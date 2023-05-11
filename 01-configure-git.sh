@@ -52,7 +52,7 @@ setGitDetails () {
 # Set global default branch to `main`.
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
-  echo "$COMMENT_PREFIX"'Setting global default branch to `main`.'
+  echo "$COMMENT_PREFIX"'Setting global default branch to main.'
   git config --global init.defaultBranch main
 }
 
@@ -71,7 +71,7 @@ addSshKeytoAgent () {
 # Generate an ssh config file.
 #-------------------------------------------------------------------------------
 generateSshConfig () {
-  echo "$COMMENT_PREFIX"'Generating ssh config file at `~/.ssh/config`'
+  echo "$COMMENT_PREFIX"'Generating ssh config file at ~/.ssh/config'
   cat <<EOF > $SSH_CONF
 Host github.com
   Hostname github.com
@@ -85,8 +85,8 @@ EOF
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
-  echo "$COMMENT_PREFIX"'You must add the contents of `~/.ssh/github.pub` to your Github account via:'
-  echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+  echo "$COMMENT_PREFIX"'You must add the contents of ~/.ssh/github.pub to your Github account via:'
+  echo "$COMMENT_PREFIX"'Settings > Access > SSH and GPG keys'
   echo "$COMMENT_PREFIX"'You will likely need to open a separate command line session to copy the contents.'
 }
 
@@ -104,11 +104,11 @@ checkUserAddedKey () {
   sleep 5
   read -p "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? ' KEY_ADDED
 
-  if [ $KEY_ADDED -eq 'y' -o $KEY_ADDED -eq 'Y' ]; then
+  if [ $KEY_ADDED = 'y' -o $KEY_ADDED = 'Y' ]; then
     echo "$COMMENT_PREFIX"'Key added to Github – we will know later if you fibbed…'
   else
     echo "$COMMENT_PREFIX"'You must add your key to Github proceed. Please add it now via:'
-    echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+    echo "$COMMENT_PREFIX"'Settings > Access > SSH and GPG keys'
     echo "$COMMENT_PREFIX"'You will likely need to open a separate command line session to copy the contents.'
     checkUserAddedKey
   fi
@@ -133,7 +133,9 @@ testGitSsh () {
   ssh -T git@github.com
   echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'If you saw a success message, you are good to go.'
-  echo "$COMMENT_PREFIX"'If you saw an error message about permissions, you fibbed about adding your key.'
+  echo "$COMMENT_PREFIX"'If you saw an error about permissions when this script exits you can try:'
+  echo "$COMMENT_PREFIX"'ssh -T git@github.com'
+  echo "$COMMENT_PREFIX"'Or you fibbed about adding your key.'
 }
 
 #-------------------------------------------------------------------------------
