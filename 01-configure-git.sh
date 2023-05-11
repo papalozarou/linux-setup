@@ -8,7 +8,7 @@
 # 3. setting global git user;
 # 4. setting global git email;
 # 5. setting global branch to `main`;
-# 6. generating an ssh key; 
+# 6. generating an ssh key;
 # 7. adding the ssh key to the ssh agent; and
 # 8. generating an ssh config file.
 #
@@ -36,7 +36,7 @@ getGitDetails () {
   echo "$COMMENT_PREFIX"'What global git username do you want to use with git?'
   read -p GIT_USERNAME
   echo "$COMMENT_PREFIX"'What global git email do you want to use with git?'
-  read -p GIT_EMAIL  
+  read -p GIT_EMAIL
 }
 
 #-------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ setGitDetails () {
 }
 
 #-------------------------------------------------------------------------------
-# Set global default branch to `main`. 
+# Set global default branch to `main`.
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
   echo "$COMMENT_PREFIX"'Setting global default branch to `main`.'
