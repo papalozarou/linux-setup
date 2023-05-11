@@ -64,6 +64,7 @@ addSshKeytoAgent () {
   echo "$COMMENT_SEPARATOR"
   eval "$(ssh-agent -s)"
   ssh-add $SSH_KEY
+  echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Key added to agent.'
 }
 
