@@ -51,20 +51,23 @@ getNewUserName () {
 # in username and groupname to $NEW_USER.
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  echo "$COMMENT_PREFIX"'Creating a script to change the current username and group within the tempuser'
-  echo "$COMMENT_PREFIX"'home directory at /home/tempuser/renameUser.sh.'
+  echo "$COMMENT_PREFIX"'Creating a script to change the current username and group within'
+  echo "$COMMENT_PREFIX"'the tempuser home directory at /home/tempuser/renameUser.sh.'
   cat <<EOF > /home/tempuser/renameUser.sh
 #!/bin/sh
-echo "$COMMENT_PREFIX""Changing username and group of $SUDO_USER."
+echo "$COMMENT_PREFIX""Changing username and group of the user $SUDO_USER."
 usermod -l $NEW_USER $SUDO_USER
 usermod -d /home/$NEW_USER -m $NEW_USER
 groupmod --new-name $NEW_USER $SUDO_USER
-echo "$COMMENT_PREFIX""You can now log back in as $NEW_USER."
-echo "$COMMENT_PREFIX""Once logged in run 03-change-username.sh again."
+echo "$COMMENT_PREFIX""You can now log back in as the user $NEW_USER."
+echo "$COMMENT_PREFIX""Once logged in run:"
+echo "$COMMENT_PREFIX""sudo ./03-change-username.sh"
 EOF
 
-  echo "$COMMENT_PREFIX"'Script created. Please log in as tempuser and run the script with:'
-  echo "$COMMENT_PREFIX"'./renameUser.sh.'
+  echo "$COMMENT_SEPARATOR"
+  ls -lna /home/tempuser | grep renameUser.sh
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX"'Script created.'
 }
 
 #-------------------------------------------------------------------------------
@@ -92,7 +95,8 @@ checkForTempUser () {
     createTempUserScript
     setPermissions "+x" "/home/tempuser/renameUser.sh"
     setOwner "tempuser" "/home/tempuser/renameUser.sh"
-    echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempuser, then run ./renameUser.sh.'
+    echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempuser, then run:'
+    echo "$COMMENT_PREFIX"'sudo ./renameUser.sh.'
   fi
 }
 
