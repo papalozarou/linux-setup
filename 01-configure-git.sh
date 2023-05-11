@@ -33,8 +33,10 @@ SSH_KEY=$SSH_DIR/github
 # for Github.
 #-------------------------------------------------------------------------------
 getGitDetails () {
-  echo "$COMMENT_PREFIX"'What global git username do you want to use with git? 'GIT_USERNAME
-  echo "$COMMENT_PREFIX"'What global git email do you want to use with git? 'GIT_EMAIL  
+  echo "$COMMENT_PREFIX"'What global git username do you want to use with git?'
+  read -p GIT_USERNAME
+  echo "$COMMENT_PREFIX"'What global git email do you want to use with git?'
+  read -p GIT_EMAIL  
 }
 
 #-------------------------------------------------------------------------------
@@ -93,9 +95,10 @@ getUserToAddKey () {
 #-------------------------------------------------------------------------------
 checkUserAddedKey () {
   sleep 5
-  echo "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? 'KEY_ADDED
+  echo "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? '
+  read -p KEY_ADDED
 
-  if [ $KEY_ADDED == 'y' || $KEY_ADDED == 'Y' ]: then
+  if [ $KEY_ADDED == 'y' || $KEY_ADDED == 'Y' ] then
     echo "$COMMENT_PREFIX"'Key added to Github – we will know later if you fibbed…'
   else
     echo "$COMMENT_PREFIX"'You must add your key to Github proceed. Please add it now via:'
