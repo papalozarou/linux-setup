@@ -148,6 +148,7 @@ setGitDetails
 setGitDefaultBranch
 generateSshKey $SSH_KEY $GIT_EMAIL
 setOwner $SUDO_USER $SSH_KEY
+setOwner $SUDO_USER $SSH_KEY.pub
 addSshKeytoAgent
 generateSshConfig
 setPermissions 600 $SSH_CONF
