@@ -22,9 +22,8 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# Set the ssh directory variables for the Linux user.
+# Set the ssh file variables for the Linux user.
 #-------------------------------------------------------------------------------
-SSH_DIR=/home/$SUDO_USER/.ssh
 SSH_CONF=$SSH_DIR/config
 SSH_KEY=$SSH_DIR/github
 

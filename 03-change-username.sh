@@ -7,6 +7,9 @@
 # 2. Creating a script within their home directory to change the default ubuntu
 #    username and groupname; and
 # 3. Deleting the temporary user and their home directory.
+#
+# N.B.
+# This script needs to be run as `sudo`.
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
