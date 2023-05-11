@@ -6,6 +6,9 @@
 # N.B.
 # As this script is run as sudo, the environment variable $SUDO_USER is used as 
 # the user for which the password is changed.
+#
+# N.B.
+# This script needs to be run as `sudo`.
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
