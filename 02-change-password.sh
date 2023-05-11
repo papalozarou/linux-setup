@@ -31,7 +31,7 @@ changeUserPassword () {
 displayUserAccountStatus() {
   echo "$COMMENT_PREFIX"'Your password has been successfully changed. Your account status is:'
   echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX""(passwd -S $SUDO_USER)"
+  echo "$COMMENT_PREFIX"$(passwd -S $SUDO_USER)
   echo "$COMMENT_SEPARATOR"
 }
 
