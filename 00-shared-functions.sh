@@ -23,16 +23,22 @@ COMMENT_PREFIX='SETUP SCRIPT: '
 COMMENT_SEPARATOR="$COMMENT_PREFIX"'------------------------------------------------------------------'
 
 #-------------------------------------------------------------------------------
-# Generates an ssh key. Takes two mandatory arguments, defined by `${1:?}` and 
-# `${2:?}`, which specify a file path and an email address for the key.
+# Generates an ssh key. Takes two arguments which specify a file path, `${1:?}`,
+# and an optional email address, `$2`, for the key.
 #-------------------------------------------------------------------------------
 generateSshKey () {
   local KEY_PATH=${1:?}
-  local KEY_EMAIL=${2:?}
+  local KEY_EMAIL=$2
 
   echo "$COMMENT_PREFIX"'Generating an ssh key at '"$KEY_PATH"'.'
   echo "$COMMENT_SEPARATOR"
-  ssh-keygen -t ed25519 -f $KEY_PATH -C "$KEY_EMAIL"
+
+  if [ -z "$KEY_EMAIL" ]; then
+    ssh-keygen -t ed25519 -f $KEY_PATH
+  else
+    ssh-keygen -t ed25519 -f $KEY_PATH -C "$KEY_EMAIL"
+  fi
+
   echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Key generated.'
 }
