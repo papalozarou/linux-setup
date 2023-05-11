@@ -52,16 +52,33 @@ setGitDetails () {
 # Set global default branch to `main`. 
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
-  echo "$COMMENT_PREFIX"'Setting global default brand to `main`.'
+  echo "$COMMENT_PREFIX"'Setting global default branch to `main`.'
   git config --global init.defaultBranch main
 }
 
 #-------------------------------------------------------------------------------
-# Generate an ssh key for use with github.
+# Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
-generateGitSshKey () {
-  generateSshKey $SSH_KEY $GIT_EMAIL
-  chown -R $USR:$USR $SSH_KEY
+getUserToAddKey () {
+  echo "$COMMENT_PREFIX"'You must add the contents of `~/.ssh/github.pub` to your Github account via:'
+  echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+}
+
+#-------------------------------------------------------------------------------
+# Check if the user has added the key to their Github account. Block progress 
+# until they have added it.
+#-------------------------------------------------------------------------------
+checkUserAddedKey () {
+  sleep 5
+  echo "$COMMENT_PREFIX"'Have you added the key to your account (y/n)?' KEY_ADDED
+
+  if [ $KEY_ADDED == 'y' || $KEY_ADDED == 'Y' ]: then
+    echo "$COMMENT_PREFIX"'Key added to Github – we will know later if you fibbed…'
+  else
+    echo "$COMMENT_PREFIX"'You must add your key to Github proceed. Please add it now via:'
+    echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+    checkUserAddedKey
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -100,16 +117,8 @@ listGitConfig () {
 testGitSsh () {
   echo "$COMMENT_PREFIX"'Testing ssh connection to git, which should show a success message.'
   ssh -T git@github.com
-}
-
-#-------------------------------------------------------------------------------
-# Remind user to copy public ssh key to Github account.
-#-------------------------------------------------------------------------------
-remindUserToAddKey () {
-  echo "$COMMENT_PREFIX"'Git is now configured on this machine.'
-  echo "$COMMENT_PREFIX"'N.B.'
-  echo "$COMMENT_PREFIX"'Add the contents of `~/.ssh/github.pub` to your Github account via:'
-  echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+  echo "$COMMENT_PREFIX"'If you saw a success message, you are good to go.'
+  echo "$COMMENT_PREFIX"'If you saw an error message, you fibbed about adding your key.'
 }
 
 #-------------------------------------------------------------------------------
@@ -122,9 +131,10 @@ setGitDefaultBranch
 generateSshKey $SSH_KEY $GIT_EMAIL
 setOwner $SUDO_USER $SSH_KEY
 addSshKeytoAgent
+getUserToAddKey
+checkUserAddedKey
 generateSshConfig
 setPermissions 600 $SSH_CONF
 setOwner $SUDO_USER $SSH_CONF
 listGitConfig
 testGitSsh
-remindUserToAddKey
