@@ -56,8 +56,6 @@ setGitDefaultBranch () {
   git config --global init.defaultBranch main
 }
 
-echo "$COMMENT_PREFIX"''
-
 #-------------------------------------------------------------------------------
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
@@ -119,6 +117,8 @@ listGitConfig () {
 testGitSsh () {
   echo "$COMMENT_PREFIX"'Testing ssh connection to git, which should show a success message.'
   ssh -T git@github.com
+  echo "$COMMENT_PREFIX"'If you saw a success message, you are good to go.'
+  echo "$COMMENT_PREFIX"'If you saw an error message, you fibbed about adding your key.'
 }
 
 #-------------------------------------------------------------------------------
@@ -131,9 +131,10 @@ setGitDefaultBranch
 generateSshKey $SSH_KEY $GIT_EMAIL
 setOwner $SUDO_USER $SSH_KEY
 addSshKeytoAgent
+getUserToAddKey
+checkUserAddedKey
 generateSshConfig
 setPermissions 600 $SSH_CONF
 setOwner $SUDO_USER $SSH_CONF
 listGitConfig
 testGitSsh
-remindUserToAddKey
