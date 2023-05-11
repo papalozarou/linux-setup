@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 # Changes the current user's username by:
 #
-# 1. Creating a temporary user, `tempUser`;
+# 1. Creating a temporary user, `tempuser`;
 # 2. Creating a script within their home directory to change the default ubuntu
 #    username and groupname; and
 # 3. Deleting the temporary user and their home directory.
@@ -15,7 +15,7 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# Create a temporary user, `tempUser`, and adds it to sudoers so it can change
+# Create a temporary user, `tempuser`, and adds it to sudoers so it can change
 # the current users name and group.
 #
 # N.B.
@@ -26,15 +26,15 @@
 # https://unix.stackexchange.com/a/611219
 #-------------------------------------------------------------------------------
 createTempUser () {
-  echo "$COMMENT_PREFIX"'Creating temporary user, tempUser.'
+  echo "$COMMENT_PREFIX"'Creating temporary user, tempuser.'
   echo "$COMMENT_PREFIX"'N.B.'
   echo "$COMMENT_PREFIX"'Set a password you can remember easily as you will need it shortly.'
   echo "$COMMENT_SEPARATOR"
-  adduser --gecos GECOS tempUser
+  adduser --gecos GECOS tempuser
   echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Temporary user created. Adding to sudoers.'
   echo "$COMMENT_SEPARATOR"
-  adduser tempUser sudo
+  adduser tempuser sudo
   echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Temporary user added to sudoers file.'
 }
@@ -51,9 +51,9 @@ getNewUserName () {
 # in username and groupname to $NEW_USER.
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  echo "$COMMENT_PREFIX"'Creating a script to change the current username and group within the tempUser'
-  echo "$COMMENT_PREFIX"'home directory at /home/tempUser/renameUser.sh.'
-  cat <<EOF > /home/tempUser/renameUser.sh
+  echo "$COMMENT_PREFIX"'Creating a script to change the current username and group within the tempuser'
+  echo "$COMMENT_PREFIX"'home directory at /home/tempuser/renameUser.sh.'
+  cat <<EOF > /home/tempuser/renameUser.sh
 #!/bin/sh
 echo "$COMMENT_PREFIX""Changing username and group of $SUDO_USER."
 usermod -l $NEW_USER $SUDO_USER
@@ -63,36 +63,36 @@ echo "$COMMENT_PREFIX""You can now log back in as $NEW_USER."
 echo "$COMMENT_PREFIX""Once logged in run 03-change-username.sh again."
 EOF
 
-  echo "$COMMENT_PREFIX"'Script created. Please log in as tempUser and run the script with:'
+  echo "$COMMENT_PREFIX"'Script created. Please log in as tempuser and run the script with:'
   echo "$COMMENT_PREFIX"'./renameUser.sh.'
 }
 
 #-------------------------------------------------------------------------------
-# Removes the temporary user `tempUser` and it's home directory.
+# Removes the temporary user `tempuser` and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
-  echo "$COMMENT_PREFIX"'Deleting temporary user, tempUser.'
+  echo "$COMMENT_PREFIX"'Deleting temporary user, tempuser.'
   echo "$COMMENT_SEPARATOR"
-  deluser tempUser
-  rm -r /home/tempUser
+  deluser tempuser
+  rm -r /home/tempuser
   echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Temporary user and home folder deleted.'
 }
 
 #-------------------------------------------------------------------------------
-# Check whether `tempUser` exists. I it does exist delete it, if it doesn't
+# Check whether `tempuser` exists. I it does exist delete it, if it doesn't
 # exist create it.
 #-------------------------------------------------------------------------------
 checkForTempUser () {
-  if id tempUser; then
+  if id tempuser; then
     removeTempUser
   else
     createTempUser
     getNewUserName
     createTempUserScript
-    setPermissions "+x" "/home/tempUser/renameUser.sh"
-    setOwner "tempUser" "/home/tempUser/renameUser.sh"
-    echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempUser, then run ./renameUser.sh.'
+    setPermissions "+x" "/home/tempuser/renameUser.sh"
+    setOwner "tempuser" "/home/tempuser/renameUser.sh"
+    echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempuser, then run ./renameUser.sh.'
   fi
 }
 
