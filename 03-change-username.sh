@@ -10,6 +10,11 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
+# Import shared functions.
+#-------------------------------------------------------------------------------
+. ./00-shared-functions.sh
+
+#-------------------------------------------------------------------------------
 # Create a temporary user, `tempUser`, and adds it to sudoers so it can change
 # the current users name and group.
 #
@@ -75,13 +80,11 @@ removeTempUser () {
 }
 
 #-------------------------------------------------------------------------------
-# Check whether `tempUser` exists. If it doesn't exist, create it, or if it does
-# exist, delete it.
+# Check whether `tempUser` exists. I it does exist delete it, if it doesn't
+# exist create it.
 #-------------------------------------------------------------------------------
 checkForTempUser () {
-  local TEMPUSER=echo $(cat /etc/passwd | grep tempUser)
-
-  if [ -z TEMPUSER ]; then
+  if id tempUser; then
     removeTempUser
   else
     createTempUser
