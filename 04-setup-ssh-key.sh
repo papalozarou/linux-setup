@@ -35,8 +35,7 @@ addKeyToAuthorizedKeys () {
 # Tell the user to copy the private key to their local machine.
 #-------------------------------------------------------------------------------
 keyUsage () {
-  echo "$COMMENT_PREFIX"'Please copy the private key, '"$REMOTE_KEY_NAME"', to your local .ssh'
-  echo "$COMMENT_PREFIX"'Please copy the private key, '"$REMOTE_KEY_NAME"' to your local .ssh'
+  echo "$COMMENT_PREFIX"'Please copy the private key, '"$REMOTE_KEY_NAME"', to your local'
   echo "$COMMENT_PREFIX"'~/.ssh directory. YOu will also want to add this host to your ssh'
   echo "$COMMENT_PREFIX"'config file, either ~/.ssh/ssh_config or ~/.ssh/config.'
 }
