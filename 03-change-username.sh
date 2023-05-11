@@ -34,7 +34,7 @@ createTempUser () {
 # Get the desired new username and group.
 #-------------------------------------------------------------------------------
 getNewUserName () {
-  echo "$COMMENT_PREFIX"'What is your new user name?' NEW_USER
+  read -p "$COMMENT_PREFIX"'What is your new user name? 'NEW_USER
 }
 
 #-------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ removeTempUser () {
 checkForTempUser () {
   local tempUser=echo $(cat /etc/passwd | grep tempUser) 
 
-  if [ -z tempUser]: then
+  if [ -z tempUser]; then
     removeTempUser
   else
     createTempUser
