@@ -82,14 +82,14 @@ checkForTempUser () {
   local TEMPUSER=echo $(cat /etc/passwd | grep tempUser)
 
   if [ -z TEMPUSER ]; then
+    removeTempUser
+  else
     createTempUser
     getNewUserName
     createTempUserScript
     setPermissions "+x" "/home/tempUser/renameUser.sh"
     setOwner "tempUser" "/home/tempUser/renameUser.sh"
     echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempUser, then run ./renameUser.sh.'
-  else
-    removeTempUser
   fi
 }
 
