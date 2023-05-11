@@ -57,31 +57,6 @@ setGitDefaultBranch () {
 }
 
 #-------------------------------------------------------------------------------
-# Get the user to copy public ssh key to Github account.
-#-------------------------------------------------------------------------------
-getUserToAddKey () {
-  echo "$COMMENT_PREFIX"'You must add the contents of `~/.ssh/github.pub` to your Github account via:'
-  echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
-}
-
-#-------------------------------------------------------------------------------
-# Check if the user has added the key to their Github account. Block progress 
-# until they have added it.
-#-------------------------------------------------------------------------------
-checkUserAddedKey () {
-  sleep 5
-  echo "$COMMENT_PREFIX"'Have you added the key to your account (y/n)?' KEY_ADDED
-
-  if [ $KEY_ADDED == 'y' || $KEY_ADDED == 'Y' ]: then
-    echo "$COMMENT_PREFIX"'Key added to Github – we will know later if you fibbed…'
-  else
-    echo "$COMMENT_PREFIX"'You must add your key to Github proceed. Please add it now via:'
-    echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
-    checkUserAddedKey
-  fi
-}
-
-#-------------------------------------------------------------------------------
 # Start the `ssh-agent` and add the newly generated key to it.
 #-------------------------------------------------------------------------------
 addSshKeytoAgent () {
@@ -101,6 +76,33 @@ Host github.com
   IdentityFile ~/.ssh/github
   IdentitiesOnly yes
 EOF
+}
+
+#-------------------------------------------------------------------------------
+# Get the user to copy public ssh key to Github account.
+#-------------------------------------------------------------------------------
+getUserToAddKey () {
+  echo "$COMMENT_PREFIX"'You must add the contents of `~/.ssh/github.pub` to your Github account via:'
+  echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+  echo "$COMMENT_PREFIX"'You will likely need to open a separate command line session to copy the contents.'
+}
+
+#-------------------------------------------------------------------------------
+# Check if the user has added the key to their Github account. Block progress 
+# until they have added it.
+#-------------------------------------------------------------------------------
+checkUserAddedKey () {
+  sleep 5
+  echo "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? 'KEY_ADDED
+
+  if [ $KEY_ADDED == 'y' || $KEY_ADDED == 'Y' ]: then
+    echo "$COMMENT_PREFIX"'Key added to Github – we will know later if you fibbed…'
+  else
+    echo "$COMMENT_PREFIX"'You must add your key to Github proceed. Please add it now via:'
+    echo "$COMMENT_PREFIX"'`Settings > Access > SSH and GPG keys`'
+    echo "$COMMENT_PREFIX"'You will likely need to open a separate command line session to copy the contents.'
+    checkUserAddedKey
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -131,10 +133,10 @@ setGitDefaultBranch
 generateSshKey $SSH_KEY $GIT_EMAIL
 setOwner $SUDO_USER $SSH_KEY
 addSshKeytoAgent
-getUserToAddKey
-checkUserAddedKey
 generateSshConfig
 setPermissions 600 $SSH_CONF
 setOwner $SUDO_USER $SSH_CONF
+getUserToAddKey
+checkUserAddedKey
 listGitConfig
 testGitSsh
