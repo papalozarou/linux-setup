@@ -61,7 +61,7 @@ usermod -d /home/$NEW_USER -m $NEW_USER
 groupmod --new-name $NEW_USER $SUDO_USER
 echo "$COMMENT_PREFIX""You can now log back in as the user $NEW_USER."
 echo "$COMMENT_PREFIX""Once logged in run:"
-echo "$COMMENT_PREFIX""sudo ./03-change-username.sh"
+echo "$COMMENT_PREFIX""sudo ~/linux-setup/03-change-username.sh"
 EOF
 
   echo "$COMMENT_SEPARATOR"
