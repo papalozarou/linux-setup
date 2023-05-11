@@ -88,6 +88,7 @@ getUserToAddKey () {
   echo "$COMMENT_PREFIX"'You must add the contents of ~/.ssh/github.pub to your Github account via:'
   echo "$COMMENT_PREFIX"'Settings > Access > SSH and GPG keys'
   echo "$COMMENT_PREFIX"'You will likely need to open a separate command line session to copy the contents.'
+  echo "$COMMENT_PREFIX"'We will wait a while you go add the key…'
 }
 
 #-------------------------------------------------------------------------------
@@ -135,7 +136,7 @@ testGitSsh () {
   echo "$COMMENT_PREFIX"'If you saw a success message, you are good to go.'
   echo "$COMMENT_PREFIX"'If you saw an error about permissions when this script exits you can try:'
   echo "$COMMENT_PREFIX"'ssh -T git@github.com'
-  echo "$COMMENT_PREFIX"'Or you fibbed about adding your key.'
+  echo "$COMMENT_PREFIX"'If that still does not work, you fibbed about adding your key.'
 }
 
 #-------------------------------------------------------------------------------
