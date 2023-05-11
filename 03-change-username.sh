@@ -24,9 +24,13 @@ createTempUser () {
   echo "$COMMENT_PREFIX"'Creating temporary user, tempUser.'
   echo "$COMMENT_PREFIX"'N.B.'
   echo "$COMMENT_PREFIX"'Set a password you can remember easily as you will need it shortly.'
+  echo "$COMMENT_SEPARATOR"
   adduser --gecos GECOS tempUser
+  echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Temporary user created. Adding to sudoers.'
+  echo "$COMMENT_SEPARATOR"
   adduser tempUser sudo
+  echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Temporary user added to sudoers file.'
 }
 
@@ -63,8 +67,10 @@ EOF
 #-------------------------------------------------------------------------------
 removeTempUser () {
   echo "$COMMENT_PREFIX"'Deleting temporary user, tempUser.'
+  echo "$COMMENT_SEPARATOR"
   deluser tempUser
   rm -r /home/tempUser
+  echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'Temporary user and home folder deleted.'
 }
 
