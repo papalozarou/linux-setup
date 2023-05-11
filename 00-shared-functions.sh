@@ -18,7 +18,8 @@
 #-------------------------------------------------------------------------------
 # Comment variables.
 #-------------------------------------------------------------------------------
-COMMENT_PREFIX='Setup script: '
+COMMENT_PREFIX='SETUP SCRIPT: '
+COMMENT_SEPARATOR="$COMMENT_PREFIX"'------------------------------------------------------------------'
 
 #-------------------------------------------------------------------------------
 # Config variables.
@@ -100,7 +101,10 @@ generateSshKey () {
   local KEY_EMAIL=${2:?}
 
   echo "$COMMENT_PREFIX"'Generating an ssh key at '"$KEY_PATH"'.'
+  echo "$COMMENT_SEPARATOR"
   ssh-keygen -t ed25519 -f $KEY_PATH -C "$KEY_EMAIL"
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX"'Key generated.'
 }
 
 #-------------------------------------------------------------------------------
@@ -135,6 +139,7 @@ setOwner () {
 #-------------------------------------------------------------------------------
 updateUpgrade () {
   echo "$COMMENT_PREFIX"'Updating and upgrading packages.'
-
+  echo "$COMMENT_SEPARATOR"
   apt update && apt upgrade -y
+  echo "$COMMENT_SEPARATOR"
 }

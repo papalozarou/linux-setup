@@ -61,8 +61,10 @@ setGitDefaultBranch () {
 #-------------------------------------------------------------------------------
 addSshKeytoAgent () {
   echo "$COMMENT_PREFIX"'Adding the generated key to the ssh-agent.'
+  echo "$COMMENT_SEPARATOR"
   eval "$(ssh-agent -s)"
   ssh-add $SSH_KEY
+  echo "$COMMENT_PREFIX"'Key added to agent.'
 }
 
 #-------------------------------------------------------------------------------
@@ -76,6 +78,7 @@ Host github.com
   IdentityFile ~/.ssh/github
   IdentitiesOnly yes
 EOF
+  echo "$COMMENT_PREFIX"'Config file generated.'
 }
 
 #-------------------------------------------------------------------------------
@@ -88,14 +91,20 @@ getUserToAddKey () {
 }
 
 #-------------------------------------------------------------------------------
-# Check if the user has added the key to their Github account. Block progress 
+# Check if the user has added the key to their Github account. Block progress
 # until they have added it.
+#
+# N.B.
+# As we are trying to be POSIX compliant, we are using `-eq` and `-o` within
+# single brackets as per:
+#
+# https://queirozf.com/entries/posix-shell-tests-and-conditionals-examples-and-reference
 #-------------------------------------------------------------------------------
 checkUserAddedKey () {
   sleep 5
   read -p "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? ' KEY_ADDED
 
-  if [ $KEY_ADDED == 'y' || $KEY_ADDED == 'Y' ]; then
+  if [ $KEY_ADDED -eq 'y' -o $KEY_ADDED -eq 'Y' ]; then
     echo "$COMMENT_PREFIX"'Key added to Github – we will know later if you fibbed…'
   else
     echo "$COMMENT_PREFIX"'You must add your key to Github proceed. Please add it now via:'
@@ -110,7 +119,9 @@ checkUserAddedKey () {
 #-------------------------------------------------------------------------------
 listGitConfig () {
   echo "$COMMENT_PREFIX"'Listing git configuration…'
+  echo "$COMMENT_SEPARATOR"
   git config --list
+  echo "$COMMENT_SEPARATOR"
 }
 
 #-------------------------------------------------------------------------------
@@ -118,9 +129,11 @@ listGitConfig () {
 #-------------------------------------------------------------------------------
 testGitSsh () {
   echo "$COMMENT_PREFIX"'Testing ssh connection to git, which should show a success message.'
+  echo "$COMMENT_SEPARATOR"
   ssh -T git@github.com
+  echo "$COMMENT_SEPARATOR"
   echo "$COMMENT_PREFIX"'If you saw a success message, you are good to go.'
-  echo "$COMMENT_PREFIX"'If you saw an error message, you fibbed about adding your key.'
+  echo "$COMMENT_PREFIX"'If you saw an error message about permissions, you fibbed about adding your key.'
 }
 
 #-------------------------------------------------------------------------------
