@@ -105,28 +105,29 @@ generateSshKey () {
 
 #-------------------------------------------------------------------------------
 # Sets permissions of a file or directory. Takes two mandatory arguments, 
-# defined by `${1:?}` and `${2:?}`, which specify a user and a path.`
+# defined by `${1:?}` and `${2:?}`, which specify a user and a path of the file
+# or directory.
 #-------------------------------------------------------------------------------
 setPermissions () {
   local PERMISSIONS=${1:?}
-  local FILE=${2:?}
+  local FILE_FOLDER=${2:?}
 
-  echo "$COMMENT_PREFIX"'Setting permissions of '"$PATH"' to '"$PERMISSIONS"'.'
-  chmod -R $PERMISSIONS $PATH
+  echo "$COMMENT_PREFIX"'Setting permissions of '"$FILE_FOLDER"' to '"$PERMISSIONS"'.'
+  chmod -R $PERMISSIONS $FILE_FOLDER
 }
 
 #-------------------------------------------------------------------------------
 # Sets ownership of a file or directory. Takes two mandatory arguments, defined
 # by `${1:?}` and `${2:?}`, which specify the owner – also used for the group –
-# and the path.
+# and the path of the file or directory.
 #-------------------------------------------------------------------------------
 setOwner () {
   local USER=${1:?}
   local GROUP=$USER
-  local PATH=${2:?}
+  local FILE_FOLDER=${2:?}
 
-  echo "$COMMENT_PREFIX"'Setting ownership of '"$FILE"' to '"$USER"':'"$GROUP"'.'
-  chown -R $USER:$GROUP $PATH
+  echo "$COMMENT_PREFIX"'Setting ownership of '"$FILE_FOLDER"' to '"$USER"':'"$GROUP"'.'
+  chown -R $USER:$GROUP $FILE_FOLDER
 }
 
 #-------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ createTempUser () {
 # Get the desired new username and group.
 #-------------------------------------------------------------------------------
 getNewUserName () {
-  read -p "$COMMENT_PREFIX"'What is your new user name? 'NEW_USER
+  read -p "$COMMENT_PREFIX"'What is your new user name? ' NEW_USER
 }
 
 #-------------------------------------------------------------------------------
