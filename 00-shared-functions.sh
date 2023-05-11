@@ -99,7 +99,34 @@ generateSshKey () {
   local KEY_PATH=${1:?}
   local KEY_EMAIL=${2:?}
 
+  echo "$COMMENT_PREFIX"'Generating an ssh key at '"$KEY_PATH"'.'
   ssh-keygen -t ed25519 -f $KEY_PATH -C "$KEY_EMAIL"
+}
+
+#-------------------------------------------------------------------------------
+# Sets permissions of a file or directory. Takes two mandatory arguments, 
+# defined by `${1:?}` and `${2:?}`, which specify a user and a path.`
+#-------------------------------------------------------------------------------
+setPermissions () {
+  local PERMISSIONS=${1:?}
+  local FILE=${2:?}
+
+  echo "$COMMENT_PREFIX"'Setting permissions of '"$PATH"' to '"$PERMISSIONS"'.'
+  chmod -R $PERMISSIONS $PATH
+}
+
+#-------------------------------------------------------------------------------
+# Sets ownership of a file or directory. Takes two mandatory arguments, defined
+# by `${1:?}` and `${2:?}`, which specify the owner – also used for the group –
+# and the path.
+#-------------------------------------------------------------------------------
+setOwner () {
+  local USER=${1:?}
+  local GROUP=$USER
+  local PATH=${2:?}
+
+  echo "$COMMENT_PREFIX"'Setting ownership of '"$FILE"' to '"$USER"':'"$GROUP"'.'
+  chown -R $USER:$GROUP $PATH
 }
 
 #-------------------------------------------------------------------------------
