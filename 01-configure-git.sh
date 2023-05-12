@@ -3,14 +3,13 @@
 #-------------------------------------------------------------------------------
 # Set up git for current user by:
 #
-# 1. updating and upgrading packages;
-# 2. asking for user details;
-# 3. setting global git user;
-# 4. setting global git email;
-# 5. setting global branch to `main`;
-# 6. generating an ssh key;
-# 7. adding the ssh key to the ssh agent; and
-# 8. generating an ssh config file.
+# 1. asking for user details;
+# 2. setting global git user;
+# 3. setting global git email;
+# 4. setting global branch to `main`;
+# 5. generating an ssh key;
+# 6. adding the ssh key to the ssh agent; and
+# 7. generating an ssh config file.
 #
 # N.B.
 # This script needs to be run as `sudo`.
@@ -140,9 +139,8 @@ testGitSsh () {
 }
 
 #-------------------------------------------------------------------------------
-# Runs the script, after updating and upgrading the installed packages.
+# Run the script.
 #-------------------------------------------------------------------------------
-updateUpgrade
 getGitDetails
 setGitDetails
 setGitDefaultBranch
