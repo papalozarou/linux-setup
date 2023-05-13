@@ -92,6 +92,7 @@ removeTempUser () {
 checkForTempUser () {
   if id tempuser; then
     removeTempUser
+    echoScriptFinished 'removing the temporary user'
   else
     createTempUser
     getNewUserName
@@ -100,6 +101,7 @@ checkForTempUser () {
     setOwner "tempuser" "/home/tempuser/renameUser.sh"
     echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempuser, then run:'
     echo "$COMMENT_PREFIX"'sudo ./renameUser.sh.'
+    echoScriptFinished 'setting up the temporary user'
   fi
 }
 

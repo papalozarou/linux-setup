@@ -52,6 +52,18 @@ generateSshKey () {
 }
 
 #-------------------------------------------------------------------------------
+# Echoes that the script given has finished. Takes one mandatory argument, 
+# `${1:?}`, which is a comment.
+#-------------------------------------------------------------------------------
+echoScriptFinished () {
+  local COMMENT=${1:?}
+
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX"'Finished '"$COMMENT"'.'
+  echo "$COMMENT_SEPARATOR"
+}
+
+#-------------------------------------------------------------------------------
 # Sets permissions of a file or directory. Takes two mandatory arguments, 
 # defined by `${1:?}` and `${2:?}`, which specify a user and a path of the file
 # or directory.

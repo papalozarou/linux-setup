@@ -49,3 +49,4 @@ setOwner $SUDO_USER $SSH_KEY
 setOwner $SUDO_USER $SSH_KEY.pub
 addKeyToAuthorizedKeys
 keyUsage
+echoScriptFinished 'setting up remote ssh key'

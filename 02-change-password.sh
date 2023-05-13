@@ -43,3 +43,4 @@ displayUserAccountStatus() {
 #-------------------------------------------------------------------------------
 changeUserPassword
 displayUserAccountStatus
+echoScriptFinished 'changing password for '"$SUDO_USER"

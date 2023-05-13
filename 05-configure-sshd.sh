@@ -9,7 +9,7 @@
 # 3. disallowing X11 and agent forwarding; and
 # 4. not permitting user environment variables to be passed.
 #
-# Changes are stored in a conf file in /etc/ssh/sshd_config.d/99-defaults.conf.
+# Changes are stored in a conf file in /etc/ssh/sshd_config.d/99-hardened.conf.
 # Once changes have been made, the ssh daemon is restarted.
 #
 # This script is based on:
@@ -50,7 +50,13 @@ listCurrentSshdConfigs() {
 # Removes the config files within $SSHD_CONF_DIR, if the user requests it.
 #-------------------------------------------------------------------------------
 removeCurrentSShdConfigs () {
-  echo "$COMMENT_PREFIX"
+  read -p "$COMMENT_PREFIX"'Do you want to remove the configs in '"$SSHD_CONF_DIR"'? ' CONF_ANSR
+
+  if [ SOMETHING $CONF_ANSR]; then
+
+  else
+
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -86,4 +92,7 @@ checkSshdConfig () {
 }
 
 listCurrentSshdConfigs
+removeCurrentSshdConfigs
 checkSshdConfig
+createHardenedSShdConfig
+echoScriptFinished 'setting up and configuring sshd'
