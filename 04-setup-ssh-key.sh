@@ -34,10 +34,11 @@ addKeyToAuthorizedKeys () {
 #-------------------------------------------------------------------------------
 # Tell the user to copy the private key to their local machine.
 #-------------------------------------------------------------------------------
-keyUsage () {
+echoKeyUsage () {
   echo "$COMMENT_PREFIX"'Please copy the private key, '"$REMOTE_KEY_NAME"', to your local'
-  echo "$COMMENT_PREFIX"'~/.ssh directory. You will also want to add this host to your ssh'
-  echo "$COMMENT_PREFIX"'config file, either ~/.ssh/ssh_config or ~/.ssh/config.'
+  echo "$COMMENT_PREFIX"'~/.ssh directory. You will also want to add the following to your'
+  echo "$COMMENT_PREFIX"'local ssh config file, either ~/.ssh/ssh_config or ~/.ssh/config,'
+  echo "$COMMENT_PREFIX"'once you have configured sshd with the next script.'
 }
 
 #-------------------------------------------------------------------------------
@@ -48,5 +49,5 @@ generateSshKey $SSH_KEY $SSH_EMAIL
 setOwner $SUDO_USER $SSH_KEY
 setOwner $SUDO_USER $SSH_KEY.pub
 addKeyToAuthorizedKeys
-keyUsage
+echoKeyUsage
 echoScriptFinished 'setting up remote ssh key'

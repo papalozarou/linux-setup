@@ -70,7 +70,7 @@ addSshKeytoAgent () {
 # Generate an ssh config file.
 #-------------------------------------------------------------------------------
 generateSshConfig () {
-  echo "$COMMENT_PREFIX"'Generating ssh config file at ~/.ssh/config'
+  echo "$COMMENT_PREFIX"'Generating ssh config file at ~/.ssh/config.'
   cat <<EOF > $SSH_CONF
 Host github.com
   Hostname github.com
