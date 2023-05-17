@@ -31,6 +31,20 @@ USER_DIR=/home/$SUDO_USER
 SSH_DIR=$USER_DIR/.ssh
 
 #-------------------------------------------------------------------------------
+# Check to see if the port number has already been used for another service.
+#-------------------------------------------------------------------------------
+checkPortNumber () {
+  echo ""
+}
+
+#-------------------------------------------------------------------------------
+# Generates a random port number between 2000 and 65000 inclusive.
+#-------------------------------------------------------------------------------
+generatePortNumber () {
+  echo "$(shuf -i 2000-65000 -n 1)"
+}
+
+#-------------------------------------------------------------------------------
 # Generates an ssh key. Takes two arguments which specify a file path, `${1:?}`,
 # and an optional email address, `$2`, for the key.
 #-------------------------------------------------------------------------------
