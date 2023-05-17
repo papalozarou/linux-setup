@@ -39,7 +39,9 @@ checkPortNumber () {
 }
 
 #-------------------------------------------------------------------------------
-# Generates a random port number between 2000 and 65000 inclusive.
+# Generates a random port number between 2000 and 65000 inclusive, as per:
+#
+# https://unix.stackexchange.com/questions/140750/generate-random-numbers-in-specific-range
 #-------------------------------------------------------------------------------
 generatePortNumber () {
   echo "$(shuf -i 2000-65000 -n 1)"
