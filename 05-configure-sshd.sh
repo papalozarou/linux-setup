@@ -66,7 +66,7 @@ removeCurrentSShdConfigs () {
     echo "$COMMENT_PREFIX"'Files deleted.'
 
     listCurrentSshdConfigs
-  elif [ $REM_CONF_YN = 'n' -o $REM_CONF_YN = 'N' ]
+  elif [ $REM_CONF_YN = 'n' -o $REM_CONF_YN = 'N' ]; then
     echo "$COMMENT_PREFIX"'Leaving files in '"$SSHD_CONF_DIR"' intact.'
   else
     echo "$COMMENT_PREFIX"'You must answer y or n.'
@@ -139,14 +139,16 @@ EOF
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-echoLocalSshConfig () {
-  # Do we need this?
-}
+# echoLocalSshConfig () {
+#   # Do we need this?
+# }
 
 listCurrentSshdConfigs
-removeCurrentSshdConfigs
-checkSshdConfig
-createHardenedSShdConfig
-setPermissions 600 $SSHD_CONF_DIR
-echoLocalSshConfig
+TEST=$(generatePortNumber)
+echo "$COMMENT_PREFIX"'Your port number is '"$TEST"'.'
+# removeCurrentSshdConfigs
+# checkSshdConfig
+# createHardenedSShdConfig
+# setPermissions 600 $SSHD_CONF_DIR
+# echoLocalSshConfig
 echoScriptFinished 'setting up and configuring sshd'
