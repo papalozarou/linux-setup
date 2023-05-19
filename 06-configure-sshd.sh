@@ -28,10 +28,10 @@
 #-------------------------------------------------------------------------------
 # SSHD related variables.
 #-------------------------------------------------------------------------------
-SSH_DIR=/etc/ssh
-SSHD_CONF=$SSH_DIR/sshd_config
+GLOBAL_SSH_DIR=/etc/ssh
+SSHD_CONF=$GLOBAL_SSH_DIR/sshd_config
 SSHD_CONF=./sshd_config
-SSHD_CONF_DIR=$SSH_DIR/sshd_config.d
+SSHD_CONF_DIR=$GLOBAL_SSH_DIR/sshd_config.d
 SSHD_DEFAULT_CONF=$SSHD_CONF_DIR/99-defaults.conf
 
 #-------------------------------------------------------------------------------
