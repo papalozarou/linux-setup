@@ -150,5 +150,5 @@ echo "$COMMENT_PREFIX"'Your port number is '"$TEST"'.'
 # checkSshdConfig
 # createHardenedSShdConfig
 # setPermissions 600 $SSHD_CONF_DIR
+# controlService restart sshd
 # echoLocalSshConfig
-.
