@@ -83,7 +83,6 @@ checkForSetupConfigDir () {
     echo "$COMMENT_PREFIX"'The setup config directory does not exist at '"$SETUP_CONF_DIR"'.'
     createSetupDir
 
-    setPermissions 600 $SETUP_CONF_DIR
     setOwner $SUDO_USER $SETUP_CONF_DIR
   fi
 }
@@ -104,6 +103,9 @@ checkForSetupConfigFile () {
 
     setPermissions 600 $SETUP_CONF
     setOwner $SUDO_USER $SETUP_CONF
+
+    echo "$COMMENT_SEPARATOR"
+    ls -lna $SETUP_CONF_DIR
   fi
 }
 
