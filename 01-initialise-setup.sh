@@ -18,7 +18,7 @@
 #-------------------------------------------------------------------------------
 # Set the config directory variable.
 #-------------------------------------------------------------------------------
-SETUP_CONF_DIR=~/.config/linux-setup
+SETUP_CONF_DIR=/home/$SUDO_USER/.config/linux-setup
 SETUP_CONF=$ETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ removeCurrentSetupConfig () {
 # does exist, ask if the user wants to remove it.
 #-------------------------------------------------------------------------------
 checkForSetupConfig () {
-  if [ -z $SETUP_CONF ]; then
+  if [ -d $SETUP_CONF ]; then
     echo "$COMMENT_PREFIX"'No setup config file exists in '"$SETUP_CONF_DIR"'.'
 
     createSetupConfig
