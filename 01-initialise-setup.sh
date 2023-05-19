@@ -69,6 +69,7 @@ checkForSetupConfig () {
   else
     echo "$COMMENT_PREFIX"'A setup config file exists in '"$SETUP_CONF_DIR"'.'
     removeCurrentSetupConfig
+  fi
 }
 
 #-------------------------------------------------------------------------------
