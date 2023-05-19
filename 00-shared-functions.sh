@@ -104,11 +104,23 @@ installService () {
 #-------------------------------------------------------------------------------
 # Reads a setup config option. Takes one mandatory argument, defined by 
 # `${1:?}`, which defines the key of the config option.
+# 
+# The config line is read by `grep`` and stored in `$CONFIG`. This is split by 
+# `set` into it's key, $1, and it's value, $2 – the `-f` flag prevents pathname 
+# expansion for safety. Taken from:
+#
+# https://stackoverflow.com/a/1478245
 #-------------------------------------------------------------------------------
 readSetupConfigOption() {
   local CONFIG_KEY=${1:?}
 
-  echo "$COMMENT_PREFIX"'Reading '"$CONFIG_KEY"'.'
+  echo "$COMMENT_PREFIX"'Reading '"$CONFIG_KEY"' from '"$SETUP_CONF"'.'
+
+  local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
+
+  set -f $CONFIG
+  
+  echo $2
 }
 
 #-------------------------------------------------------------------------------
