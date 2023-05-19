@@ -78,9 +78,13 @@ checkForSetupConfigDir () {
   echo "$COMMENT_PREFIX"'Checking for the setup config directory at '"$SETUP_CONF_DIR"'.' 
 
   if [ -d $SETUP_CONF_DIR ]; then
-    echo "$COMMENT_PREFIX"'The setup config directory exists at '"$SETUP_CONF_DIR"'.' 
+    echo "$COMMENT_PREFIX"'The setup config directory exists at '"$SETUP_CONF_DIR"'.'
   else
     echo "$COMMENT_PREFIX"'The setup config directory does not exist at '"$SETUP_CONF_DIR"'.'
+    createSetupDir
+
+    setPermissions 600 $SETUP_CONF_DIR
+    setOwner $SUDO_USER $SETUP_CONF_DIR
   fi
 }
 
@@ -93,11 +97,13 @@ checkForSetupConfigFile () {
 
   if [ -f $SETUP_CONF ]; then
     echo "$COMMENT_PREFIX"'A setup config file exists in '"$SETUP_CONF_DIR"'.'
-    # removeCurrentSetupConfig
+    removeCurrentSetupConfig
   else
     echo "$COMMENT_PREFIX"'No setup config file exists in '"$SETUP_CONF_DIR"'.'
-    # createSetupConfig
-    # setPermissions 600 $SETUP_CONF
+    createSetupConfig
+
+    setPermissions 600 $SETUP_CONF
+    setOwner $SUDO_USER $SETUP_CONF
   fi
 }
 
