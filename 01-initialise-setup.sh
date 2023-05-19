@@ -75,7 +75,7 @@ removeCurrentSetupConfig () {
 #-------------------------------------------------------------------------------
 # Check for a setup config directory. If one exists, do nothing. If one doesn't
 # exist, create it and it's parent if necessary, then set ownership to 
-# $SUDO_USER.
+# `$SUDO_USER`.
 #-------------------------------------------------------------------------------
 checkForSetupConfigDir () {
   echo "$COMMENT_PREFIX"'Checking for the setup config directory at '"$SETUP_CONF_DIR"'.' 
