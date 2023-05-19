@@ -35,7 +35,7 @@ createSetupDir () {
 createSetupConfig () {
   echo "$COMMENT_PREFIX"'Creating setup config file in '"$SETUP_CONF_DIR"'.'
   cat <<EOF > $SETUP_CONF
-lastCompletedStep=1
+lastCompletedStep 1
 EOF
   echo "$COMMENT_PREFIX"'Setup config file created.'
 }
