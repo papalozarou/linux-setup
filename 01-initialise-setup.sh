@@ -19,10 +19,24 @@
 # Set the config directory variable.
 #-------------------------------------------------------------------------------
 SETUP_CONF_DIR=/home/$SUDO_USER/.config/linux-setup
-SETUP_CONF=$ETUP_CONF_DIR/setup.conf
+SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
-#
+# Creates the setup config directory at `$SETUP_CONF_DIR`.
+#-------------------------------------------------------------------------------
+createSetupDir () {
+  echo "$COMMENT_PREFIX"'Creating setup config directory at '"$SETUP_CONF_DIR"'.'
+  mkdir -p $SETUP_CONF_DIR
+
+  echo "$COMMENT_SEPARATOR"
+  ls -lna $SETUP_CONF_DIR
+  echo "$COMMENT_SEPARATOR"
+
+  echo "$COMMENT_PREFIX"'Setup config directory created.'
+}
+
+#-------------------------------------------------------------------------------
+# Creates the basic setup config file in `$SETUP_CONF_DIR`.
 #-------------------------------------------------------------------------------
 createSetupConfig () {
   echo "$COMMENT_PREFIX"'Creating setup config file in '"$SETUP_CONF_DIR"'.'
@@ -58,17 +72,32 @@ removeCurrentSetupConfig () {
 }
 
 #-------------------------------------------------------------------------------
+# Run the script.
+#-------------------------------------------------------------------------------
+checkForSetupConfigDir () {
+  echo "$COMMENT_PREFIX"'Checking for the setup config directory at '"$SETUP_CONF_DIR"'.' 
+
+  if [ -d $SETUP_CONF_DIR ]; then
+    echo "$COMMENT_PREFIX"'The setup config directory exists at '"$SETUP_CONF_DIR"'.' 
+  else
+    echo "$COMMENT_PREFIX"'The setup config directory does not exist at '"$SETUP_CONF_DIR"'.'
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Check for a current setup config file. If one doesn't exist, create it. If one
 # does exist, ask if the user wants to remove it.
 #-------------------------------------------------------------------------------
-checkForSetupConfig () {
-  if [ -d $SETUP_CONF ]; then
-    echo "$COMMENT_PREFIX"'No setup config file exists in '"$SETUP_CONF_DIR"'.'
+checkForSetupConfigFile () {
+  echo "$COMMENT_PREFIX"'Checking for a setup config file in '"$SETUP_CONF_DIR"'.'
 
-    createSetupConfig
-  else
+  if [ -f $SETUP_CONF ]; then
     echo "$COMMENT_PREFIX"'A setup config file exists in '"$SETUP_CONF_DIR"'.'
-    removeCurrentSetupConfig
+    # removeCurrentSetupConfig
+  else
+    echo "$COMMENT_PREFIX"'No setup config file exists in '"$SETUP_CONF_DIR"'.'
+    # createSetupConfig
+    # setPermissions 600 $SETUP_CONF
   fi
 }
 
@@ -76,6 +105,7 @@ checkForSetupConfig () {
 # Run the script.
 #-------------------------------------------------------------------------------
 updateUpgrade
-checkForSetupConfig
+checkForSetupConfigDir
+checkForSetupConfigFile
 echoScriptFinished 'initialising setup'
 
