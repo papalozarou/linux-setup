@@ -18,18 +18,19 @@
 #-------------------------------------------------------------------------------
 # Set the config directory variable.
 #-------------------------------------------------------------------------------
-SETUP_CONF=~/.config/linux-setup/setup.conf
+SETUP_CONF_DIR=~/.config/linux-setup
+SETUP_CONF=$ETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 createSetupConfig () {
-  echo "$COMMENT_PREFIX"'Creating setup config file at '"$SETUP_CONF"'.'
+  echo "$COMMENT_PREFIX"'Creating setup config file in '"$SETUP_CONF_DIR"'.'
   cat <<EOF > $SETUP_CONF
-setupStep
+lastCompletedStep 1
 sshPort
 EOF
-  echo "$COMMENT_PREFIX"'Setup config created.'
+  echo "$COMMENT_PREFIX"'Setup config file created.'
 }
 
 #-------------------------------------------------------------------------------
@@ -42,15 +43,15 @@ EOF
 # Any input other than `y`, `Y`, `n` or `N` will re-run this function.
 #-------------------------------------------------------------------------------
 removeCurrentSetupConfig () {
-  echo "$COMMENT_PREFIX"'Do you want to remove the setup config at '"$SETUP_CONF"' (y/n)?' 
+  echo "$COMMENT_PREFIX"'Do you want to remove the setup config file in '"$SETUP_CONF_DIR"' (y/n)?' 
   read -p "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' SETUP_CONF_YN
 
   if [ $SETUP_CONF_YN = 'y' -o $SETUP_CONF_YN = 'Y' ]; then
-    echo "$COMMENT_PREFIX"'Deleting '"$SETUP_CONF"'.'
+    echo "$COMMENT_PREFIX"'Deleting setup config file in '"$SETUP_CONF_DIR"'.'
     rm $SETUP_CONF
-    echo "$COMMENT_PREFIX"'Setup config deleted.'
+    echo "$COMMENT_PREFIX"'Setup config file deleted.'
   elif [ $SETUP_CONF_YN = 'n' -o $SETUP_CONF_YN = 'N' ]; then
-    echo "$COMMENT_PREFIX"'Leaving '"$SETUP_CONF"' intact.'
+    echo "$COMMENT_PREFIX"'Leaving setup config file in '"$SETUP_CONF_DIR"' intact.'
   else
     echo "$COMMENT_PREFIX"'You must answer y or n.'
     removeCurrentSetupConfig
@@ -61,7 +62,13 @@ removeCurrentSetupConfig () {
 #
 #-------------------------------------------------------------------------------
 checkForSetupConfig () {
-  if [ -z ]
+  if [ -z $SETUP_CONF ]; then
+    echo "$COMMENT_PREFIX"'No setup config file exists in '"$SETUP_CONF_DIR"'.'
+
+    createSetupConfig
+  else
+    echo "$COMMENT_PREFIX"'A setup config file exists in '"$SETUP_CONF_DIR"'.'
+    removeCurrentSetupConfig
 }
 
 #-------------------------------------------------------------------------------
@@ -69,4 +76,5 @@ checkForSetupConfig () {
 #-------------------------------------------------------------------------------
 updateUpgrade
 checkForSetupConfig
+echoScriptFinished 'initialising setup'
 
