@@ -16,9 +16,10 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# Set the config directory variable.
+# Setup config variables.
 #-------------------------------------------------------------------------------
-SETUP_CONF_DIR=/home/$SUDO_USER/.config/linux-setup
+CONF_DIR=/home/$SUDO_USER/.config/
+SETUP_CONF_DIR=CONF_DIR/linux-setup
 SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
@@ -72,7 +73,9 @@ removeCurrentSetupConfig () {
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Check for a setup config directory. If one exists, do nothing. If one doesn't
+# exist, create it and it's parent if necessary, then set ownership to 
+# $SUDO_USER.
 #-------------------------------------------------------------------------------
 checkForSetupConfigDir () {
   echo "$COMMENT_PREFIX"'Checking for the setup config directory at '"$SETUP_CONF_DIR"'.' 
@@ -83,6 +86,7 @@ checkForSetupConfigDir () {
     echo "$COMMENT_PREFIX"'The setup config directory does not exist at '"$SETUP_CONF_DIR"'.'
     createSetupDir
 
+    setOwner $SUDO_USER $CONF_DIR
     setOwner $SUDO_USER $SETUP_CONF_DIR
   fi
 }
