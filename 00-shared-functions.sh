@@ -39,6 +39,18 @@ checkPortNumber () {
 }
 
 #-------------------------------------------------------------------------------
+# Echoes that the script given has finished. Takes one mandatory argument, 
+# `${1:?}`, which is a comment.
+#-------------------------------------------------------------------------------
+echoScriptFinished () {
+  local COMMENT=${1:?}
+
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX"'Finished '"$COMMENT"'.'
+  echo "$COMMENT_SEPARATOR"
+}
+
+#-------------------------------------------------------------------------------
 # Generates a random port number between 2000 and 65000 inclusive, as per:
 #
 # https://unix.stackexchange.com/questions/140750/generate-random-numbers-in-specific-range
@@ -69,15 +81,27 @@ generateSshKey () {
 }
 
 #-------------------------------------------------------------------------------
-# Echoes that the script given has finished. Takes one mandatory argument, 
-# `${1:?}`, which is a comment.
+# Installs a given service. Takes one mandatory argument, defined by `${1:?}`
+# which defines the service to be installed.
 #-------------------------------------------------------------------------------
-echoScriptFinished () {
-  local COMMENT=${1:?}
+installService () {
+  local SERVICE=${1:?}
+  
+  echo "$COMMENT_PREFIX"'Installing '"$SERVICE"'.'
+  echo "$COMMENT_SEPARATOR"
+  apt install $SERVICE -y
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX""$SERVICE"' installed.'
+}
 
-  echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX"'Finished '"$COMMENT"'.'
-  echo "$COMMENT_SEPARATOR"
+#-------------------------------------------------------------------------------
+# Reads a setup config option. Takes one mandatory argument, defined by 
+# `${1:?}`, which defines the key of the config option.
+#-------------------------------------------------------------------------------
+readSetupConfigOption() {
+  local CONFIG_KEY=${1:?}
+
+  echo "$COMMENT_PREFIX"'Reading '"$CONFIG_KEY"'.'
 }
 
 #-------------------------------------------------------------------------------
@@ -115,4 +139,14 @@ updateUpgrade () {
   echo "$COMMENT_SEPARATOR"
   apt update && apt upgrade -y
   echo "$COMMENT_SEPARATOR"
+}
+
+#-------------------------------------------------------------------------------
+# Writes a setup config option. Takes one mandatory argument, defined by 
+# `${1:?}`, which defines the key of the config option.
+#-------------------------------------------------------------------------------
+writeSetupConfigOption() {
+  local CONFIG_KEY=${1:?}
+
+  echo "$COMMENT_PREFIX"'Writing '"$CONFIG_KEY"'.'
 }
