@@ -58,15 +58,15 @@ listCurrentSshdConfigs() {
 #-------------------------------------------------------------------------------
 removeCurrentSShdConfigs () {
   echo "$COMMENT_PREFIX"'Do you want to remove the configs in '"$SSHD_CONF_DIR"' (y/n)?' 
-  read -p "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' REM_CONF_YN
+  read -p "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' SSHD_CONFS_YN
 
-  if [ $REM_CONF_YN = 'y' -o $REM_CONF_YN = 'Y' ]; then
+  if [ $SSHD_CONFS_YN = 'y' -o $SSHD_CONFS_YN = 'Y' ]; then
     echo "$COMMENT_PREFIX"'Deleting files in '"$SSHD_CONF_DIR"'.'
     rm $SSHD_CONF_DIR/*
     echo "$COMMENT_PREFIX"'Files deleted.'
 
     listCurrentSshdConfigs
-  elif [ $REM_CONF_YN = 'n' -o $REM_CONF_YN = 'N' ]; then
+  elif [ $SSHD_CONFS_YN = 'n' -o $SSHD_CONFS_YN = 'N' ]; then
     echo "$COMMENT_PREFIX"'Leaving files in '"$SSHD_CONF_DIR"' intact.'
   else
     echo "$COMMENT_PREFIX"'You must answer y or n.'
@@ -112,8 +112,8 @@ checkSshdConfig () {
 createHardenedSShdConfig () {
   # Do we ask for a port number or generate it?
   # How do we store port number for future use?
-  echo "$COMMENT_PREFIX"'Generating sshd config file at '"$SSHD_DEFAULT_CONF"'.'
-  cat <<EOF > SSHD_DEFAULT_CONF
+  echo "$COMMENT_PREFIX"'Generating sshd config file at '"$SSHD_DEFAULT_CONF"'.' 
+  cat <<EOF > $SSHD_DEFAULT_CONF
 Port $SSH_PORT
 AddressFamily inet
 LoginGraceTime 20
