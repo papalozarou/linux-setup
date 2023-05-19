@@ -28,7 +28,6 @@ createSetupConfig () {
   echo "$COMMENT_PREFIX"'Creating setup config file in '"$SETUP_CONF_DIR"'.'
   cat <<EOF > $SETUP_CONF
 lastCompletedStep 1
-sshPort
 EOF
   echo "$COMMENT_PREFIX"'Setup config file created.'
 }
@@ -59,7 +58,8 @@ removeCurrentSetupConfig () {
 }
 
 #-------------------------------------------------------------------------------
-#
+# Check for a current setup config file. If one doesn't exist, create it. If one
+# does exist, ask if the user wants to remove it.
 #-------------------------------------------------------------------------------
 checkForSetupConfig () {
   if [ -z $SETUP_CONF ]; then
