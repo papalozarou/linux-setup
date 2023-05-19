@@ -4,7 +4,7 @@
 # Initialises the setup by:
 #
 # 1. updating and upgrading packages; and
-# 2. creating a config file in `~/.config/setup/setup.conf`
+# 2. creating a config file in `~/.config/linux-setup/setup.conf`
 # 
 # N.B.
 # This script needs to be run as `sudo`.
@@ -14,13 +14,6 @@
 # Import shared functions.
 #-------------------------------------------------------------------------------
 . ./00-shared-functions.sh
-
-#-------------------------------------------------------------------------------
-# Setup config variables.
-#-------------------------------------------------------------------------------
-CONF_DIR=/home/$SUDO_USER/.config
-SETUP_CONF_DIR=$CONF_DIR/linux-setup
-SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
 # Creates the setup config directory at `$SETUP_CONF_DIR`.

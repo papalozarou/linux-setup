@@ -30,6 +30,13 @@ COMMENT_SEPARATOR="$COMMENT_PREFIX"'--------------------------------------------
 #---------------------------------------
 USER_DIR=/home/$SUDO_USER
 SSH_DIR=$USER_DIR/.ssh
+CONF_DIR=$USER_DIR/.config
+SETUP_CONF_DIR=$CONF_DIR/linux-setup
+
+#---------------------------------------
+# File variables.
+#---------------------------------------
+SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
 # Check to see if the port number has already been used for another service.
