@@ -18,8 +18,8 @@
 #-------------------------------------------------------------------------------
 # Setup config variables.
 #-------------------------------------------------------------------------------
-CONF_DIR=/home/$SUDO_USER/.config/
-SETUP_CONF_DIR=CONF_DIR/linux-setup
+CONF_DIR=/home/$SUDO_USER/.config
+SETUP_CONF_DIR=$CONF_DIR/linux-setup
 SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
