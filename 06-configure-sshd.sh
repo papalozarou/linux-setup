@@ -180,6 +180,6 @@ createHardenedSShdConfig
 setPermissions 600 $SSHD_CONF_DIR
 restartSshd
 writeSetupConfigOption configuredSshd true
-writeSetupConfigOption -sshPort $SSH_PORT
+writeSetupConfigOption sshPort $SSH_PORT
 echoLocalSshConfig
 echoScriptFinished 'configuring sshd'
