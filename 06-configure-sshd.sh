@@ -32,7 +32,7 @@ GLOBAL_SSH_DIR=/etc/ssh
 SSHD_CONF=$GLOBAL_SSH_DIR/sshd_config
 SSHD_CONF=./sshd_config
 SSHD_CONF_DIR=$GLOBAL_SSH_DIR/sshd_config.d
-SSHD_DEFAULT_CONF=$SSHD_CONF_DIR/99-defaults.conf
+SSHD_DEFAULT_CONF=$SSHD_CONF_DIR/99-hardened.conf
 
 #-------------------------------------------------------------------------------
 # Lists the current contents of `$SSD_CONF_DIR` as a percursor to allowing the
@@ -110,8 +110,8 @@ checkSshdConfig () {
 # 
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
-  # Do we ask for a port number or generate it?
-  # How do we store port number for future use?
+  SSH_PORT=$(generatePortNumber)
+
   echo "$COMMENT_PREFIX"'Generating sshd config file at '"$SSHD_DEFAULT_CONF"'.' 
   cat <<EOF > $SSHD_DEFAULT_CONF
 Port $SSH_PORT
@@ -137,16 +137,30 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
-#
+# Displays the values a user needs to add to their local ssh config file.
 #-------------------------------------------------------------------------------
-# echoLocalSshConfig () {
-#   # Do we need this?
-# }
+echoLocalSshConfig () {
+  local $IP=$(getIPAddress)
+  local $SSH_KEY=$(readSetupConfigOption -sshKey)
+
+  echo "$COMMENT_PREFIX"'To enable easy connection from your local machine, add the'
+  echo "$COMMENT_PREFIX"'following to your local ssh config file at either'
+  echo "$COMMENT_PREFIX"'~/.ssh/ssh_config or ~/.ssh/config:'
+  echo "$COMMENT_SEPARATOR"
+  echo 'Host '"$(hostname)"
+  echo '  Hostname '"$IP"
+  echo '  Port '"$SSH_PORT"
+  echo '  User '"$SUDO_USER"
+  echo '  IdentityFile ~/.ssh/'"$SSH_KEY"
+  echo "$COMMENT_SEPARATOR"
+}
 
 listCurrentSshdConfigs
 removeCurrentSshdConfigs
 checkSshdConfig
-# createHardenedSShdConfig
-# setPermissions 600 $SSHD_CONF_DIR
+createHardenedSShdConfig
+setPermissions 600 $SSHD_CONF_DIR
 # controlService restart sshd
+writeSetupConfigOption configuredSshd true
+writeSetupConfigOption -sshPort $SSH_PORT
 # echoLocalSshConfig
