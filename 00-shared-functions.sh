@@ -53,12 +53,8 @@ checkSetupConfigOption () {
   local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
 
   if [ -z $CONFIG ]; then
-    echo "$COMMENT_PREFIX"'No configuration was found for '"$CONFIG_KEY"'.'
-
     echo FALSE
   else
-    echo "$COMMENT_PREFIX"'A configuration was found for '"$CONFIG_KEY"'.'
-
     echo TRUE
   fi
 }
@@ -80,12 +76,8 @@ checkPortNumber () {
 
 
   if [ $PORT = $SERVICE_PORT]; then
-    echo "$COMMENT_PREFIX"'Port '"$PORT"' is already in use by '"$SERVICE"'.'
-
     echo TRUE
   else 
-    echo "$COMMENT_PREFIX"'No port set for '"$SERVICE"'.'
-
     echo FALSE
   fi
 }
