@@ -208,11 +208,18 @@ updateUpgrade () {
 }
 
 #-------------------------------------------------------------------------------
-# Writes a setup config option. Takes one mandatory argument, defined by 
-# `${1:?}`, which defines the key of the config option.
+# Writes a setup config option. Takes two mandatory arguments, the key of the 
+# config option, `${1:?}`, and the value of the config option, `${2:?}`.
+#
+# Once the config option is written, the file ownership is set to `$SUDO_USER`.
 #-------------------------------------------------------------------------------
 writeSetupConfigOption() {
-  local CONFIG_KEY=${1:?}
+  local CONF_KEY=${1:?}
+  local CONF_VALUE=${2:?}
 
-  echo "$COMMENT_PREFIX"'Writing '"$CONFIG_KEY"'.'
+  echo "$COMMENT_PREFIX"'Writing '"$CONF_KEY"' to '"$SETUP_CONF"'.'
+  echo "$CONF_KEY $CONF_VALUE" >> $SETUP_CONF
+  echo "$COMMENT_PREFIX"'Config written.'
+
+  setOwner $SUDO_USER $SETUP_CONF
 }
