@@ -181,3 +181,4 @@ restartSshd
 writeSetupConfigOption configuredSshd true
 writeSetupConfigOption -sshPort $SSH_PORT
 echoLocalSshConfig
+echoScriptFinished 'configuring sshd'
