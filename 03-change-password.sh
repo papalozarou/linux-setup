@@ -40,4 +40,5 @@ displayUserAccountStatus() {
 #-------------------------------------------------------------------------------
 changeUserPassword
 displayUserAccountStatus
+writeSetupConfigOption changedPassword true
 echoScriptFinished 'changing password for '"$SUDO_USER"

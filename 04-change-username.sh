@@ -93,6 +93,7 @@ checkForTempUser () {
   if id tempuser; then
     removeTempUser
     echoScriptFinished 'removing the temporary user'
+    writeSetupConfigOption changedUsername true
   else
     createTempUser
     getNewUserName

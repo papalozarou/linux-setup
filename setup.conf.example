@@ -2,6 +2,7 @@ initialisedSetup true
 changedPassword true
 changedUsername true
 setupSshKey true
+-sshKeyFile myKeyFIle
 configuredSshd true
 -sshPort 00000
 configuredUfw true

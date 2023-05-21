@@ -141,7 +141,7 @@ EOF
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
   local $IP=$(getIPAddress)
-  local $SSH_KEY=$(readSetupConfigOption -sshKey)
+  local $SSH_KEY_FILE=$(readSetupConfigOption -sshKeyFile)
 
   echo "$COMMENT_PREFIX"'To enable easy connection from your local machine, add the'
   echo "$COMMENT_PREFIX"'following to your local ssh config file at either'
@@ -151,7 +151,7 @@ echoLocalSshConfig () {
   echo '  Hostname '"$IP"
   echo '  Port '"$SSH_PORT"
   echo '  User '"$SUDO_USER"
-  echo '  IdentityFile ~/.ssh/'"$SSH_KEY"
+  echo '  IdentityFile ~/.ssh/'"$SSH_KEY_FILE"
   echo "$COMMENT_SEPARATOR"
 }
 

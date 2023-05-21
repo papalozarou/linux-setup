@@ -155,4 +155,5 @@ getUserToAddKey
 checkUserAddedKey
 listGitConfig
 testGitSsh
+writeSetupConfigOption configuredGit true
 echoScriptFinished 'setting up git'
