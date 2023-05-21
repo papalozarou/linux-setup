@@ -30,7 +30,6 @@
 #-------------------------------------------------------------------------------
 GLOBAL_SSH_DIR=/etc/ssh
 SSHD_CONF=$GLOBAL_SSH_DIR/sshd_config
-SSHD_CONF=./sshd_config
 SSHD_CONF_DIR=$GLOBAL_SSH_DIR/sshd_config.d
 SSHD_DEFAULT_CONF=$SSHD_CONF_DIR/99-hardened.conf
 
@@ -137,6 +136,24 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
+# Asks they user if they want to restart the sshd service.
+#-------------------------------------------------------------------------------
+restartSshd () {
+  echo "$COMMENT_PREFIX"'To enable the new sshd configutation, you will need to restart'
+  echo "$COMMENT_PREFIX"'sshd. This can potentially interupt your connection.'
+  read -p "$COMMENT_PREFIX"'Do you want to restart sshd?' SSHD_RESTART_YN
+
+  if [ $SSHD_RESTART_YN = 'y' -o $SSHD_RESTART_YN = 'Y' ]; then
+    controlService restart sshd
+  elif [ $SSHD_RESTART_YN = 'n' -o $SSHD_RESTART_YN = 'N' ]; then
+    echo "$COMMENT_PREFIX"'sshd will not be restarted.'
+  else
+    echo "$COMMENT_PREFIX"'You must answer y or n.'
+    restartSshd
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Displays the values a user needs to add to their local ssh config file.
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
@@ -147,7 +164,7 @@ echoLocalSshConfig () {
   echo "$COMMENT_PREFIX"'following to your local ssh config file at either ~/.ssh/ssh_config'
   echo "$COMMENT_PREFIX"'or ~/.ssh/config:'
   echo "$COMMENT_SEPARATOR"
-  echo 'Host '"$(hostname)"
+  echo 'Host '"$SSH_KEY_FILE"
   echo '  Hostname '"$IP_ADDRESS"
   echo '  Port '"$SSH_PORT"
   echo '  User '"$SUDO_USER"
@@ -160,7 +177,7 @@ removeCurrentSshdConfigs
 checkSshdConfig
 createHardenedSShdConfig
 setPermissions 600 $SSHD_CONF_DIR
-# controlService restart sshd
+restartSshd
 writeSetupConfigOption configuredSshd true
 writeSetupConfigOption -sshPort $SSH_PORT
 echoLocalSshConfig
