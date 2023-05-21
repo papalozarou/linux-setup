@@ -140,7 +140,7 @@ EOF
 # Displays the values a user needs to add to their local ssh config file.
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
-  local $IP=$(getIPAddress)
+  local $IP_ADDRESS=$(getIPAddress)
   local $SSH_KEY_FILE=$(readSetupConfigOption -sshKeyFile)
 
   echo "$COMMENT_PREFIX"'To enable easy connection from your local machine, add the'
@@ -148,7 +148,7 @@ echoLocalSshConfig () {
   echo "$COMMENT_PREFIX"'~/.ssh/ssh_config or ~/.ssh/config:'
   echo "$COMMENT_SEPARATOR"
   echo 'Host '"$(hostname)"
-  echo '  Hostname '"$IP"
+  echo '  Hostname '"$IP_ADDRESS"
   echo '  Port '"$SSH_PORT"
   echo '  User '"$SUDO_USER"
   echo '  IdentityFile ~/.ssh/'"$SSH_KEY_FILE"
@@ -163,4 +163,4 @@ setPermissions 600 $SSHD_CONF_DIR
 # controlService restart sshd
 writeSetupConfigOption configuredSshd true
 writeSetupConfigOption -sshPort $SSH_PORT
-# echoLocalSshConfig
+echoLocalSshConfig

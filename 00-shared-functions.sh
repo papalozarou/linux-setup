@@ -138,6 +138,13 @@ generateSshKey () {
 }
 
 #-------------------------------------------------------------------------------
+# Gets the IP address of the host machine.
+#-------------------------------------------------------------------------------
+getIPAddress () {
+  echo "$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')"
+}
+
+#-------------------------------------------------------------------------------
 # Installs a given service. Takes one mandatory argument, defined by `${1:?}`
 # which defines the service to be installed.
 #-------------------------------------------------------------------------------
