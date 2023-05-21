@@ -39,10 +39,55 @@ SETUP_CONF_DIR=$CONF_DIR/linux-setup
 SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
+# Checks for a setup config option. Takes one mandatory argument, defined by 
+# `${1:?}`, which defines the key of the config option.
+#
+# The function returns `TRUE` or `FALSE` depending on if the config option is 
+# present in the config file.
+#-------------------------------------------------------------------------------
+checkSetupConfigOption () {
+  local CONFIG_KEY=${1:?}
+
+  echo "$COMMENT_PREFIX"'Checking for '"$CONFIG_KEY"' in '"$SETUP_CONF"'.'
+
+  local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
+
+  if [ -z $CONFIG ]; then
+    echo "$COMMENT_PREFIX"'No configuration was found for '"$CONFIG_KEY"'.'
+
+    echo FALSE
+  else
+    echo "$COMMENT_PREFIX"'A configuration was found for '"$CONFIG_KEY"'.'
+
+    echo TRUE
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Check to see if the port number has already been used for another service.
+# Takes two mandatory arguement, defined by `${1:?}` and `${2:?}`, which define 
+# the port to check and the config option key for the service to check against.
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file.
 #-------------------------------------------------------------------------------
 checkPortNumber () {
-  echo ""
+  local PORT=${1:?}
+  local SERVICE=${2:?}
+  local SERVICE_PORT=$(readSetupConfigOption $SERVICE)
+
+  echo "$COMMENT_PREFIX"'Checking if port '"$PORT"' is already in use by '"$SERVICE"'.'
+
+
+  if [ $PORT = $SERVICE_PORT]; then
+    echo "$COMMENT_PREFIX"'Port '"$PORT"' is already in use by '"$SERVICE"'.'
+
+    echo TRUE
+  else 
+    echo "$COMMENT_PREFIX"'No port set for '"$SERVICE"'.'
+
+    echo FALSE
+  fi
 }
 
 #-------------------------------------------------------------------------------
