@@ -144,9 +144,6 @@ installService () {
 #-------------------------------------------------------------------------------
 readSetupConfigOption() {
   local CONFIG_KEY=${1:?}
-
-  echo "$COMMENT_PREFIX"'Reading '"$CONFIG_KEY"' from '"$SETUP_CONF"'.'
-
   local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
 
   set -f $CONFIG

@@ -1,8 +1,8 @@
-initialisedSetup TRUE
-changedPassword TRUE
-changedUsername TRUE
-setupSshKey TRUE
-configuredSshd TRUE
+initialisedSetup true
+changedPassword true
+changedUsername true
+setupSshKey true
+configuredSshd true
 -sshPort 00000
-configuredUfw TRUE
-configuredFail2ban TRUE
+configuredUfw true
+configuredFail2ban true
