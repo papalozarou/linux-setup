@@ -63,8 +63,8 @@ usermod -l $NEW_USER $SUDO_USER
 usermod -d /home/$NEW_USER -m $NEW_USER
 groupmod --new-name $NEW_USER $SUDO_USER
 echo "$COMMENT_PREFIX""You can now log back in as the user $NEW_USER."
-echo "$COMMENT_PREFIX""Once logged in run:"
-echo "$COMMENT_PREFIX""sudo ~/linux-setup/03-change-username.sh"
+echo "$COMMENT_PREFIX""Once logged in re-run:"
+echo "$COMMENT_PREFIX""sudo ~/linux-setup/04-change-username.sh"
 EOF
 
   echo "$COMMENT_SEPARATOR"
@@ -86,8 +86,12 @@ removeTempUser () {
 }
 
 #-------------------------------------------------------------------------------
-# Check whether `tempuser` exists. I it does exist delete it, if it doesn't
+# Check whether `tempuser` exists. If it does exist delete it, if it doesn't
 # exist create it.
+# 
+# N.B.
+# When the `tempuser` is created, all processes for the currnet user are 
+# terminated, including the current ssh session.
 #-------------------------------------------------------------------------------
 checkForTempUser () {
   if id tempuser; then
@@ -103,6 +107,9 @@ checkForTempUser () {
     echo "$COMMENT_PREFIX"'You can now log this user out, log in as tempuser, then run:'
     echo "$COMMENT_PREFIX"'sudo ./renameUser.sh.'
     echoScriptFinished 'setting up the temporary user'
+
+    echo "$COMMENt_PREFIX"'Killing all processes for '"$SUDO_USER"'. This will log you out.'
+    pkill -u $SUDO_UID
   fi
 }
 
