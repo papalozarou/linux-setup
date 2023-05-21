@@ -145,9 +145,11 @@ EOF
 
 listCurrentSshdConfigs
 TEST=$(generatePortNumber)
-ANOTHER_TEST=$(checkPortNumber 00000 sshPort)
+PORT_TEST=$(checkPortNumber 00000 sshPort)
+READ_TEST=$(readSetupConfigOption initialisedSetup)
 echo "$COMMENT_PREFIX"'Your port number is '"$TEST"'.'
-echo "$COMMENT_PREFIX"'The result is '"$ANOTHER_TEST"'.'
+echo "$COMMENT_PREFIX"'The result the port test is '"$PORT_TEST"'.'
+echo "$COMMENT_PREFIX"'The result of the read test is '"$READ_TEST"'.'
 # removeCurrentSshdConfigs
 # checkSshdConfig
 # createHardenedSShdConfig
