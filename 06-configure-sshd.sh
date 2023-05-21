@@ -145,7 +145,9 @@ EOF
 
 listCurrentSshdConfigs
 TEST=$(generatePortNumber)
+ANOTHER_TEST=$(checkPortNumber 00000 sshdPort)
 echo "$COMMENT_PREFIX"'Your port number is '"$TEST"'.'
+echo "$COMMENT_PREFIX"'The result is  '"$ANOTHER_TEST"'
 # removeCurrentSshdConfigs
 # checkSshdConfig
 # createHardenedSShdConfig
