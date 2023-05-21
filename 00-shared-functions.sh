@@ -141,7 +141,7 @@ generateSshKey () {
 # Gets the IP address of the host machine.
 #-------------------------------------------------------------------------------
 getIPAddress () {
-  echo $"(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')"
+  echo "$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')"
 }
 
 #-------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ installService () {
 #-------------------------------------------------------------------------------
 readSetupConfigOption() {
   local CONFIG_KEY=${1:?}
-  local CONFIG=$"(grep $CONFIG_KEY $SETUP_CONF)"
+  local CONFIG="$(grep $CONFIG_KEY $SETUP_CONF)"
 
   set -f $CONFIG
   

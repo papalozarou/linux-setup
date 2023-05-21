@@ -56,7 +56,7 @@ listCurrentSshdConfigs() {
 #
 # Any input other than `y`, `Y`, `n` or `N` will re-run this function.
 #-------------------------------------------------------------------------------
-removeCurrentSShdConfigs () {
+removeCurrentSshdConfigs () {
   echo "$COMMENT_PREFIX"'Do you want to remove the configs in '"$SSHD_CONF_DIR"' (y/n)?' 
   read -p "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' SSHD_CONFS_YN
 
