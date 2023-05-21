@@ -167,6 +167,9 @@ installService () {
 # expansion for safety. Taken from:
 #
 # https://stackoverflow.com/a/1478245
+#
+# N.B.
+# A list of the config keys can be found in `setup.conf.example`.
 #-------------------------------------------------------------------------------
 readSetupConfigOption() {
   local CONFIG_KEY=${1:?}

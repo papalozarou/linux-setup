@@ -141,7 +141,7 @@ EOF
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
   local IP_ADDRESS=$(getIPAddress)
-  local SSH_KEY_FILE=$(readSetupConfigOption -sshKeyFile)
+  local SSH_KEY_FILE=$(readSetupConfigOption sshKeyFile)
 
   echo "$COMMENT_PREFIX"'To enable easy connection from your local machine, add the'
   echo "$COMMENT_PREFIX"'following to your local ssh config file at either ~/.ssh/ssh_config'
