@@ -51,5 +51,5 @@ setOwner $SUDO_USER $SSH_KEY.pub
 addKeyToAuthorizedKeys
 echoKeyUsage
 writeSetupConfigOption setupSshKey true
-writeSetupConfigOption -sshKeyFile $REMOTE_KEY_NAME
+writeSetupConfigOption sshKeyFile $REMOTE_KEY_NAME
 echoScriptFinished 'setting up remote ssh key'
