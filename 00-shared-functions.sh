@@ -47,9 +47,6 @@ SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 #-------------------------------------------------------------------------------
 checkSetupConfigOption () {
   local CONFIG_KEY=${1:?}
-
-  echo "$COMMENT_PREFIX"'Checking for '"$CONFIG_KEY"' in '"$SETUP_CONF"'.'
-
   local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
 
   if [ -z $CONFIG ]; then
@@ -71,9 +68,6 @@ checkPortNumber () {
   local PORT=${1:?}
   local SERVICE=${2:?}
   local SERVICE_PORT=$(readSetupConfigOption $SERVICE)
-
-  echo "$COMMENT_PREFIX"'Checking if port '"$PORT"' is already in use by '"$SERVICE"'.'
-
 
   if [ $PORT = $SERVICE_PORT]; then
     echo TRUE
