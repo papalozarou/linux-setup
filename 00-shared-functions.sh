@@ -170,7 +170,7 @@ installService () {
 #-------------------------------------------------------------------------------
 readSetupConfigOption() {
   local CONFIG_KEY=${1:?}
-  local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
+  local CONFIG='$(grep "$CONFIG_KEY" "$SETUP_CONF")'
 
   set -f $CONFIG
   
