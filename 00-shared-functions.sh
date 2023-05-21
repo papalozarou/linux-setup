@@ -86,7 +86,7 @@ controlService () {
 
   echo "$COMMENT_PREFIX""$ACTION"'ing '"$SERVICE"'.'
   echo "$COMMENT_SEPARATOR"
-  if [$SERVICE == 'ufw']; then
+  if [$SERVICE = 'ufw']; then
     $SERVICE $ACTION
   else
     systemctl $ACTION $SERVICE

@@ -133,6 +133,8 @@ PermitUserEnvironment no
 #AcceptEnv LANG LC_*
 EOF
   echo "$COMMENT_PREFIX"'Config file generated.'
+
+  listCurrentSshdConfigs
 }
 
 #-------------------------------------------------------------------------------
