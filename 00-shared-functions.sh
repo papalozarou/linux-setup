@@ -77,6 +77,25 @@ checkPortNumber () {
 }
 
 #-------------------------------------------------------------------------------
+# Starts, stops or restarts a service. Takes two mandatory arguments which 
+# specify the action, `${1:?}`, and the service, `{$2:?}`.
+#-------------------------------------------------------------------------------
+controlService () {
+  local ACTION=${1:?}
+  local SERVICE=${2:?}
+
+  echo "$COMMENT_PREFIX""$ACTION"'ing '"$SERVICE"'.'
+  echo "$COMMENT_SEPARATOR"
+  if [$SERVICE == 'ufw']; then
+    $SERVICE $ACTION
+  else
+    systemctl $ACTION $SERVICE
+  fi
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX""$ACTION"'ed '"$SERVICE"'.'
+}
+
+#-------------------------------------------------------------------------------
 # Echoes that the script given has finished. Takes one mandatory argument, 
 # `${1:?}`, which is a comment.
 #-------------------------------------------------------------------------------

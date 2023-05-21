@@ -144,14 +144,8 @@ EOF
 # }
 
 listCurrentSshdConfigs
-TEST=$(generatePortNumber)
-PORT_TEST=$(checkPortNumber 00000 sshPort)
-READ_TEST=$(readSetupConfigOption initialisedSetup)
-echo "$COMMENT_PREFIX"'Your port number is '"$TEST"'.'
-echo "$COMMENT_PREFIX"'The result the port test is '"$PORT_TEST"'.'
-echo "$COMMENT_PREFIX"'The result of the read test is '"$READ_TEST"'.'
-# removeCurrentSshdConfigs
-# checkSshdConfig
+removeCurrentSshdConfigs
+checkSshdConfig
 # createHardenedSShdConfig
 # setPermissions 600 $SSHD_CONF_DIR
 # controlService restart sshd
