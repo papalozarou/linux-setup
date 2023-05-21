@@ -50,9 +50,9 @@ checkSetupConfigOption () {
   local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
 
   if [ -z $CONFIG ]; then
-    echo FALSE
+    echo false
   else
-    echo TRUE
+    echo true
   fi
 }
 
@@ -70,9 +70,9 @@ checkPortNumber () {
   local SERVICE_PORT=$(readSetupConfigOption $SERVICE)
 
   if [ $PORT = $SERVICE_PORT]; then
-    echo TRUE
+    echo true
   else 
-    echo FALSE
+    echo false
   fi
 }
 
