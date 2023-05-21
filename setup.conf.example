@@ -3,6 +3,6 @@ changedPassword TRUE
 changedUsername TRUE
 setupSshKey TRUE
 configuredSshd TRUE
--sshdPort 00000
+-sshPort 00000
 configuredUfw TRUE
 configuredFail2ban TRUE
