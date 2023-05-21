@@ -171,7 +171,6 @@ echoLocalSshConfig () {
   echo '  Port '"$SSH_PORT"
   echo '  User '"$SUDO_USER"
   echo '  IdentityFile ~/.ssh/'"$SSH_KEY_FILE"
-  echo "$COMMENT_SEPARATOR"
 }
 
 listCurrentSshdConfigs
