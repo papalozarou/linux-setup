@@ -171,13 +171,35 @@ installService () {
 # N.B.
 # A list of the config keys can be found in `setup.conf.example`.
 #-------------------------------------------------------------------------------
-readSetupConfigOption() {
+readSetupConfigOption () {
   local CONFIG_KEY=${1:?}
   local CONFIG="$(grep $CONFIG_KEY $SETUP_CONF)"
 
   set -f $CONFIG
   
   echo $2
+}
+
+#-------------------------------------------------------------------------------
+# Changes the case of text. Takes two mandatory arguements, the text string,
+# `${1:?}`, and the required case, `${2:?}`. Based on the following articles:
+#
+# - https://medium.com/mkdir-awesome/case-transformation-in-bash-and-posix-with-examples-acdc1e0d0bc4
+# - https://tech.io/snippet/JCFhOEk
+#-------------------------------------------------------------------------------
+changeCase () {
+  local STRING=${1:?}
+  local CASE=${2:?}
+
+  if [ CASE = "upper" ]; then
+    CASE=$(echo "$CASE" | tr '[:lower:]' '[:upper:]')
+  elif [ CASE = "lower"]; then
+    CASE=$(echo "$CASE" | tr '[:upper:]' '[:lower:]')
+  elif [ CASE = "sentence" ]; then
+    CASE="$(tr '[:lower:]' '[:upper:]' <<< ${CASE:0:1})${CASE:1}"
+  fi
+
+  echo $CASE
 }
 
 #-------------------------------------------------------------------------------
@@ -223,7 +245,7 @@ updateUpgrade () {
 #
 # Once the config option is written, the file ownership is set to `$SUDO_USER`.
 #-------------------------------------------------------------------------------
-writeSetupConfigOption() {
+writeSetupConfigOption () {
   local CONF_KEY=${1:?}
   local CONF_VALUE=${2:?}
 
