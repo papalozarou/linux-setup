@@ -39,6 +39,28 @@ SETUP_CONF_DIR=$CONF_DIR/linux-setup
 SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
+# Changes the case of text. Takes two mandatory arguements, the text string,
+# `${1:?}`, and the required case, `${2:?}`. Based on the following articles:
+#
+# - https://medium.com/mkdir-awesome/case-transformation-in-bash-and-posix-with-examples-acdc1e0d0bc4
+# - https://tech.io/snippet/JCFhOEk
+#-------------------------------------------------------------------------------
+changeCase () {
+  local STRING=${1:?}
+  local CASE=${2:?}
+
+  if [ CASE = "upper" ]; then
+    CASE=$(echo "$CASE" | tr '[:lower:]' '[:upper:]')
+  elif [ CASE = "lower"]; then
+    CASE=$(echo "$CASE" | tr '[:upper:]' '[:lower:]')
+  elif [ CASE = "sentence" ]; then
+    CASE="$(tr '[:lower:]' '[:upper:]' <<< ${CASE:0:1})${CASE:1}"
+  fi
+
+  echo $CASE
+}
+
+#-------------------------------------------------------------------------------
 # Checks for a setup config option. Takes one mandatory argument, defined by 
 # `${1:?}`, which defines the key of the config option.
 #
@@ -83,6 +105,8 @@ checkPortNumber () {
 controlService () {
   local ACTION=${1:?}
   local SERVICE=${2:?}
+
+  ACTION=$(changeCase $ACTION sentence)
 
   echo "$COMMENT_PREFIX""$ACTION"'ing '"$SERVICE"'.'
   echo "$COMMENT_SEPARATOR"
@@ -178,28 +202,6 @@ readSetupConfigOption () {
   set -f $CONFIG
   
   echo $2
-}
-
-#-------------------------------------------------------------------------------
-# Changes the case of text. Takes two mandatory arguements, the text string,
-# `${1:?}`, and the required case, `${2:?}`. Based on the following articles:
-#
-# - https://medium.com/mkdir-awesome/case-transformation-in-bash-and-posix-with-examples-acdc1e0d0bc4
-# - https://tech.io/snippet/JCFhOEk
-#-------------------------------------------------------------------------------
-changeCase () {
-  local STRING=${1:?}
-  local CASE=${2:?}
-
-  if [ CASE = "upper" ]; then
-    CASE=$(echo "$CASE" | tr '[:lower:]' '[:upper:]')
-  elif [ CASE = "lower"]; then
-    CASE=$(echo "$CASE" | tr '[:upper:]' '[:lower:]')
-  elif [ CASE = "sentence" ]; then
-    CASE="$(tr '[:lower:]' '[:upper:]' <<< ${CASE:0:1})${CASE:1}"
-  fi
-
-  echo $CASE
 }
 
 #-------------------------------------------------------------------------------
