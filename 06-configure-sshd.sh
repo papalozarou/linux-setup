@@ -126,11 +126,11 @@ PermitEmptyPasswords no
 KbdInteractiveAuthentication no
 KerberosAuthentication no
 GSSAPIAuthentication no
-UsePAM no
+UsePAM yes
 AllowAgentForwarding no
 X11Forwarding no
 PermitUserEnvironment no
-#AcceptEnv LANG LC_*
+AcceptEnv LANG LC_*
 EOF
   echo "$COMMENT_PREFIX"'Config file generated.'
 
