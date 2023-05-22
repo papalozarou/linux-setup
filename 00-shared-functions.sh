@@ -99,6 +99,31 @@ checkPortNumber () {
 }
 
 #-------------------------------------------------------------------------------
+# Initialises a given script by checking the config file to see if the script
+# has been run and completed before.
+#
+# If the script has been run before, the script will exit. If not it will run.
+# If there is an error, we ask the user to check the setup config file.
+#-------------------------------------------------------------------------------
+checkSetupStep () {
+  local CONFIG_KEY=${1:?}
+  local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
+
+  if [ $CONFIG_KEY = true ]; then
+    echo "$COMMENT_PREFIX"'You have already performed this step.'
+    echo "$COMMENT_SEPARATOR"
+    echo "$COMMENT_PREFIX"'Script exiting.'
+    echo "$COMMENT_SEPARATOR"
+  elif [ $CONFIG_KEY = false ]; then
+    echo "$COMMENT_PREFIX"'You have not performed this step. Running script.'
+    echo "$COMMENT_SEPARATOR"
+    runScript
+  else
+    echo "$COMMENT_PREFIX"'Something went wrong. Please check your setup config at '"$SETUP_CONF"'.'
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Starts, stops or restarts a service. Takes two mandatory arguments which 
 # specify the action, `${1:?}`, and the service, `{$2:?}`.
 #-------------------------------------------------------------------------------
