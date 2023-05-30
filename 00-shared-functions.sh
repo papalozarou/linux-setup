@@ -54,7 +54,7 @@ changeCase () {
   elif [ CASE = "lower"]; then
     CASE=$(echo "$CASE" | tr '[:upper:]' '[:lower:]')
   elif [ CASE = "sentence" ]; then
-    CASE="$(tr '[:lower:]' '[:upper:]' <<< ${CASE:0:1})${CASE:1}"
+    CASE="$(tr '[:lower:]' '[:upper:]' <<< ${CASE:0:1}) ${CASE:1}"
   fi
 
   echo $CASE
