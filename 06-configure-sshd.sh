@@ -173,6 +173,9 @@ echoLocalSshConfig () {
   echo '  IdentityFile ~/.ssh/'"$SSH_KEY_FILE"
 }
 
+#-------------------------------------------------------------------------------
+# Run the script.
+#-------------------------------------------------------------------------------
 listCurrentSshdConfigs
 removeCurrentSshdConfigs
 checkSshdConfig
