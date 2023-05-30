@@ -50,14 +50,14 @@ changeCase () {
   local CASE=${2:?}
 
   if [ CASE = "upper" ]; then
-    CASE=$(echo "$CASE" | tr '[:lower:]' '[:upper:]')
+    STRING=$(echo "$STRING" | tr '[:lower:]' '[:upper:]')
   elif [ CASE = "lower"]; then
-    CASE=$(echo "$CASE" | tr '[:upper:]' '[:lower:]')
-  elif [ CASE = "sentence" ]; then
-    CASE="$(tr '[:lower:]' '[:upper:]' <<< ${CASE:0:1}) ${CASE:1}"
+    STRING=$(echo "$STRING" | tr '[:upper:]' '[:lower:]')
+  # elif [ CASE = "sentence" ]; then
+    # STRING="$(tr '[:lower:]' '[:upper:]' <<< ${STRING:0:1}) ${STRING:1}"
   fi
 
-  echo $CASE
+  echo $STRING
 }
 
 #-------------------------------------------------------------------------------
