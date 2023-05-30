@@ -120,8 +120,17 @@ controlService () {
 }
 
 #-------------------------------------------------------------------------------
-# Echoes that the script given has finished. Takes one mandatory argument, 
-# `${1:?}`, which is a comment.
+# Echose that the script is exiting. Takes no arguments.
+#-------------------------------------------------------------------------------
+echoScriptExiting () {
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX"'Exiting script with no changes made.'
+  echo "$COMMENT_SEPARATOR"
+}
+
+#-------------------------------------------------------------------------------
+# Echoes that the script has finished. Takes one mandatory argument, `${1:?}`, 
+# which is a comment.
 #-------------------------------------------------------------------------------
 echoScriptFinished () {
   local COMMENT=${1:?}
