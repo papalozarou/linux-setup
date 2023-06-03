@@ -18,7 +18,29 @@
 runScript () {
   echo "$COMMENT_PREFIX"'Starting setup of ufw.'
 
+  local UFW_CHECK=$(checkForService ufw)
+
+  if [ $UFW_CHECK = true ]; then
+    echo "$COMMENT_PREFIX"'You have already installed ufw.'
+  elif [ $UFW_CHECK = false]; then
+    echo "$COMMENT_PREFIX"'You need to install ufw.'
+    installService ufw
+
+    echo "$COMMENT_PREFIX"'Explicitly denying incoming traffic.'
+    ufw default deny incoming
+
+    echo "$COMMENT_PREFIX"'Explicitly allowing outgoing traffic.'
+    ufw default allow outgoing
+
+    echo "$COMMENT_PREFIX"'Explicitly denying port 22.'
+    addPortToUFW deny 22
+  if
   
+  echo "$COMMENT_PREFIX"'Reading ssh port.'
+  local SSH_PORT=$(readSetupConfigOption sshPort)
+  echo "$COMMENT_PREFIX"'Current port is '"$SSH_PORT"'.'
+
+  addPortToUFW allow $SSH_PORT tcp
 }
 
 #-------------------------------------------------------------------------------

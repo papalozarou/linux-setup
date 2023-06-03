@@ -39,6 +39,27 @@ SETUP_CONF_DIR=$CONF_DIR/linux-setup
 SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 
 #-------------------------------------------------------------------------------
+# Adds a port to ufw. Takes three arguments:
+#
+# - `${1:?}` a mandatory action, either `allow`, `deny` or `limit`;
+# - `${2:?}` a mandatory port number; and
+# - `$3` an optional protocol
+#-------------------------------------------------------------------------------
+addPortToUFW () {
+  local ACTION=${1:?}
+  local PORT=${2:?}
+  local PROTOCOL="/$3"
+
+  if $PROTOCOL; then
+    echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT""$PROTOCOL"' to UFW.'
+    ufw $ACTION "$PORT""$PROTOCOL"
+  else
+    echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT"' to UFW.'
+    ufw $ACTION $PORT
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Changes the case of text. Takes two mandatory arguements, the text string,
 # `${1:?}`, and the required case, `${2:?}`. Based on the following articles:
 #
