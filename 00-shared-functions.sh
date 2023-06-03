@@ -77,11 +77,11 @@ changeCase () {
   local STRING=${1:?}
   local CASE=${2:?}
 
-  if [ CASE = 'upper' ]; then
+  if [ $CASE = 'upper' ]; then
     STRING=$(echo "$STRING" | tr '[:lower:]' '[:upper:]')
-  elif [ CASE = 'lower' ]; then
+  elif [ $CASE = 'lower' ]; then
     STRING=$(echo "$STRING" | tr '[:upper:]' '[:lower:]')
-  elif [ CASE = 'sentence' ]; then
+  elif [ $CASE = 'sentence' ]; then
     STRING=$(echo "$STRING" | sed 's/\<\([[:lower:]]\)\([^[:punct:]]*\)/\u\1\2/g')
   fi
 
