@@ -107,6 +107,26 @@ checkForService () {
 }
 
 #-------------------------------------------------------------------------------
+# Uses the above function to check for a service and if not installed installs
+# it. Takes one mandatory argument, `${1:?}`, defining the service.
+#-------------------------------------------------------------------------------
+checkForServiceAndInstall () {
+  local SERVICE=${1:?}
+  echo "$COMMENT_PREFIX"'Starting setup of '"$SERVICE"'.'
+
+  local SERVICE_CHECK=$(checkForService $SERVICE)
+  echo "$COMMENT_PREFIX"'Checking for '"$SERVICE"'.'
+  echo "$COMMENT_PREFIX"'Check returned '"$SERVICE_CHECK"'.'
+
+  if [ $SERVICE_CHECK = true ]; then
+    echo "$COMMENT_PREFIX"'You have already installed '"$SERVICE"'.'
+  elif [ $SERVICE_CHECK = false ]; then
+    echo "$COMMENT_PREFIX"'You need to install '"$SERVICE"'.'
+    installService $SERVICE
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Checks for a setup config option. Takes one mandatory argument, defined by 
 # `${1:?}`, which defines the key of the config option.
 #

@@ -25,18 +25,7 @@
 #-------------------------------------------------------------------------------
 runScript () {
   local SERVICE='ufw'
-  echo "$COMMENT_PREFIX"'Starting setup of '"$SERVICE"'.'
-
-  local SERVICE_CHECK=$(checkForService $SERVICE)
-  echo "$COMMENT_PREFIX"'Checking for '"$SERVICE"'.'
-  echo "$COMMENT_PREFIX"'Check returned '"$SERVICE_CHECK"'.'
-
-  if [ $SERVICE_CHECK = true ]; then
-    echo "$COMMENT_PREFIX"'You have already installed '"$SERVICE"'.'
-  elif [ $SERVICE_CHECK = false ]; then
-    echo "$COMMENT_PREFIX"'You need to install '"$SERVICE"'.'
-    installService $SERVICE
-  fi
+  checkForServiceAndInstall $SERVICE
 
   echo "$COMMENT_PREFIX"'Explicitly denying incoming traffic.'
   echo "$COMMENT_SEPARATOR"
