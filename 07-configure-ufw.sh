@@ -43,6 +43,8 @@ runScript () {
   addPortToUFW allow $SSH_PORT tcp
 
   controlService enable ufw
+
+  echoScriptFinished "setting up ufw"
 }
 
 #-------------------------------------------------------------------------------

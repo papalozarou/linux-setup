@@ -51,12 +51,14 @@ addPortToUFW () {
   local PROTOCOL=$3
 
   if [ -z $PROTOCOL ]; then
+      echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT"' to UFW.'
+      ufw $ACTION $PORT
+  else
     echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT/$PROTOCOL"' to UFW.'
     ufw $ACTION "$PORT/$PROTOCOL"
-  else
-    echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT"' to UFW.'
-    ufw $ACTION $PORT
   fi
+
+  echo "$COMMENT_PREFIX"'Rule added.'
 }
 
 #-------------------------------------------------------------------------------
@@ -146,9 +148,17 @@ controlService () {
   local ACTION=${1:?}
   local SERVICE=${2:?}
 
-  ACTION=$(changeCase $ACTION sentence)
+  # ACTION=$(changeCase $ACTION sentence)
 
-  echo "$COMMENT_PREFIX""$ACTION"'ing '"$SERVICE"'.'
+  if [ $ACTION = 'enable' ]; then
+    ACTIONING="Enabling"
+  elif [ $ACTION = 'disable' ]; then
+    ACTIONING="Disabling"
+  else
+    ACTIONING="$ACTION"'ing'
+  fi
+
+  echo "$COMMENT_PREFIX""$ACTIONING"' '"$SERVICE"'.'
   echo "$COMMENT_SEPARATOR"
   if [ $SERVICE = 'ufw' ]; then
     $SERVICE $ACTION
@@ -156,7 +166,6 @@ controlService () {
     systemctl $ACTION $SERVICE
   fi
   echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX""$ACTION"'ed '"$SERVICE"'.'
 }
 
 #-------------------------------------------------------------------------------
