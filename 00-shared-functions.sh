@@ -231,10 +231,10 @@ initialiseScript () {
 
   echo "$COMMENT_PREFIX"'Checking '"$SETUP_CONF"' to see if this step has already been performed.'
 
-  if [ $CONFIG_KEY = true ]; then
+  if [ $CONFIG_KEY = "true" ]; then
     echo "$COMMENT_PREFIX"'You have already performed this step.'
     echoScriptExiting
-  elif [ $CONFIG_KEY = false ]; then
+  elif [ $CONFIG_KEY = "false" ]; then
     echo "$COMMENT_PREFIX"'You have not performed this step. Running script.'
     echo "$COMMENT_SEPARATOR"
     runScript
