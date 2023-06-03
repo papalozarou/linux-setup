@@ -61,6 +61,21 @@ changeCase () {
 }
 
 #-------------------------------------------------------------------------------
+# Checks whether a given service is already installed. Takes one mandatory
+# argument, `${1:?}`, which defines the service to be checked. Returns false if 
+# the service is not installed, returns true if the service is installed.
+#-------------------------------------------------------------------------------
+checkForService () {
+  local SERVICE=${1:?}
+
+  if ! type $SERVICE > /dev/null; then
+    echo false
+  else
+    echo true   
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Checks for a setup config option. Takes one mandatory argument, defined by 
 # `${1:?}`, which defines the key of the config option.
 #
