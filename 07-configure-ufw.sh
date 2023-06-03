@@ -13,7 +13,15 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# Runs if this step hasn't been completed before.
+# Runs if this step hasn't been completed before. The script:
+#
+# 1. checks if ufw is installed, installs if not;
+# 2. denies incoming traffic;
+# 3. allows outgoing traffic;
+# 4. denies all traffic on port 22;
+# 5. adds the ssh port configured in the previous step;
+# 6. enables ufw; and
+# 7. lists the current ufw configuration.
 #-------------------------------------------------------------------------------
 runScript () {
   echo "$COMMENT_PREFIX"'Starting setup of ufw.'
