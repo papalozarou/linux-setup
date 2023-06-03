@@ -230,6 +230,7 @@ initialiseScript () {
   local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
 
   echo "$COMMENT_PREFIX"'Checking '"$SETUP_CONF"' to see if this step has already been performed.'
+  echo "$COMMENT_PREFIX"'Check returned '"$CONFIG_KEY_TF"'.'
 
   if [ $CONFIG_KEY = "true" ]; then
     echo "$COMMENT_PREFIX"'You have already performed this step.'
