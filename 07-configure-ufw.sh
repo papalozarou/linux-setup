@@ -44,6 +44,10 @@ runScript () {
 
   controlService enable ufw
 
+  ufw status numbered
+
+  writeSetupConfigOption configureUfw true
+
   echoScriptFinished "setting up ufw"
 }
 
