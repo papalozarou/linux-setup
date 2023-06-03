@@ -36,19 +36,25 @@ runScript () {
   fi
 
   echo "$COMMENT_PREFIX"'Explicitly denying incoming traffic.'
+  echo "$COMMENT_SEPARATOR"
   ufw default deny incoming
+  echo "$COMMENT_SEPARATOR"
 
   echo "$COMMENT_PREFIX"'Explicitly allowing outgoing traffic.'
+  echo "$COMMENT_SEPARATOR"
   ufw default allow outgoing
+  echo "$COMMENT_SEPARATOR"
 
   echo "$COMMENT_PREFIX"'Explicitly denying port 22.'
-  addPortToUFW deny 22
+  echo "$COMMENT_SEPARATOR"
+  addRuleToUfw deny 22
+  echo "$COMMENT_SEPARATOR"
   
   echo "$COMMENT_PREFIX"'Reading ssh port.'
   local SSH_PORT=$(readSetupConfigOption sshPort)
   echo "$COMMENT_PREFIX"'Current port is '"$SSH_PORT"'.'
 
-  addPortToUFW allow $SSH_PORT tcp
+  addRuleToUfw allow $SSH_PORT tcp
 
   controlService enable ufw
 

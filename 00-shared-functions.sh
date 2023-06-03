@@ -45,17 +45,21 @@ SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 # - `${2:?}` a mandatory port number; and
 # - `$3` an optional protocol
 #-------------------------------------------------------------------------------
-addPortToUFW () {
+addRuleToUfw () {
   local ACTION=${1:?}
   local PORT=${2:?}
   local PROTOCOL=$3
 
   if [ -z $PROTOCOL ]; then
       echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT"' to UFW.'
+      echo "$COMMENT_SEPARATOR"
       ufw $ACTION $PORT
+      echo "$COMMENT_SEPARATOR"
   else
     echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT/$PROTOCOL"' to UFW.'
+    echo "$COMMENT_SEPARATOR"
     ufw $ACTION "$PORT/$PROTOCOL"
+    echo "$COMMENT_SEPARATOR"
   fi
 
   echo "$COMMENT_PREFIX"'Rule added.'
