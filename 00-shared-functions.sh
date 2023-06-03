@@ -71,17 +71,18 @@ addRuleToUfw () {
 #
 # - https://medium.com/mkdir-awesome/case-transformation-in-bash-and-posix-with-examples-acdc1e0d0bc4
 # - https://tech.io/snippet/JCFhOEk
+# - https://unix.stackexchange.com/a/554909
 #-------------------------------------------------------------------------------
 changeCase () {
   local STRING=${1:?}
   local CASE=${2:?}
 
-  if [ CASE = "upper" ]; then
+  if [ CASE = 'upper' ]; then
     STRING=$(echo "$STRING" | tr '[:lower:]' '[:upper:]')
-  elif [ CASE = "lower" ]; then
+  elif [ CASE = 'lower' ]; then
     STRING=$(echo "$STRING" | tr '[:upper:]' '[:lower:]')
-  # elif [ CASE = "sentence" ]; then
-    # STRING="$(tr '[:lower:]' '[:upper:]' <<< ${STRING:0:1}) ${STRING:1}"
+  elif [ CASE = 'sentence' ]; then
+    STRING=$(echo "$STRING" | sed 's/\<\([[:lower:]]\)\([^[:punct:]]*\)/\u\1\2/g')
   fi
 
   echo $STRING
@@ -172,8 +173,6 @@ controlService () {
   local ACTION=${1:?}
   local SERVICE=${2:?}
 
-  # ACTION=$(changeCase $ACTION sentence)
-
   if [ $ACTION = 'enable' ]; then
     ACTIONING="Enabling"
   elif [ $ACTION = 'disable' ]; then
@@ -187,7 +186,7 @@ controlService () {
   elif [ $ACTION = 'status' ]; then
     ACTIONING='Checking status of'
   else
-    ACTIONING="$ACTION"'ing'
+    ACTIONING=$(changeCase $ACTION sentence)'ing'
   fi
 
   echo "$COMMENT_PREFIX""$ACTIONING"' '"$SERVICE"'.'
