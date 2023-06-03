@@ -295,7 +295,7 @@ initialiseScript () {
   elif [ $CONFIG_KEY_TF = false ]; then
     echoComment 'You have not performed this step. Running script'
     echoSeparator
-    runScript
+    runScript $CONFIG_KEY
   else
     echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
   fi
