@@ -41,6 +41,8 @@ runScript () {
   echo "$COMMENT_PREFIX"'Current port is '"$SSH_PORT"'.'
 
   addPortToUFW allow $SSH_PORT tcp
+
+  controlService start ufw
 }
 
 #-------------------------------------------------------------------------------
