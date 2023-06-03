@@ -34,7 +34,7 @@ runScript () {
 
     echo "$COMMENT_PREFIX"'Explicitly denying port 22.'
     addPortToUFW deny 22
-  if
+  fi
   
   echo "$COMMENT_PREFIX"'Reading ssh port.'
   local SSH_PORT=$(readSetupConfigOption sshPort)
