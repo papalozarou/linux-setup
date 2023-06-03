@@ -42,7 +42,7 @@ runScript () {
 
   addPortToUFW allow $SSH_PORT tcp
 
-  controlService start ufw
+  controlService enable ufw
 }
 
 #-------------------------------------------------------------------------------
