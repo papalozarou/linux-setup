@@ -74,6 +74,26 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
+# Kills all processes currently being run by `$SUDO_USER`. This is done to
+# ensure that the name of `$SUDO_USER` can be changed by `tempUser`.
+#-------------------------------------------------------------------------------
+killProcesses () {
+    echo "$COMMENT_PREFIX"'To ensure that the current username can be changed, all'
+    echo "$COMMENT_PREFIX"'processes currently being run by '"$SUDO_USER"' must be killed.'
+    echo "$COMMENT_SEPARATOR"
+    SETUP SCRIPT: Warning: This will log you out.
+    echo "$COMMENT_SEPARATOR"
+    read -p "$COMMENT_PREFIX"'Press any key to kill processes.' KILL_PROCESSES
+
+    if [ $KILL_PROCESSES ]; then
+      echo "$COMMENT_SEPARATOR"
+      echo "$COMMENT_PREFIX"'Killing all processes for '"$SUDO_USER"'.'
+      echo "$COMMENT_SEPARATOR"
+      pkill -u $SUDO_UID
+    fi
+}
+
+#-------------------------------------------------------------------------------
 # Removes the temporary user `tempuser` and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
@@ -108,8 +128,7 @@ checkForTempUser () {
     echo "$COMMENT_PREFIX"'sudo ./renameUser.sh.'
     echoScriptFinished 'setting up the temporary user'
 
-    echo "$COMMENt_PREFIX"'Killing all processes for '"$SUDO_USER"'. This will log you out.'
-    pkill -u $SUDO_UID
+    killProcesses
   fi
 }
 
