@@ -339,7 +339,8 @@ readSetupConfigOption () {
 
 #-------------------------------------------------------------------------------
 # Runs the main body of the script, defined in the function `main` within each 
-# script.
+# script. Takes one mandatory argument, ${1:?}, which is the `$CONFIG_KEY`
+# variable based from `initialiseScript`.
 #  
 # Before running `main` a check is performed to see if the script is 
 # configuring a service.
@@ -360,7 +361,6 @@ runScript () {
   writeSetupConfigOption $CONFIG_KEY true
 
   echoComment 'Script finished'
-
 }
 
 #-------------------------------------------------------------------------------
