@@ -48,7 +48,7 @@ SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 addPortToUFW () {
   local ACTION=${1:?}
   local PORT=${2:?}
-  local PROTOCOL="$3"
+  local PROTOCOL=$3
 
   if $PROTOCOL; then
     echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT/$PROTOCOL"' to UFW.'
@@ -72,7 +72,7 @@ changeCase () {
 
   if [ CASE = "upper" ]; then
     STRING=$(echo "$STRING" | tr '[:lower:]' '[:upper:]')
-  elif [ CASE = "lower"]; then
+  elif [ CASE = "lower" ]; then
     STRING=$(echo "$STRING" | tr '[:upper:]' '[:lower:]')
   # elif [ CASE = "sentence" ]; then
     # STRING="$(tr '[:lower:]' '[:upper:]' <<< ${STRING:0:1}) ${STRING:1}"
