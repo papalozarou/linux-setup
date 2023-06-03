@@ -29,7 +29,7 @@ createHardenedFail2banConfig () {
 [DEFAULT]
 ignoreip = 127.0.0.1/8
 bantime  = 10m
-findtime  = 5m
+findtime = 5m
 maxretry = 3
 
 [sshd]
@@ -54,7 +54,7 @@ runScript () {
   local SERVICE='fail2ban'
 
   checkForServiceAndInstall $SERVICE
-  
+
   createHardenedFail2banConfig
   setPermissions 644 $FAIL2BAN_DEFAULT_CONF
 
