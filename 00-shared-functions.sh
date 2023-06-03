@@ -50,7 +50,7 @@ addPortToUFW () {
   local PORT=${2:?}
   local PROTOCOL=$3
 
-  if $PROTOCOL; then
+  if [ -z $PROTOCOL ]; then
     echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT/$PROTOCOL"' to UFW.'
     ufw $ACTION "$PORT/$PROTOCOL"
   else
