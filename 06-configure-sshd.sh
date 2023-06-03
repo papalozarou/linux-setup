@@ -143,7 +143,7 @@ EOF
 restartSshd () {
   echo "$COMMENT_PREFIX"'To enable the new sshd configutation, you will need to restart'
   echo "$COMMENT_PREFIX"'sshd. This can potentially interupt your connection.'
-  read -p "$COMMENT_PREFIX"'Do you want to restart sshd?' SSHD_RESTART_YN
+  read -p "$COMMENT_PREFIX"'Do you want to restart sshd (y/n)?' SSHD_RESTART_YN
 
   if [ $SSHD_RESTART_YN = 'y' -o $SSHD_RESTART_YN = 'Y' ]; then
     controlService restart sshd

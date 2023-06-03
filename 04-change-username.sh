@@ -83,13 +83,19 @@ killProcesses () {
     echo "$COMMENT_SEPARATOR"
     SETUP SCRIPT: Warning: This will log you out.
     echo "$COMMENT_SEPARATOR"
-    read -p "$COMMENT_PREFIX"'Press any key to kill processes.' KILL_PROCESSES
+    read -p "$COMMENT_PREFIX"'Ready to kill all processes (y)?' KILL_PROCESSES
 
-    if [ $KILL_PROCESSES ]; then
+    if [ $KILL_PROCESSES = 'y' -o $KILL_PROCESSES = 'Y' ]; then
       echo "$COMMENT_SEPARATOR"
       echo "$COMMENT_PREFIX"'Killing all processes for '"$SUDO_USER"'.'
       echo "$COMMENT_SEPARATOR"
       pkill -u $SUDO_UID
+    else
+      echo "$COMMENT_SEPARATOR"
+      echo "$COMMENT_PREFIX"'You must answer y or Y to proceed.'
+      echo "$COMMENT_SEPARATOR"
+
+      killProcesses
     fi
 }
 
