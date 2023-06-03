@@ -48,11 +48,11 @@ SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 addPortToUFW () {
   local ACTION=${1:?}
   local PORT=${2:?}
-  local PROTOCOL="/$3"
+  local PROTOCOL="$3"
 
   if $PROTOCOL; then
-    echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT""$PROTOCOL"' to UFW.'
-    ufw $ACTION "$PORT""$PROTOCOL"
+    echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT/$PROTOCOL"' to UFW.'
+    ufw $ACTION "$PORT/$PROTOCOL"
   else
     echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT"' to UFW.'
     ufw $ACTION $PORT
