@@ -23,7 +23,7 @@ FAIL2BAN_DEFAULT_CONF=$GLOBAL_FAIL2BAN_DIR/jail.local
 # Creates the hardened config file for fail2ban. This overides the default 
 # values stored in /etc/fail2ban/jail.conf.
 #-------------------------------------------------------------------------------
-createHardenedFail2BanConfig () {
+createHardenedFail2banConfig () {
   echo "$COMMENT_PREFIX"'Generating fail2ban config file at '"$FAIL2BAN_DEFAULT_CONF"'.'
   cat <<EOF > $FAIL2BAN_DEFAULT_CONF
 [DEFAULT]
@@ -39,6 +39,44 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
+# Runs if this step hasn't been completed before. The script:
+#
+# 1. checks if fail2ban is installed, installs if not;
+# 2. generates the hardened config file;
+# 3. adjusts permissions of the config file;
+# 4. starts fail2ban; and
+# 5. lists the current status of fail2ban.
+# 
 # N.B.
-# We check for fail2ban-server, not fail2ban.
+# We check for `fail2ban-server`, not `fail2ban`.
 #-------------------------------------------------------------------------------
+runScript () {
+  local SERVICE='fail2ban'
+
+  echo "$COMMENT_PREFIX"'Starting setup of '"$SERVICE"'.'
+
+  local FAiL2BAN_CHECK=$(checkForService "$SERVICE-server")
+
+  if [ $FAIL2BAN_CHECK = true ]; then
+    echo "$COMMENT_PREFIX"'You have already installed '"$SERVICE"'.'
+  elif [ $FAIL2BAN_CHECK = false ]; then
+    echo "$COMMENT_PREFIX"'You need to install '"$SERVICE"'.'
+    installService $SERVICE
+  fi
+
+  createHardenedFail2banConfig
+  setPermissions 644 $FAIL2BAN_DEFAULT_CONF
+
+  controlService start $SERVICE
+
+  controlService status $SERVICE
+
+  writeSetupConfigOption configuredFail2ban true
+
+  echoScriptFinished "setting up $SERVICE."
+}
+
+#-------------------------------------------------------------------------------
+# Performas the initial check to see if this step has already been completed.
+#-------------------------------------------------------------------------------
+initialiseScript configuredFail2ban
