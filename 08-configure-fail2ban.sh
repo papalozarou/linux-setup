@@ -55,11 +55,13 @@ runScript () {
 
   echo "$COMMENT_PREFIX"'Starting setup of '"$SERVICE"'.'
 
-  local FAiL2BAN_CHECK=$(checkForService "$SERVICE-server")
+  local SERVICE_CHECK=$(checkForService $SERVICE)
+  echo "$COMMENT_PREFIX"'Checking for '"$SERVICE"'.'
+  echo "$COMMENT_PREFIX"'Check returned '"$SERVICE_CHECK"'.'
 
-  if [ $FAIL2BAN_CHECK = true ]; then
+  if [ $SERVICE_CHECK = true ]; then
     echo "$COMMENT_PREFIX"'You have already installed '"$SERVICE"'.'
-  elif [ $FAIL2BAN_CHECK = false ]; then
+  elif [ $SERVICE_CHECK = false ]; then
     echo "$COMMENT_PREFIX"'You need to install '"$SERVICE"'.'
     installService $SERVICE
   fi
