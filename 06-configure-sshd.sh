@@ -106,7 +106,7 @@ checkSshdConfig () {
 }
 
 #-------------------------------------------------------------------------------
-# 
+# Creates the hardened config file for sshd.
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
   SSH_PORT=$(generatePortNumber)
