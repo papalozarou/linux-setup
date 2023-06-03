@@ -24,25 +24,26 @@
 # 7. lists the current ufw configuration.
 #-------------------------------------------------------------------------------
 runScript () {
-  echo "$COMMENT_PREFIX"'Starting setup of ufw.'
+  local SERVICE='ufw'
+  echo "$COMMENT_PREFIX"'Starting setup of '"$SERVICE"'.'
 
-  local UFW_CHECK=$(checkForService ufw)
+  local UFW_CHECK=$(checkForService $SERVICE)
 
   if [ $UFW_CHECK = true ]; then
-    echo "$COMMENT_PREFIX"'You have already installed ufw.'
-  elif [ $UFW_CHECK = false]; then
-    echo "$COMMENT_PREFIX"'You need to install ufw.'
-    installService ufw
+    echo "$COMMENT_PREFIX"'You have already installed '"$SERVICE"'.'
+  elif [ $UFW_CHECK = false ]; then
+    echo "$COMMENT_PREFIX"'You need to install '"$SERVICE"'.'
+    installService $SERVICE
   fi
 
   echo "$COMMENT_PREFIX"'Explicitly denying incoming traffic.'
   echo "$COMMENT_SEPARATOR"
-  ufw default deny incoming
+  $SERVICE default deny incoming
   echo "$COMMENT_SEPARATOR"
 
   echo "$COMMENT_PREFIX"'Explicitly allowing outgoing traffic.'
   echo "$COMMENT_SEPARATOR"
-  ufw default allow outgoing
+  $SERVICE default allow outgoing
   echo "$COMMENT_SEPARATOR"
 
   echo "$COMMENT_PREFIX"'Explicitly denying port 22.'
@@ -56,17 +57,17 @@ runScript () {
 
   addRuleToUfw allow $SSH_PORT tcp
 
-  controlService enable ufw
+  controlService enable $SERVICE
 
-  ufw status numbered
+  $SERVICE status numbered
   echo "$COMMENT_SEPARATOR"
 
-  writeSetupConfigOption configureUfw true
+  writeSetupConfigOption configuredUfw true
 
-  echoScriptFinished "setting up ufw"
+  echoScriptFinished "setting up $SERVICE"
 }
 
 #-------------------------------------------------------------------------------
 # Performas the initial check to see if this step has already been completed.
 #-------------------------------------------------------------------------------
-initialiseScript configureUfw
+initialiseScript configuredUfw
