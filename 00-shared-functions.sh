@@ -338,6 +338,32 @@ readSetupConfigOption () {
 }
 
 #-------------------------------------------------------------------------------
+# Runs the main body of the script, defined in the function `main` within each 
+# script.
+#  
+# Before running `main` a check is performed to see if the script is 
+# configuring a service.
+#-------------------------------------------------------------------------------
+runScript () {
+  local CONFIG_KEY=${1:?}
+
+  if [ -z "${SERVICE##configured*}" ]; then
+    local SERVICE=$(changeCase ${CONFIG_KEY#'configured'} 'lower')
+
+    checkForServiceAndInstall $SERVICE
+
+    main $SERVICE
+  else
+    main
+  fi
+
+  writeSetupConfigOption $CONFIG_KEY true
+
+  echoComment 'Script finished'
+
+}
+
+#-------------------------------------------------------------------------------
 # Sets permissions of a file or directory. Takes two mandatory arguments, 
 # defined by `${1:?}` and `${2:?}`, which specify a user and a path of the file
 # or directory.
