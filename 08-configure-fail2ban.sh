@@ -68,6 +68,6 @@ runScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Performas the initial check to see if this step has already been completed.
+# Performs the initial check to see if this step has already been completed.
 #-------------------------------------------------------------------------------
 initialiseScript configuredFail2ban
