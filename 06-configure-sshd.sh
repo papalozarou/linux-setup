@@ -26,7 +26,7 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# SSHD related variables.
+# sshd related variables.
 #-------------------------------------------------------------------------------
 GLOBAL_SSH_DIR=/etc/ssh
 SSHD_CONF=$GLOBAL_SSH_DIR/sshd_config
@@ -106,7 +106,8 @@ checkSshdConfig () {
 }
 
 #-------------------------------------------------------------------------------
-# Creates the hardened config file for sshd.
+# Creates the hardened config file for sshd. This overides the default values
+# stored in /etc/ssh/sshd_config.
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
   SSH_PORT=$(generatePortNumber)
