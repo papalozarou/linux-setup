@@ -206,7 +206,7 @@ controlService () {
 echoComment () {
   local COMMENT=${1:?}
 
-  echo "$COMMENT_PREFIX $COMMENT"'.'
+  echo "$COMMENT_PREFIX $COMMENT."
 }
 
 #-------------------------------------------------------------------------------
@@ -360,7 +360,9 @@ runScript () {
 
   writeSetupConfigOption $CONFIG_KEY true
 
+  echoSeparator
   echoComment 'Script finished'
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
