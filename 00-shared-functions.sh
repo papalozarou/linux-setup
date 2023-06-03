@@ -179,7 +179,8 @@ getIPAddress () {
 
 #-------------------------------------------------------------------------------
 # Initialises a given script by checking the config file to see if the script
-# has been run and completed before.
+# has been run and completed before. Takes one mandatory argument, `${1:?}`
+# which defines the key to be checked in the `setup.conf` file.
 #
 # If the script has been run before, the script will exit. If not it will run.
 # If there is an error, we ask the user to check the setup config file.
@@ -188,11 +189,11 @@ initialiseScript () {
   local CONFIG_KEY=${1:?}
   local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
 
+  echo "$COMMENT_PREFIX"'Checking '"$SETUP_CONF"' to see if this step has already been performed.'
+
   if [ $CONFIG_KEY = true ]; then
     echo "$COMMENT_PREFIX"'You have already performed this step.'
-    echo "$COMMENT_SEPARATOR"
-    echo "$COMMENT_PREFIX"'Script exiting.'
-    echo "$COMMENT_SEPARATOR"
+    echoScriptExiting
   elif [ $CONFIG_KEY = false ]; then
     echo "$COMMENT_PREFIX"'You have not performed this step. Running script.'
     echo "$COMMENT_SEPARATOR"
