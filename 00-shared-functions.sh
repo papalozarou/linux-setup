@@ -178,12 +178,21 @@ controlService () {
     ACTIONING="Enabling"
   elif [ $ACTION = 'disable' ]; then
     ACTIONING="Disabling"
+  elif [ $ACTION = 'start']; then
+    ACTIONING="Starting"
+  elif [ $ACTION = 'stop']; then
+    ACTIONING="Stopping"
+  elif [ $ACTION = 'restart']; then
+    ACTIONING="Restarting"
+  elif [ $ACTION = 'status' ]; then
+    ACTIONING='Checking status of'
   else
     ACTIONING="$ACTION"'ing'
   fi
 
   echo "$COMMENT_PREFIX""$ACTIONING"' '"$SERVICE"'.'
   echo "$COMMENT_SEPARATOR"
+
   if [ $SERVICE = 'ufw' ]; then
     $SERVICE $ACTION
   else
