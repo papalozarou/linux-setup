@@ -22,8 +22,8 @@
 #-------------------------------------------------------------------------------
 # Comment variables.
 #---------------------------------------
-COMMENT_PREFIX='SETUP SCRIPT: '
-COMMENT_SEPARATOR="$COMMENT_PREFIX"'------------------------------------------------------------------'
+COMMENT_PREFIX='SETUP SCRIPT:'
+COMMENT_SEPARATOR='------------------------------------------------------------------'
 
 #---------------------------------------
 # Directory variables.
@@ -51,18 +51,18 @@ addRuleToUfw () {
   local PROTOCOL=$3
 
   if [ -z $PROTOCOL ]; then
-      echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT"' to UFW.'
-      echo "$COMMENT_SEPARATOR"
+      echoComment "Adding rule $ACTION $PORT to UFW"
+      echoSeparator
       ufw $ACTION $PORT
-      echo "$COMMENT_SEPARATOR"
+      echoSeparator
   else
-    echo "$COMMENT_PREFIX"'Adding rule '"$ACTION"' '"$PORT/$PROTOCOL"' to UFW.'
-    echo "$COMMENT_SEPARATOR"
+    echoComment "Adding rule $ACTION $PORT/$PROTOCOL to UFW"
+    echoSeparator
     ufw $ACTION "$PORT/$PROTOCOL"
-    echo "$COMMENT_SEPARATOR"
+    echoSeparator
   fi
 
-  echo "$COMMENT_PREFIX"'Rule added.'
+  echoComment 'Rule added'
 }
 
 #-------------------------------------------------------------------------------
@@ -113,16 +113,16 @@ checkForService () {
 #-------------------------------------------------------------------------------
 checkForServiceAndInstall () {
   local SERVICE=${1:?}
-  echo "$COMMENT_PREFIX"'Starting setup of '"$SERVICE"'.'
+  echoComment "Starting setup of $SERVICE"
 
   local SERVICE_CHECK=$(checkForService $SERVICE)
-  echo "$COMMENT_PREFIX"'Checking for '"$SERVICE"'.'
-  echo "$COMMENT_PREFIX"'Check returned '"$SERVICE_CHECK"'.'
+  echoComment "Checking for $SERVICE"
+  echoComment "Check returned $SERVICE_CHECK"
 
   if [ $SERVICE_CHECK = true ]; then
-    echo "$COMMENT_PREFIX"'You have already installed '"$SERVICE"'.'
+    echoComment "You have already installed $SERVICE"
   elif [ $SERVICE_CHECK = false ]; then
-    echo "$COMMENT_PREFIX"'You need to install '"$SERVICE"'.'
+    echoComment "You need to install $SERVICE"
     installService $SERVICE
   fi
 }
@@ -189,24 +189,33 @@ controlService () {
     ACTIONING=$(changeCase $ACTION sentence)'ing'
   fi
 
-  echo "$COMMENT_PREFIX""$ACTIONING"' '"$SERVICE"'.'
-  echo "$COMMENT_SEPARATOR"
+  echoComment "$COMMENT_PREFIX$ACTIONING $SERVICE"
+  echoSeparator
 
   if [ $SERVICE = 'ufw' ]; then
     $SERVICE $ACTION
   else
     systemctl $ACTION $SERVICE
   fi
-  echo "$COMMENT_SEPARATOR"
+  echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Echoes comments. Takes one mandatory argument, `${1:?}`, which is the comment.
+#-------------------------------------------------------------------------------
+echoComment () {
+  local COMMENT=${1:?}
+
+  echo "$COMMENT_PREFIX $COMMENT"'.'
 }
 
 #-------------------------------------------------------------------------------
 # Echose that the script is exiting. Takes no arguments.
 #-------------------------------------------------------------------------------
 echoScriptExiting () {
-  echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX"'Exiting script with no changes made.'
-  echo "$COMMENT_SEPARATOR"
+  echoSeparator
+  echoComment 'Exiting script with no changes made'
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
@@ -216,9 +225,16 @@ echoScriptExiting () {
 echoScriptFinished () {
   local COMMENT=${1:?}
 
-  echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX"'Finished '"$COMMENT"'.'
-  echo "$COMMENT_SEPARATOR"
+  echoSeparator
+  echoComment "Finished $COMMENT"
+  echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Echoes comment separator. Takes no arguments.
+#-------------------------------------------------------------------------------
+echoSeparator () {
+  echoComment "$COMMENT_SEPARATOR"
 }
 
 #-------------------------------------------------------------------------------
@@ -238,8 +254,8 @@ generateSshKey () {
   local KEY_PATH=${1:?}
   local KEY_EMAIL=$2
 
-  echo "$COMMENT_PREFIX"'Generating an ssh key at '"$KEY_PATH"'.'
-  echo "$COMMENT_SEPARATOR"
+  echoComment "Generating an ssh key at $KEY_PATH"
+  echoSeparator
 
   if [ -z "$KEY_EMAIL" ]; then
     ssh-keygen -t ed25519 -f $KEY_PATH
@@ -247,8 +263,8 @@ generateSshKey () {
     ssh-keygen -t ed25519 -f $KEY_PATH -C "$KEY_EMAIL"
   fi
 
-  echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX"'Key generated.'
+  echoSeparator
+  echoComment 'Key generated'
 }
 
 #-------------------------------------------------------------------------------
@@ -270,18 +286,18 @@ initialiseScript () {
   local CONFIG_KEY=${1:?}
   local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
 
-  echo "$COMMENT_PREFIX"'Checking '"$SETUP_CONF"' to see if this step has already been performed.'
-  echo "$COMMENT_PREFIX"'Check returned '"$CONFIG_KEY_TF"'.'
+  echoComment "Checking $SETUP_CONF to see if this step has already been performed"
+  echoComment "Check returned $CONFIG_KEY_TF"
 
   if [ $CONFIG_KEY_TF = true ]; then
-    echo "$COMMENT_PREFIX"'You have already performed this step.'
+    echoComment 'You have already performed this step'
     echoScriptExiting
   elif [ $CONFIG_KEY_TF = false ]; then
-    echo "$COMMENT_PREFIX"'You have not performed this step. Running script.'
-    echo "$COMMENT_SEPARATOR"
+    echoComment 'You have not performed this step. Running script'
+    echoSeparator
     runScript
   else
-    echo "$COMMENT_PREFIX"'Something went wrong. Please check your setup config at '"$SETUP_CONF"'.'
+    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
   fi
 }
 
@@ -292,11 +308,11 @@ initialiseScript () {
 installService () {
   local SERVICE=${1:?}
   
-  echo "$COMMENT_PREFIX"'Installing '"$SERVICE"'.'
-  echo "$COMMENT_SEPARATOR"
+  echoComment "Installing $SERVICE"
+  echoSeparator
   apt install $SERVICE -y
-  echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX""$SERVICE"' installed.'
+  echoSeparator
+  echoComment "$SERVICE installed"
 }
 
 #-------------------------------------------------------------------------------
@@ -330,7 +346,7 @@ setPermissions () {
   local PERMISSIONS=${1:?}
   local FILE_FOLDER=${2:?}
 
-  echo "$COMMENT_PREFIX"'Setting permissions of '"$FILE_FOLDER"' to '"$PERMISSIONS"'.'
+  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS"
   chmod -R $PERMISSIONS $FILE_FOLDER
 }
 
@@ -344,7 +360,7 @@ setOwner () {
   local GROUP=$USER
   local FILE_FOLDER=${2:?}
 
-  echo "$COMMENT_PREFIX"'Setting ownership of '"$FILE_FOLDER"' to '"$USER"':'"$GROUP"'.'
+  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP"
   chown -R $USER:$GROUP $FILE_FOLDER
 }
 
@@ -352,10 +368,10 @@ setOwner () {
 # Updates and upgrades installed packages.
 #-------------------------------------------------------------------------------
 updateUpgrade () {
-  echo "$COMMENT_PREFIX"'Updating and upgrading packages.'
-  echo "$COMMENT_SEPARATOR"
+  echoComment 'Updating and upgrading packages'
+  echoSeparator
   apt update && apt upgrade -y
-  echo "$COMMENT_SEPARATOR"
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
@@ -368,9 +384,9 @@ writeSetupConfigOption () {
   local CONF_KEY=${1:?}
   local CONF_VALUE=${2:?}
 
-  echo "$COMMENT_PREFIX"'Writing '"$CONF_KEY"' to '"$SETUP_CONF"'.'
+  echoComment "Writing $CONF_KEY to $SETUP_CONF"
   echo "$CONF_KEY $CONF_VALUE" >> $SETUP_CONF
-  echo "$COMMENT_PREFIX"'Config written.'
+  echoComment 'Config written'
 
   setOwner $SUDO_USER $SETUP_CONF
 }
