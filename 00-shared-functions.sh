@@ -348,7 +348,7 @@ readSetupConfigOption () {
 runScript () {
   local CONFIG_KEY=${1:?}
 
-  if [ -z "${SERVICE##configured*}" ]; then
+  if [ -z "${CONFIG_KEY##configured*}" ]; then
     local SERVICE=$(changeCase ${CONFIG_KEY#'configured'} 'lower')
 
     checkForServiceAndInstall $SERVICE
