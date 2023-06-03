@@ -16,7 +16,9 @@
 # Runs if this step hasn't been completed before.
 #-------------------------------------------------------------------------------
 runScript () {
+  echo "$COMMENT_PREFIX"'Starting setup of ufw.'
 
+  
 }
 
 #-------------------------------------------------------------------------------

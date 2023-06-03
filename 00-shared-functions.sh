@@ -64,6 +64,10 @@ changeCase () {
 # Checks whether a given service is already installed. Takes one mandatory
 # argument, `${1:?}`, which defines the service to be checked. Returns false if 
 # the service is not installed, returns true if the service is installed.
+#
+# As per:
+#
+# https://stackoverflow.com/a/7522866
 #-------------------------------------------------------------------------------
 checkForService () {
   local SERVICE=${1:?}
