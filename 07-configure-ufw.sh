@@ -59,6 +59,7 @@ runScript () {
   controlService enable ufw
 
   ufw status numbered
+  echo "$COMMENT_SEPARATOR"
 
   writeSetupConfigOption configureUfw true
 
