@@ -275,6 +275,23 @@ getIPAddress () {
 }
 
 #-------------------------------------------------------------------------------
+# Gets a service name from a given config key. Takes one mandatory argument,
+# `${1:?}`, which defines the key to be used.
+#
+# If the config key contains a service, `$SERVICE` is returned. If not, nothing
+# is returned.
+#-------------------------------------------------------------------------------
+getServiceFromConfigKey () {
+  local CONFIG_KEY=${1:?}
+
+  if [ -z "${CONFIG_KEY##configured*}" ]; then
+    local SERVICE=$(changeCase ${CONFIG_KEY#'configured'} 'lower')
+
+    echo $SERVICE
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Initialises a given script by checking the config file to see if the script
 # has been run and completed before. Takes one mandatory argument, `${1:?}`
 # which defines the key to be checked in the `setup.conf` file.
@@ -285,6 +302,7 @@ getIPAddress () {
 initialiseScript () {
   local CONFIG_KEY=${1:?}
   local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
+  local SERVICE=$(getServiceFromConfigKey $CONFIG_KEY)
 
   echoComment "Checking $SETUP_CONF to see if this step has already been performed"
   echoComment "Check returned $CONFIG_KEY_TF"
