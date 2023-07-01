@@ -158,7 +158,7 @@ checkPortNumber () {
   local SERVICE=${2:?}
   local SERVICE_PORT=$(readSetupConfigOption $SERVICE)
 
-  if [ $PORT = $SERVICE_PORT]; then
+  if [ $PORT = $SERVICE_PORT ]; then
     echo true
   else 
     echo false
