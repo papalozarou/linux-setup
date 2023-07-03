@@ -236,7 +236,7 @@ echoComment () {
 #-------------------------------------------------------------------------------
 echoScriptExiting () {
   echoSeparator
-  echoComment 'Exiting script with no changes made'
+  echoComment 'Exiting script with no changes made.'
   echoSeparator
 }
 
@@ -249,7 +249,7 @@ echoScriptFinished () {
   local COMMENT=${1:?}
 
   echoSeparator
-  echoComment "Finished $COMMENT"
+  echoComment "Finished $COMMENT."
   echoSeparator
 }
 
