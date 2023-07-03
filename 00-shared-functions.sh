@@ -46,9 +46,9 @@ SETUP_CONF=$SETUP_CONF_DIR/setup.conf
 # 3. "$3" – an optional protocol
 #-------------------------------------------------------------------------------
 addRuleToUfw () {
-  local ACTION=${1:?}
-  local PORT=${2:?}
-  local PROTOCOL=$3
+  local ACTION="${1:?}"
+  local PORT="${2:?}"
+  local PROTOCOL="$3"
 
   if [ -z "$PROTOCOL" ]; then
       echoComment "Adding rule $ACTION $PORT to UFW"
@@ -78,8 +78,8 @@ addRuleToUfw () {
 # - https://unix.stackexchange.com/a/554909
 #-------------------------------------------------------------------------------
 changeCase () {
-  local STRING=${1:?}
-  local CASE=${2:?}
+  local STRING="${1:?}"
+  local CASE="${2:?}"
 
   if [ "$CASE" = 'upper' ]; then
     STRING=$(echo "$STRING" | tr '[:lower:]' '[:upper:]')
@@ -104,7 +104,7 @@ changeCase () {
 # https://stackoverflow.com/a/7522866
 #-------------------------------------------------------------------------------
 checkForService () {
-  local SERVICE=${1:?}
+  local SERVICE="${1:?}"
 
   if ! type "$SERVICE" > /dev/null; then
     echo false
@@ -120,10 +120,10 @@ checkForService () {
 # 1. "${1:?}" – the service.
 #-------------------------------------------------------------------------------
 checkForServiceAndInstall () {
-  local SERVICE=${1:?}
+  local SERVICE="${1:?}"
   echoComment "Starting setup of $SERVICE"
 
-  local SERVICE_CHECK=$(checkForService $SERVICE)
+  local SERVICE_CHECK=$(checkForService "$SERVICE")
   echoComment "Checking for $SERVICE"
   echoComment "Check returned $SERVICE_CHECK"
 
@@ -149,8 +149,8 @@ checkForServiceAndInstall () {
 # "setup.conf.example".
 #-------------------------------------------------------------------------------
 checkSetupConfigOption () {
-  local CONFIG_KEY=${1:?}
-  local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
+  local CONFIG_KEY="${1:?}"
+  local CONFIG=$(grep "$CONFIG_KEY" "$SETUP_CONF")
 
   if [ -z "$CONFIG" ]; then
     echo false
@@ -172,9 +172,9 @@ checkSetupConfigOption () {
 # "setup.conf.example".
 #-------------------------------------------------------------------------------
 checkPortNumber () {
-  local PORT=${1:?}
-  local SERVICE=${2:?}
-  local SERVICE_PORT=$(readSetupConfigOption $SERVICE)
+  local PORT="${1:?}"
+  local SERVICE="${2:?}"
+  local SERVICE_PORT=$(readSetupConfigOption "$SERVICE")
 
   if [ "$PORT" = "$SERVICE_PORT" ]; then
     echo true
@@ -190,18 +190,18 @@ checkPortNumber () {
 # 2. "${2:?}" – the service.
 #-------------------------------------------------------------------------------
 controlService () {
-  local ACTION=${1:?}
-  local SERVICE=${2:?}
+  local ACTION="${1:?}"
+  local SERVICE="${2:?}"
 
   if [ "$ACTION" = 'enable' ]; then
     ACTIONING="Enabling"
   elif [ "$ACTION" = 'disable' ]; then
     ACTIONING="Disabling"
-  elif [ "$ACTION" = 'start']; then
+  elif [ "$ACTION" = 'start' ]; then
     ACTIONING="Starting"
-  elif [ "$ACTION" = 'stop']; then
+  elif [ "$ACTION" = 'stop' ]; then
     ACTIONING="Stopping"
-  elif [ "$ACTION" = 'restart']; then
+  elif [ "$ACTION" = 'restart' ]; then
     ACTIONING="Restarting"
   elif [ "$ACTION" = 'status' ]; then
     ACTIONING='Checking status of'
@@ -209,7 +209,7 @@ controlService () {
     ACTIONING=$(changeCase "$ACTION" sentence)'ing'
   fi
 
-  echoComment "$COMMENT_PREFIX$ACTIONING $SERVICE"
+  echoComment "$COMMENT_PREFIX$ACTIONING $SERVICE."
   echoSeparator
 
   if [ "$SERVICE" = 'ufw' ]; then
@@ -226,7 +226,7 @@ controlService () {
 # 1. "${1:?}" – a comment.
 #-------------------------------------------------------------------------------
 echoComment () {
-  local COMMENT=${1:?}
+  local COMMENT="${1:?}"
 
   echo "$COMMENT_PREFIX $COMMENT."
 }
@@ -246,7 +246,7 @@ echoScriptExiting () {
 # 1. "${1:?}" – a comment.
 #-------------------------------------------------------------------------------
 echoScriptFinished () {
-  local COMMENT=${1:?}
+  local COMMENT="${1:?}"
 
   echoSeparator
   echoComment "Finished $COMMENT."
@@ -276,8 +276,8 @@ generatePortNumber () {
 # 2. "$2" – an optional email address for the key.
 #-------------------------------------------------------------------------------
 generateSshKey () {
-  local KEY_PATH=${1:?}
-  local KEY_EMAIL=$2
+  local KEY_PATH="${1:?}"
+  local KEY_EMAIL="$2"
 
   echoComment "Generating an ssh key at $KEY_PATH"
   echoSeparator
@@ -289,7 +289,7 @@ generateSshKey () {
   fi
 
   echoSeparator
-  echoComment 'Key generated'
+  echoComment 'Key generated.'
 }
 
 #-------------------------------------------------------------------------------
@@ -313,10 +313,10 @@ getIPAddress () {
 # "setup.conf.example".
 #-------------------------------------------------------------------------------
 getServiceFromConfigKey () {
-  local CONFIG_KEY=${1:?}
+  local CONFIG_KEY="${1:?}"
 
   if [ -z "${CONFIG_KEY##configured*}" ]; then
-    local SERVICE=$(changeCase ${CONFIG_KEY#'configured'} 'lower')
+    local SERVICE=$(changeCase "${CONFIG_KEY#'configured'}" 'lower')
 
     echo "$SERVICE"
   fi
@@ -337,22 +337,22 @@ getServiceFromConfigKey () {
 # "setup.conf.example".
 #-------------------------------------------------------------------------------
 initialiseScript () {
-  local CONFIG_KEY=${1:?}
-  local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
-  local SERVICE=$(getServiceFromConfigKey $CONFIG_KEY)
+  local CONFIG_KEY="${1:?}"
+  local CONFIG_KEY_TF=$(checkSetupConfigOption "$CONFIG_KEY")
+  local SERVICE=$(getServiceFromConfigKey "$CONFIG_KEY")
 
-  echoComment "Checking $SETUP_CONF to see if this step has already been performed"
-  echoComment "Check returned $CONFIG_KEY_TF"
+  echoComment "Checking $SETUP_CONF to see if this step has already been performed."
+  echoComment "Check returned $CONFIG_KEY_TF."
 
   if [ "$CONFIG_KEY_TF" = true ]; then
-    echoComment 'You have already performed this step'
+    echoComment 'You have already performed this step.'
     echoScriptExiting
   elif [ "$CONFIG_KEY_TF" = false ]; then
-    echoComment 'You have not performed this step. Running script'
+    echoComment 'You have not performed this step. Running script.'
     echoSeparator
     runScript "$CONFIG_KEY"
   else
-    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
+    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF."
   fi
 }
 
@@ -362,7 +362,7 @@ initialiseScript () {
 # 1. "${1:?}" – the service to be installed.
 #-------------------------------------------------------------------------------
 installService () {
-  local SERVICE=${1:?}
+  local SERVICE="${1:?}"
   
   echoComment "Installing $SERVICE"
   echoSeparator
@@ -388,8 +388,8 @@ installService () {
 # "setup.conf.example".
 #-------------------------------------------------------------------------------
 readSetupConfigOption () {
-  local CONFIG_KEY=${1:?}
-  local CONFIG="$(grep $CONFIG_KEY $SETUP_CONF)"
+  local CONFIG_KEY="${1:?}"
+  local CONFIG=$(grep "$CONFIG_KEY" "$SETUP_CONF")
 
   set -f "$CONFIG"
   
@@ -406,10 +406,10 @@ readSetupConfigOption () {
 # configuring a service.
 #-------------------------------------------------------------------------------
 runScript () {
-  local CONFIG_KEY=${1:?}
+  local CONFIG_KEY="${1:?}"
 
   if [ -z "${CONFIG_KEY##configured*}" ]; then
-    local SERVICE=$(changeCase ${CONFIG_KEY#'configured'} 'lower')
+    local SERVICE=$(changeCase "${CONFIG_KEY#'configured'}" 'lower')
 
     checkForServiceAndInstall "$SERVICE"
 
@@ -421,7 +421,7 @@ runScript () {
   writeSetupConfigOption "$CONFIG_KEY" true
 
   echoSeparator
-  echoComment 'Script finished'
+  echoComment 'Script finished.'
   echoSeparator
 }
 
@@ -432,11 +432,11 @@ runScript () {
 # 2. "${2:?}" – the path of the file or directory.
 #-------------------------------------------------------------------------------
 setPermissions () {
-  local PERMISSIONS=${1:?}
-  local FILE_FOLDER=${2:?}
+  local PERMISSIONS="${1:?}"
+  local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS"
-  chmod -R "$PERMISSIONS $FILE_FOLDER"
+  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS."
+  chmod -R "$PERMISSIONS" "$FILE_FOLDER"
 }
 
 #-------------------------------------------------------------------------------
@@ -446,19 +446,19 @@ setPermissions () {
 # 2. "${2:?}" – the path of the file or directory.
 #-------------------------------------------------------------------------------
 setOwner () {
-  local USER=${1:?}
-  local GROUP=$USER
-  local FILE_FOLDER=${2:?}
+  local USER="${1:?}"
+  local GROUP="$USER"
+  local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP"
-  chown -R "$USER:$GROUP $FILE_FOLDER"
+  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP."
+  chown -R "$USER:$GROUP" "$FILE_FOLDER"
 }
 
 #-------------------------------------------------------------------------------
 # Updates and upgrades installed packages.
 #-------------------------------------------------------------------------------
 updateUpgrade () {
-  echoComment 'Updating and upgrading packages'
+  echoComment 'Updating and upgrading packages.'
   echoSeparator
   apt update && apt upgrade -y
   echoSeparator
@@ -478,12 +478,12 @@ updateUpgrade () {
 # "setup.conf.example".
 #-------------------------------------------------------------------------------
 writeSetupConfigOption () {
-  local CONF_KEY=${1:?}
-  local CONF_VALUE=${2:?}
+  local CONF_KEY="${1:?}"
+  local CONF_VALUE="${2:?}"
 
   echoComment "Writing $CONF_KEY to $SETUP_CONF"
-  echo "$CONF_KEY $CONF_VALUE" >> $SETUP_CONF
-  echoComment 'Config written'
+  echo "$CONF_KEY $CONF_VALUE" >> "$SETUP_CONF"
+  echoComment 'Config written.'
 
   setOwner "$SUDO_USER" "$SETUP_CONF"
 }
