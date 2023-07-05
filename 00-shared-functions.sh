@@ -241,19 +241,6 @@ echoScriptExiting () {
 }
 
 #-------------------------------------------------------------------------------
-# Echoes that the script has finished. Takes one mandatory argument:
-# 
-# 1. "${1:?}" – a comment.
-#-------------------------------------------------------------------------------
-echoScriptFinished () {
-  local COMMENT="${1:?}"
-
-  echoSeparator
-  echoComment "Finished $COMMENT"
-  echoSeparator
-}
-
-#-------------------------------------------------------------------------------
 # Echoes comment separator. Takes no arguments.
 #-------------------------------------------------------------------------------
 echoSeparator () {
@@ -262,10 +249,9 @@ echoSeparator () {
 
 #-------------------------------------------------------------------------------
 # Finishes the script by writing in the config key and echoing the script has
-# finished. Takes two mandatory arguments:
+# finished. Takes one mandatory argument:
 # 
-# 1. "${1:?}" – the config key to be written; and
-# 2. "${2:?}" – the final comment to echo.
+# 1. "${1:?}" – the config key to be written.
 #
 # N.B.
 # The config option key must be formatted exactly as in the config option file,
@@ -274,10 +260,12 @@ echoSeparator () {
 #-------------------------------------------------------------------------------
 finaliseScript () {
   local CONFIG_KEY="${1:?}"
-  local FINAL_COMMENT="${2:?}"
 
-  writeSetupConfigOption "$CONFIG_KEY"
-  echoScriptFinished "$FINAL_COMMENT"
+  writeSetupConfigOption "$CONFIG_KEY" true
+
+  echoSeparator
+  echoComment 'Script finished.'
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
