@@ -329,7 +329,8 @@ getServiceFromConfigKey () {
 # 1. "${1:?}" – the key to be checked in the "setup.conf" file.
 #
 # If the script has been run before, the script will exit. If not it will run.
-# If there is an error, we ask the user to check the setup config file.
+# If there is an error, we ask the user to check the setup config file and then
+# exit the script.
 # 
 # N.B.
 # The config option key must be formatted exactly as in the config option file,
@@ -347,12 +348,17 @@ initialiseScript () {
   if [ "$CONFIG_KEY_TF" = true ]; then
     echoComment 'You have already performed this step'
     echoScriptExiting
+
+    exit 1
   elif [ "$CONFIG_KEY_TF" = false ]; then
     echoComment 'You have not performed this step. Running script'
     echoSeparator
     runScript "$CONFIG_KEY"
   else
     echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
+    echoScriptExiting
+
+    exit 1
   fi
 }
 
