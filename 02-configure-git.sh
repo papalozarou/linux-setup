@@ -24,7 +24,7 @@
 # Config key and service variables.
 #-------------------------------------------------------------------------------
 CONFIG_KEY='configuredGit'
-SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" 'lower')"
+SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
 # Set the ssh file variables for the Linux user.
