@@ -136,30 +136,6 @@ checkForServiceAndInstall () {
 }
 
 #-------------------------------------------------------------------------------
-# Checks for a setup config option. Takes one mandatory argument:
-# 
-# 1. "${1:?}" – the key of the config option.
-#
-# The function returns true or false depending on if the config option is 
-# present in the config file.
-# 
-# N.B.
-# The config option key must be formatted exactly as in the config option file,
-# i.e. using camelCase. A list of the config keys can be found in 
-# "setup.conf.example".
-#-------------------------------------------------------------------------------
-checkSetupConfigOption () {
-  local CONFIG_KEY="${1:?}"
-  local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
-
-  if [ -z "$CONFIG" ]; then
-    echo false
-  else
-    echo true
-  fi
-}
-
-#-------------------------------------------------------------------------------
 # Check to see if the port number has already been used for another service.
 # Takes two mandatory arguement:
 # 
@@ -180,6 +156,30 @@ checkPortNumber () {
     echo true
   else 
     echo false
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Checks for a setup config option. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the key of the config option.
+#
+# The function returns true or false depending on if the config option is 
+# present in the config file.
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
+#-------------------------------------------------------------------------------
+checkSetupConfigOption () {
+  local CONFIG_KEY="${1:?}"
+  local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
+
+  if [ -z "$CONFIG" ]; then
+    echo false
+  else
+    echo true
   fi
 }
 
@@ -261,6 +261,26 @@ echoSeparator () {
 }
 
 #-------------------------------------------------------------------------------
+# Finishes the script by writing in the config key and echoing the script has
+# finished. Takes two mandatory arguments:
+# 
+# 1. "${1:?}" – the config key to be written; and
+# 2. "${2:?}" – the final comment to echo.
+#
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
+#-------------------------------------------------------------------------------
+finaliseScript () {
+  local CONFIG_KEY="${1:?}"
+  local FINAL_COMMENT="${2:?}"
+
+  writeSetupConfigOption "$CONFIG_KEY"
+  echoScriptFinished "$FINAL_COMMENT"
+}
+
+#-------------------------------------------------------------------------------
 # Generates a random port number between 2000 and 65000 inclusive, as per:
 #
 # https://unix.stackexchange.com/questions/140750/generate-random-numbers-in-specific-range
@@ -323,10 +343,10 @@ getServiceFromConfigKey () {
 }
 
 #-------------------------------------------------------------------------------
-# Initialises a given script by checking the config file to see if the script
-# has been run and completed before. Takes one mandatory argument:
-# 
-# 1. "${1:?}" – the key to be checked in the "setup.conf" file.
+# Checks the config file to see if the script has been run and completed before.
+# Takes one mandatory arguement:
+#
+# 1. "${1:?}" – the config option key to be used.
 #
 # If the script has been run before, the script will exit. If not it will run.
 # If there is an error, we ask the user to check the setup config file and then
