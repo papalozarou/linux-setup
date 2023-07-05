@@ -139,7 +139,9 @@ checkForTempUser () {
     setPermissions "+x" "$RENAME_SCRIPT_PATH"
     setOwner "tempuser" "$RENAME_SCRIPT_PATH"
     echoComment "You can now log this user out, log in as tempuser, then run sudo ./$RENAME_SCRIPT"
+    echoSeparator
     echoComment 'Finished setting up the temporary user'
+    echoSeparator
 
     killProcesses
   fi
