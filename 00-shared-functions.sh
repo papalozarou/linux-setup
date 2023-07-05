@@ -28,15 +28,15 @@ COMMENT_SEPARATOR='-------------------------------------------------------------
 #---------------------------------------
 # Directory variables.
 #---------------------------------------
-USER_DIR=/home/$SUDO_USER
-SSH_DIR=$USER_DIR/.ssh
-CONF_DIR=$USER_DIR/.config
-SETUP_CONF_DIR=$CONF_DIR/linux-setup
+USER_DIR="/home/$SUDO_USER"
+SSH_DIR="$USER_DIR/.ssh"
+CONF_DIR="$USER_DIR/.config"
+SETUP_CONF_DIR="$CONF_DIR/linux-setup"
 
 #---------------------------------------
 # File variables.
 #---------------------------------------
-SETUP_CONF=$SETUP_CONF_DIR/setup.conf
+SETUP_CONF="$SETUP_CONF_DIR/setup.conf"
 
 #-------------------------------------------------------------------------------
 # Adds a port to ufw. Takes three arguments:
@@ -123,7 +123,7 @@ checkForServiceAndInstall () {
   local SERVICE="${1:?}"
   echoComment "Starting setup of $SERVICE"
 
-  local SERVICE_CHECK=$(checkForService "$SERVICE")
+  local SERVICE_CHECK="$(checkForService "$SERVICE")"
   echoComment "Checking for $SERVICE"
   echoComment "Check returned $SERVICE_CHECK"
 
@@ -150,7 +150,7 @@ checkForServiceAndInstall () {
 #-------------------------------------------------------------------------------
 checkSetupConfigOption () {
   local CONFIG_KEY="${1:?}"
-  local CONFIG=$(grep "$CONFIG_KEY" "$SETUP_CONF")
+  local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
 
   if [ -z "$CONFIG" ]; then
     echo false
@@ -174,7 +174,7 @@ checkSetupConfigOption () {
 checkPortNumber () {
   local PORT="${1:?}"
   local SERVICE="${2:?}"
-  local SERVICE_PORT=$(readSetupConfigOption "$SERVICE")
+  local SERVICE_PORT="$(readSetupConfigOption "$SERVICE")"
 
   if [ "$PORT" = "$SERVICE_PORT" ]; then
     echo true
@@ -206,7 +206,7 @@ controlService () {
   elif [ "$ACTION" = 'status' ]; then
     ACTIONING='Checking status of'
   else
-    ACTIONING=$(changeCase "$ACTION" sentence)'ing'
+    ACTIONING="$(changeCase "$ACTION" sentence)ing"
   fi
 
   echoComment "$COMMENT_PREFIX$ACTIONING $SERVICE."
@@ -228,7 +228,7 @@ controlService () {
 echoComment () {
   local COMMENT="${1:?}"
 
-  echo "$COMMENT_PREFIX $COMMENT."
+  echo "$COMMENT_PREFIX $COMMENT"
 }
 
 #-------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ echoComment () {
 #-------------------------------------------------------------------------------
 echoScriptExiting () {
   echoSeparator
-  echoComment 'Exiting script with no changes made.'
+  echoComment 'Exiting script with no changes made'
   echoSeparator
 }
 
@@ -249,7 +249,7 @@ echoScriptFinished () {
   local COMMENT="${1:?}"
 
   echoSeparator
-  echoComment "Finished $COMMENT."
+  echoComment "Finished $COMMENT"
   echoSeparator
 }
 
@@ -289,7 +289,7 @@ generateSshKey () {
   fi
 
   echoSeparator
-  echoComment 'Key generated.'
+  echoComment 'Key generated'
 }
 
 #-------------------------------------------------------------------------------
@@ -316,7 +316,7 @@ getServiceFromConfigKey () {
   local CONFIG_KEY="${1:?}"
 
   if [ -z "${CONFIG_KEY##configured*}" ]; then
-    local SERVICE=$(changeCase "${CONFIG_KEY#'configured'}" 'lower')
+    local SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" 'lower')"
 
     echo "$SERVICE"
   fi
@@ -338,21 +338,21 @@ getServiceFromConfigKey () {
 #-------------------------------------------------------------------------------
 initialiseScript () {
   local CONFIG_KEY="${1:?}"
-  local CONFIG_KEY_TF=$(checkSetupConfigOption "$CONFIG_KEY")
-  local SERVICE=$(getServiceFromConfigKey "$CONFIG_KEY")
+  local CONFIG_KEY_TF="$(checkSetupConfigOption "$CONFIG_KEY")"
+  local SERVICE="$(getServiceFromConfigKey "$CONFIG_KEY")"
 
-  echoComment "Checking $SETUP_CONF to see if this step has already been performed."
-  echoComment "Check returned $CONFIG_KEY_TF."
+  echoComment "Checking $SETUP_CONF to see if this step has already been performed"
+  echoComment "Check returned $CONFIG_KEY_TF"
 
   if [ "$CONFIG_KEY_TF" = true ]; then
-    echoComment 'You have already performed this step.'
+    echoComment 'You have already performed this step'
     echoScriptExiting
   elif [ "$CONFIG_KEY_TF" = false ]; then
-    echoComment 'You have not performed this step. Running script.'
+    echoComment 'You have not performed this step. Running script'
     echoSeparator
     runScript "$CONFIG_KEY"
   else
-    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF."
+    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
   fi
 }
 
@@ -389,7 +389,7 @@ installService () {
 #-------------------------------------------------------------------------------
 readSetupConfigOption () {
   local CONFIG_KEY="${1:?}"
-  local CONFIG=$(grep "$CONFIG_KEY" "$SETUP_CONF")
+  local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
 
   set -f "$CONFIG"
   
@@ -409,7 +409,7 @@ runScript () {
   local CONFIG_KEY="${1:?}"
 
   if [ -z "${CONFIG_KEY##configured*}" ]; then
-    local SERVICE=$(changeCase "${CONFIG_KEY#'configured'}" 'lower')
+    local SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" 'lower')"
 
     checkForServiceAndInstall "$SERVICE"
 
@@ -435,7 +435,7 @@ setPermissions () {
   local PERMISSIONS="${1:?}"
   local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS."
+  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS"
   chmod -R "$PERMISSIONS" "$FILE_FOLDER"
 }
 
@@ -450,7 +450,7 @@ setOwner () {
   local GROUP="$USER"
   local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP."
+  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP"
   chown -R "$USER:$GROUP" "$FILE_FOLDER"
 }
 
@@ -458,7 +458,7 @@ setOwner () {
 # Updates and upgrades installed packages.
 #-------------------------------------------------------------------------------
 updateUpgrade () {
-  echoComment 'Updating and upgrading packages.'
+  echoComment 'Updating and upgrading packages'
   echoSeparator
   apt update && apt upgrade -y
   echoSeparator
@@ -483,7 +483,7 @@ writeSetupConfigOption () {
 
   echoComment "Writing $CONF_KEY to $SETUP_CONF"
   echo "$CONF_KEY $CONF_VALUE" >> "$SETUP_CONF"
-  echoComment 'Config written.'
+  echoComment 'Config written'
 
   setOwner "$SUDO_USER" "$SETUP_CONF"
 }
