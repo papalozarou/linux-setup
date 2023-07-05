@@ -29,8 +29,8 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 #-------------------------------------------------------------------------------
 # Set the ssh file variables for the Linux user.
 #-------------------------------------------------------------------------------
-SSH_CONF=$SSH_DIR/config
-SSH_KEY=$SSH_DIR/github
+SSH_CONF="$SSH_DIR/config"
+SSH_KEY="$SSH_DIR/github"
 
 #-------------------------------------------------------------------------------
 # Request user details to use in global git settings and when generating ssh key
