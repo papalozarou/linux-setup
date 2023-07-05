@@ -7,7 +7,7 @@
 # 2. creating a config file in "~/.config/linux-setup/setup.conf"
 # 
 # N.B.
-# This script needs to be run as sudo.
+# This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ checkForSetupConfigFile () {
 }
 
 #-------------------------------------------------------------------------------
-# Executes the functions of the script.
+# Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
   updateUpgrade
