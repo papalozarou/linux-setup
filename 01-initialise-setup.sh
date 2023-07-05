@@ -126,6 +126,6 @@ mainScript () {
 #-------------------------------------------------------------------------------
 # Run the script.
 #-------------------------------------------------------------------------------
-initialiseScript $CONFIG_KEY
+initialiseScript "$CONFIG_KEY"
 mainScript
-finaliseScript $CONFIG_KEY
+finaliseScript "$CONFIG_KEY"
