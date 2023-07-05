@@ -340,7 +340,6 @@ getServiceFromConfigKey () {
 initialiseScript () {
   local CONFIG_KEY="${1:?}"
   local CONFIG_KEY_TF="$(checkSetupConfigOption "$CONFIG_KEY")"
-  local SERVICE="$(getServiceFromConfigKey "$CONFIG_KEY")"
 
   echoComment "Checking $SETUP_CONF to see if this step has already been performed"
   echoComment "Check returned $CONFIG_KEY_TF"
@@ -353,7 +352,6 @@ initialiseScript () {
   elif [ "$CONFIG_KEY_TF" = false ]; then
     echoComment 'You have not performed this step. Running script'
     echoSeparator
-    runScript "$CONFIG_KEY"
   else
     echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
     echoScriptExiting
