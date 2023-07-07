@@ -17,7 +17,7 @@
 # https://www.digitalocean.com/community/tutorials/how-to-harden-openssh-on-ubuntu-20-04
 #
 # N.B.
-# This script needs to be run as `sudo`.
+# This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -26,82 +26,87 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# sshd related variables.
+# Config key variable.
 #-------------------------------------------------------------------------------
-GLOBAL_SSH_DIR=/etc/ssh
-SSHD_CONF=$GLOBAL_SSH_DIR/sshd_config
-SSHD_CONF_DIR=$GLOBAL_SSH_DIR/sshd_config.d
-SSHD_DEFAULT_CONF=$SSHD_CONF_DIR/99-hardened.conf
+CONFIG_KEY='configuredSshd'
 
 #-------------------------------------------------------------------------------
-# Lists the current contents of `$SSD_CONF_DIR` as a percursor to allowing the
+# sshd related variables.
+#-------------------------------------------------------------------------------
+GLOBAL_SSH_DIR="/etc/ssh"
+SSHD_CONF="$GLOBAL_SSH_DIR/sshd_config"
+SSHD_CONF_DIR="$GLOBAL_SSH_DIR/sshd_config.d"
+SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
+
+#-------------------------------------------------------------------------------
+# Lists the current contents of "$SSD_CONF_DIR" as a percursor to allowing the
 # user to delete them if required, e.g. if a Cloud provider or distro has auto 
 # installed files here.
 #-------------------------------------------------------------------------------
 listCurrentSshdConfigs() {
-  echo "$COMMENT_PREFIX"'Listing '"$SSHD_CONF_DIR"'…'
-  echo "$COMMENT_SEPARATOR"
+  echoComment "Listing $SSHD_CONF_DIR…"
+  echoSeparator
   ls -lna $SSHD_CONF_DIR
-  echo "$COMMENT_SEPARATOR"
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
-# Removes the config files within $SSHD_CONF_DIR, based on the users input.
+# Removes the config files within "$SSHD_CONF_DIR", based on the users input.
 #
 # If the user requests to delete, the files are deleted and the folder is listed
-# again to confirm deletion, using `listCurrentSshdConfigs`.
+# again to confirm deletion, using "listCurrentSshdConfigs".
 #
 # If the user doesn't request to delete, the files are left alone.
 #
-# Any input other than `y`, `Y`, `n` or `N` will re-run this function.
+# Any input other than "y", "Y", "n" or "N" will re-run this function.
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
-  echo "$COMMENT_PREFIX"'Do you want to remove the configs in '"$SSHD_CONF_DIR"' (y/n)?' 
+  echoComment "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 
   read -p "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' SSHD_CONFS_YN
 
-  if [ $SSHD_CONFS_YN = 'y' -o $SSHD_CONFS_YN = 'Y' ]; then
-    echo "$COMMENT_PREFIX"'Deleting files in '"$SSHD_CONF_DIR"'.'
-    rm $SSHD_CONF_DIR/*
-    echo "$COMMENT_PREFIX"'Files deleted.'
+  if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
+    echoComment "Deleting files in $SSHD_CONF_DIR."
+    rm "$SSHD_CONF_DIR/*"
+    echoComment 'Files deleted.'
 
     listCurrentSshdConfigs
-  elif [ $SSHD_CONFS_YN = 'n' -o $SSHD_CONFS_YN = 'N' ]; then
-    echo "$COMMENT_PREFIX"'Leaving files in '"$SSHD_CONF_DIR"' intact.'
+  elif [ "$SSHD_CONFS_YN" = 'n' -o "$SSHD_CONFS_YN" = 'N' ]; then
+    echoComment "Leaving files in $SSHD_CONF_DIR intact."
   else
-    echo "$COMMENT_PREFIX"'You must answer y or n.'
+    echoComment 'You must answer y or n.'
     removeCurrentSShdConfigs
   fi
 }
 
 #-------------------------------------------------------------------------------
-# Check for the `Include` line in `$SSHD_CONF`. If not present, add it after
+# Check for the "Include" line in "$SSHD_CONF". If not present, add it after
 # the first comment block at the top of the config file. If it is present,
 # confirm it's present.
 #
 # N.B.
-# The `sed` command is in double quotes to ensure variable substitution of
-# `$SSHD_CONF_DIR` as per:
+# The "sed" command is in double quotes to ensure variable substitution of
+# "$SSHD_CONF_DIR" as per:
 #
 # https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed#748586
 #
-# For the newline to work the `\` and the `n` must be escaped, hence the triple
-# `\\\` in the command.
+# For the newline to work the "\" and the "n" must be escaped, hence the triple
+# "\\\" in the command.
 #-------------------------------------------------------------------------------
 checkSshdConfig () {
-  echo "$COMMENT_PREFIX"'Checking for include line in '"$SSHD_CONF"'.'
+  echoComment "Checking for include line in $SSHD_CONF."
 
-  local INCLUDES=$(cat $SSHD_CONF | grep "Include")
+  local INCLUDES="$(cat "$SSHD_CONF" | grep "Include")"
 
   if [ -z "$INCLUDES" ]; then
-    echo "$COMMENT_PREFIX"'Include line not present so adding to '"$SSHD_CONF"'.'
+    echoComment "Include line not present so adding to $SSHD_CONF."
 
-    sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" $SSHD_CONF
-    echo "$COMMENT_PREFIX"'Added include line to '"$SSHD_CONF"'.'
-    echo "$COMMENT_SEPARATOR"
+    sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" "$SSHD_CONF"
+    echoComment "Added include line to $SSHD_CONF."
+    echoSeparator
     echo $(cat ./sshd_config | grep "Include")
-    echo "$COMMENT_SEPARATOR"
+    echoSeparator
   else
-    echo "$COMMENT_PREFIX"'Include line already present in '"$SSHD_CONF"'.'
+    echoComment "Include line already present in $SSHD_CONF."
   fi
 }
 
@@ -110,10 +115,10 @@ checkSshdConfig () {
 # stored in /etc/ssh/sshd_config.
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
-  SSH_PORT=$(generatePortNumber)
+  SSH_PORT="$(generatePortNumber)"
 
-  echo "$COMMENT_PREFIX"'Generating sshd config file at '"$SSHD_DEFAULT_CONF"'.' 
-  cat <<EOF > $SSHD_DEFAULT_CONF
+  echoComment "Generating sshd config file at $SSHD_DEFAULT_CONF." 
+  cat <<EOF > "$SSHD_DEFAULT_CONF"
 Port $SSH_PORT
 AddressFamily inet
 LoginGraceTime 20
@@ -133,7 +138,7 @@ X11Forwarding no
 PermitUserEnvironment no
 AcceptEnv LANG LC_*
 EOF
-  echo "$COMMENT_PREFIX"'Config file generated.'
+  echoComment 'Config file generated.'
 
   listCurrentSshdConfigs
 }
@@ -142,16 +147,16 @@ EOF
 # Asks they user if they want to restart the sshd service.
 #-------------------------------------------------------------------------------
 restartSshd () {
-  echo "$COMMENT_PREFIX"'To enable the new sshd configutation, you will need to restart'
-  echo "$COMMENT_PREFIX"'sshd. This can potentially interupt your connection.'
+  echoComment 'To enable the new sshd configutation, you will need to restart'
+  echoComment 'sshd. This can potentially interupt your connection.'
   read -p "$COMMENT_PREFIX"'Do you want to restart sshd (y/n)?' SSHD_RESTART_YN
 
-  if [ $SSHD_RESTART_YN = 'y' -o $SSHD_RESTART_YN = 'Y' ]; then
+  if [ "$SSHD_RESTART_YN" = 'y' -o "$SSHD_RESTART_YN" = 'Y' ]; then
     controlService restart sshd
-  elif [ $SSHD_RESTART_YN = 'n' -o $SSHD_RESTART_YN = 'N' ]; then
+  elif [ "$SSHD_RESTART_YN" = 'n' -o "$SSHD_RESTART_YN" = 'N' ]; then
     echo "$COMMENT_PREFIX"'sshd will not be restarted.'
   else
-    echo "$COMMENT_PREFIX"'You must answer y or n.'
+    echoComment 'You must answer y or n.'
     restartSshd
   fi
 }
@@ -163,27 +168,36 @@ echoLocalSshConfig () {
   local IP_ADDRESS=$(getIPAddress)
   local SSH_KEY_FILE=$(readSetupConfigOption sshKeyFile)
 
-  echo "$COMMENT_PREFIX"'To enable easy connection from your local machine, add the'
-  echo "$COMMENT_PREFIX"'following to your local ssh config file at either ~/.ssh/ssh_config'
-  echo "$COMMENT_PREFIX"'or ~/.ssh/config:'
-  echo "$COMMENT_SEPARATOR"
-  echo 'Host '"$SSH_KEY_FILE"
-  echo '  Hostname '"$IP_ADDRESS"
-  echo '  Port '"$SSH_PORT"
-  echo '  User '"$SUDO_USER"
-  echo '  IdentityFile ~/.ssh/'"$SSH_KEY_FILE"
+  echoComment 'To enable easy connection from your local machine, add the'
+  echoComment 'following to your local ssh config file at either:'
+  echoComment '~/.ssh/ssh_config'
+  echoComment '~/.ssh/config'
+  echoSeparator
+  echoComment "Host $SSH_KEY_FILE"
+  echoComment "  Hostname $IP_ADDRESS"
+  echoComment "  Port $SSH_PORT"
+  echoComment "  User $SUDO_USER"
+  echoComment "  IdentityFile ~/.ssh/$SSH_KEY_FILE"
+  echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Executes the main functions of the script.
+#-------------------------------------------------------------------------------
+mainScript () {
+  listCurrentSshdConfigs
+  removeCurrentSshdConfigs
+  checkSshdConfig
+  createHardenedSShdConfig
+  setPermissions 600 $SSHD_CONF_DIR
+  restartSshd
+  writeSetupConfigOption sshPort $SSH_PORT
+  echoLocalSshConfig
 }
 
 #-------------------------------------------------------------------------------
 # Run the script.
 #-------------------------------------------------------------------------------
-listCurrentSshdConfigs
-removeCurrentSshdConfigs
-checkSshdConfig
-createHardenedSShdConfig
-setPermissions 600 $SSHD_CONF_DIR
-restartSshd
-writeSetupConfigOption configuredSshd true
-writeSetupConfigOption sshPort $SSH_PORT
-echoLocalSshConfig
-echoScriptFinished 'configuring sshd'
+initialiseScript "$CONFIG_KEY"
+mainScript
+finaliseScript "$CONFIG_KEY"

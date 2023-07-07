@@ -4,7 +4,7 @@
 # Set up an ssh key for remote connections to the server.
 #
 # N.B.
-# This script needs to be run as `sudo`.
+# This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -18,7 +18,7 @@
 CONFIG_KEY="setupSshKey"
 
 #-------------------------------------------------------------------------------
-# Get the name of the ssh key, and set the variable `$SSH_KEY`.
+# Get the name of the ssh key, and set the variable "$SSH_KEY".
 #-------------------------------------------------------------------------------
 getSshKeyDetails () {
   read -p "$COMMENT_PREFIX"'What do you want to call your ssh key?' REMOTE_KEY_NAME
@@ -28,7 +28,7 @@ getSshKeyDetails () {
 }
 
 #-------------------------------------------------------------------------------
-# Adds the newly generated public key to the `authorized_keys` file.
+# Adds the newly generated public key to the "authorized_keys" file.
 #-------------------------------------------------------------------------------
 addKeyToAuthorizedKeys () {
   echoComment "Adding public key to $SSH_DIR/authorized_keys."
