@@ -228,7 +228,7 @@ controlService () {
 echoComment () {
   local COMMENT="${1:?}"
 
-  echo "$COMMENT_PREFIX $COMMENT."
+  echo "$COMMENT_PREFIX $COMMENT"
 }
 
 #-------------------------------------------------------------------------------
