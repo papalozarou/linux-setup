@@ -66,8 +66,9 @@ getNewUserName () {
 # in username and groupname to "$NEW_USER".
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  echoComment 'Creating a script to change the current username and group within the'
-  echoComment "tempuser home directory at $RENAME_SCRIPT_PATH."
+  echoComment 'Creating a script to change the current username and group within'
+  echoComment 'the tempuser home directory at:'
+  echoComment "$RENAME_SCRIPT_PATH"
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
 echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
@@ -124,11 +125,11 @@ removeTempUser () {
 }
 
 #-------------------------------------------------------------------------------
-# Check whether "tempuser" exists. If it does exist delete it, if it doesn't
-# exist create it.
+# Runs the main functions of the script, by checking whether "tempuser" exists. 
+# If it does exist delete it, if it doesn't exist create it.
 # 
 # N.B.
-# When the "tempuser" is created, all processes for the currnet user are 
+# When the "tempuser" is created, all processes for the current user are 
 # terminated, including the current ssh session.
 #-------------------------------------------------------------------------------
 mainScript () {

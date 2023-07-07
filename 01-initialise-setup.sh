@@ -57,7 +57,8 @@ EOF
 # Any input other than "y", "Y", "n' or "N" will re-run this function.
 #-------------------------------------------------------------------------------
 removeCurrentSetupConfig () {
-  echoComment "Do you want to remove the existing setup config file in $SETUP_CONF_DIR (y/n)?"
+  echoComment 'Do you want to remove the existing setup config file in:'
+  echoComment "$SETUP_CONF_DIR (y/n)?"
   read -r "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' SETUP_CONF_YN
 
   if [ "$SETUP_CONF_YN" = 'y' -o "$SETUP_CONF_YN" = 'Y' ]; then

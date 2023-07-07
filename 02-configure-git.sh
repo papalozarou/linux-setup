@@ -90,9 +90,11 @@ EOF
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
-  echoComment 'You must add the contents of ~/.ssh/github.pub to your Github account via:'
+  echoComment 'You must add the contents of ~/.ssh/github.pub to your Github'
+  echoComment 'account via:'
   echoComment 'Settings > Access > SSH and GPG keys'
-  echoComment 'You will likely need to open a separate command line session to copy the contents.'
+  echoComment 'You will likely need to open a separate command line session to'
+  echoComment 'copy the contents.'
   echoComment 'We will wait a while you go add the key…'
 }
 
@@ -115,7 +117,8 @@ checkUserAddedKey () {
   else
     echoComment 'You must add your key to Github proceed. Please add it now via:'
     echoCOmment 'Settings > Access > SSH and GPG keys'
-    echoComment 'You will likely need to open a separate command line session to copy the contents.'
+    echoComment 'You will likely need to open a separate command line session to'
+    echoComment 'copy the contents.'
     checkUserAddedKey
   fi
 }
@@ -139,7 +142,8 @@ testGitSsh () {
   ssh -T git@github.com
   echoSeparator
   echoComment 'If you saw a success message, you are good to go.'
-  echoComment 'If you saw an error about permissions when this script exits you can try:'
+  echoComment 'If you saw an error about permissions when this script exits you'
+  echoComment 'can try:'
   echoComment 'ssh -T git@github.com'
   echoComment 'If that still does not work, you fibbed about adding your key…'
 }

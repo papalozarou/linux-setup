@@ -34,7 +34,8 @@ changeUserPassword () {
 # Display the status of the user's account.
 #-------------------------------------------------------------------------------
 displayUserAccountStatus() {
-  echoComment 'Your password has been successfully changed. Listing your account status:'
+  echoComment 'Your password has been successfully changed.' 
+  echoComment 'Listing your account status:'
   echoSeparator
   echoComment "$(passwd -S "$SUDO_USER")"
   echoSeparator
