@@ -41,17 +41,17 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR/$RENAME_SCRIPT"
 # https://unix.stackexchange.com/a/611219
 #-------------------------------------------------------------------------------
 createTempUser () {
-  echoComment 'Creating temporary user, tempuser'
-  echoComment 'N.B'
-  echoComment 'Set a password you can remember easily as you will need it shortly'
+  echoComment 'Creating temporary user, tempuser'.
+  echoComment 'N.B.'
+  echoComment 'Set a password you can remember easily as you will need it shortly.'
   echoSeparator
   adduser --gecos GECOS tempuser
   echoSeparator
-  echoComment 'Temporary user created. Adding to sudoers'
+  echoComment 'Temporary user created. Adding to sudoers.'
   echoSeparator
   adduser tempuser sudo
   echoSeparator
-  echoComment 'Temporary user added to sudoers file'
+  echoComment 'Temporary user added to sudoers file.'
 }
 
 #-------------------------------------------------------------------------------
@@ -66,7 +66,8 @@ getNewUserName () {
 # in username and groupname to "$NEW_USER".
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  echoComment "Creating a script to change the current username and group within the tempuser home directory at $RENAME_SCRIPT_PATH"
+  echoComment 'Creating a script to change the current username and group within the'
+  echoComment "tempuser home directory at $RENAME_SCRIPT_PATH."
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
 echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
@@ -81,7 +82,7 @@ EOF
   echoSeparator
   ls -lna "$RENAME_SCRIPT_PATH"
   echoSeparator
-  echoComment 'Script created'
+  echoComment 'Script created.'
 }
 
 #-------------------------------------------------------------------------------
@@ -89,20 +90,21 @@ EOF
 # ensure that the name of `$SUDO_USER` can be changed by `tempUser`.
 #-------------------------------------------------------------------------------
 killProcesses () {
-    echoComment "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed"
+    echoComment 'To ensure that the current username can be changed, all processes'
+    echoComment "currently being run by $SUDO_USER must be killed."
     echoSeparator
-    echoComment 'Warning: This will log you out'
+    echoComment 'Warning: This will log you out.'
     echoSeparator
     read -r "$COMMENT_PREFIX Ready to kill all processes (y)?" KILL_PROCESSES_YN
 
     if [ "$KILL_PROCESSES_YN" = 'y' -o "$KILL_PROCESSES_YN" = 'Y' ]; then
       echoSeparator
-      echoComment "Killing all processes for $SUDO_USER"
+      echoComment "Killing all processes for $SUDO_USER."
       echoSeparator
       pkill -u "$SUDO_UID"
     else
       echoSeparator
-      echoComment 'You must answer y or Y to proceed'
+      echoComment 'You must answer y or Y to proceed.'
       echoSeparator
 
       killProcesses
@@ -113,12 +115,12 @@ killProcesses () {
 # Removes the temporary user "tempuser' and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
-  echoComment 'Deleting temporary user, tempuser'
+  echoComment 'Deleting temporary user, tempuser.'
   echoSeparator
   deluser tempuser
   rm -r "$TEMPUSER_DIR"
   echoSeparator
-  echoComment 'Temporary user and home folder deleted'
+  echoComment 'Temporary user and home folder deleted.'
 }
 
 #-------------------------------------------------------------------------------
@@ -129,7 +131,7 @@ removeTempUser () {
 # When the "tempuser" is created, all processes for the currnet user are 
 # terminated, including the current ssh session.
 #-------------------------------------------------------------------------------
-checkForTempUser () {
+mainScript () {
   if id tempuser; then
     removeTempUser
   else
@@ -138,9 +140,10 @@ checkForTempUser () {
     createTempUserScript
     setPermissions "+x" "$RENAME_SCRIPT_PATH"
     setOwner "tempuser" "$RENAME_SCRIPT_PATH"
-    echoComment "You can now log this user out, log in as tempuser, then run sudo ./$RENAME_SCRIPT"
+    echoComment 'You can now log this user out, log in as tempuser, then run:'
+    echoComment "sudo ./$RENAME_SCRIPT."
     echoSeparator
-    echoComment 'Finished setting up the temporary user'
+    echoComment 'Finished setting up the temporary user.'
     echoSeparator
 
     killProcesses
@@ -149,10 +152,7 @@ checkForTempUser () {
 
 #-------------------------------------------------------------------------------
 # Run the script.
-#
-# N.B.
-# There is no "mainScript" here as we only run a single function.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-checkForTempUser
+mainScript
 finaliseScript "$CONFIG_KEY"

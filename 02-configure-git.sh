@@ -45,7 +45,7 @@ getGitDetails () {
 # Set global git username and email, using values from getGitDetails.
 #-------------------------------------------------------------------------------
 setGitDetails () {
-  echoComment "Setting global git username to $GIT_USERNAME"
+  echoComment "Setting global git username to $GIT_USERNAME."
   git config --global user.name "$GIT_USERNAME"
 
   echoComment "Setting global git email to $GIT_EMAIL"
@@ -56,7 +56,7 @@ setGitDetails () {
 # Set global default branch to "main".
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
-  echoComment 'Setting global default branch to main'
+  echoComment 'Setting global default branch to main.'
   git config --global init.defaultBranch main
 }
 
@@ -64,35 +64,36 @@ setGitDefaultBranch () {
 # Start the "ssh-agent" and add the newly generated key to it.
 #-------------------------------------------------------------------------------
 addSshKeytoAgent () {
-  echoComment 'Adding the generated key to the ssh-agent'
+  echoComment 'Adding the generated key to the ssh-agent.'
   echoSeparator
   eval "$(ssh-agent -s)"
   ssh-add "$SSH_KEY"
   echoSeparator
-  echoComment 'Key added to agent'
+  echoComment 'Key added to agent.'
 }
 
 #-------------------------------------------------------------------------------
 # Generate an ssh config file.
 #-------------------------------------------------------------------------------
 generateSshConfig () {
-  echoComment 'Generating ssh config file at ~/.ssh/config'
+  echoComment 'Generating ssh config file at ~/.ssh/config.'
   cat <<EOF > "$SSH_CONF"
 Host github.com
   Hostname github.com
   IdentityFile ~/.ssh/github
   IdentitiesOnly yes
 EOF
-  echoComment 'Config file generated'
+  echoComment 'Config file generated.'
 }
 
 #-------------------------------------------------------------------------------
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
-  echoComment 'You must add the contents of ~/.ssh/github.pub to your Github account via Settings > Access > SSH and GPG keys'
-  echoComment 'You will likely need to open a separate command line session to copy the contents'
-  echoComment 'We will wait a while you go add the key'
+  echoComment 'You must add the contents of ~/.ssh/github.pub to your Github account via:'
+  echoComment 'Settings > Access > SSH and GPG keys'
+  echoComment 'You will likely need to open a separate command line session to copy the contents.'
+  echoComment 'We will wait a while you go add the key…'
 }
 
 #-------------------------------------------------------------------------------
@@ -110,10 +111,11 @@ checkUserAddedKey () {
   read -r "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? ' KEY_ADDED
 
   if [ "$KEY_ADDED" = 'y' -o "$KEY_ADDED" = 'Y' ]; then
-    echoComment 'Key added to Github – we will know later if you fibbed'
+    echoComment 'Key added to Github – we will know later if you fibbed…'
   else
-    echoComment 'You must add your key to Github proceed. Please add it now via Settings > Access > SSH and GPG keys'
-    echoComment 'You will likely need to open a separate command line session to copy the contents'
+    echoComment 'You must add your key to Github proceed. Please add it now via:'
+    echoCOmment 'Settings > Access > SSH and GPG keys'
+    echoComment 'You will likely need to open a separate command line session to copy the contents.'
     checkUserAddedKey
   fi
 }
@@ -122,7 +124,7 @@ checkUserAddedKey () {
 # List git configuration.
 #-------------------------------------------------------------------------------
 listGitConfig () {
-  echoComment 'Listing git configuration'
+  echoComment 'Listing git configuration.'
   echoSeparator
   git config --list
   echoSeparator
@@ -132,13 +134,14 @@ listGitConfig () {
 # Test ssh connection.
 #-------------------------------------------------------------------------------
 testGitSsh () {
-  echoComment 'Testing ssh connection to git, which should show a success message'
+  echoComment 'Testing ssh connection to git, which should show a success message.'
   echoSeparator
   ssh -T git@github.com
   echoSeparator
-  echoComment 'If you saw a success message, you are good to go'
-  echoComment 'If you saw an error about permissions when this script exits you can try ssh -T git@github.com'
-  echoComment 'If that still does not work, you fibbed about adding your key'
+  echoComment 'If you saw a success message, you are good to go.'
+  echoComment 'If you saw an error about permissions when this script exits you can try:'
+  echoComment 'ssh -T git@github.com'
+  echoComment 'If that still does not work, you fibbed about adding your key…'
 }
 
 #-------------------------------------------------------------------------------

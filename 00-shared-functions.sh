@@ -51,18 +51,18 @@ addRuleToUfw () {
   local PROTOCOL="$3"
 
   if [ -z "$PROTOCOL" ]; then
-      echoComment "Adding rule $ACTION $PORT to UFW"
+      echoComment "Adding rule $ACTION $PORT to UFW."
       echoSeparator
       ufw "$ACTION" "$PORT"
       echoSeparator
   else
-    echoComment "Adding rule $ACTION $PORT/$PROTOCOL to UFW"
+    echoComment "Adding rule $ACTION $PORT/$PROTOCOL to UFW."
     echoSeparator
     ufw "$ACTION" "$PORT/$PROTOCOL"
     echoSeparator
   fi
 
-  echoComment 'Rule added'
+  echoComment 'Rule added.'
 }
 
 #-------------------------------------------------------------------------------
@@ -121,16 +121,16 @@ checkForService () {
 #-------------------------------------------------------------------------------
 checkForServiceAndInstall () {
   local SERVICE="${1:?}"
-  echoComment "Starting setup of $SERVICE"
+  echoComment "Starting setup of $SERVICE."
 
   local SERVICE_CHECK="$(checkForService "$SERVICE")"
-  echoComment "Checking for $SERVICE"
-  echoComment "Check returned $SERVICE_CHECK"
+  echoComment "Checking for $SERVICE."
+  echoComment "Check returned $SERVICE_CHECK."
 
   if [ "$SERVICE_CHECK" = true ]; then
-    echoComment "You have already installed $SERVICE"
+    echoComment "You have already installed $SERVICE."
   elif [ "$SERVICE_CHECK" = false ]; then
-    echoComment "You need to install $SERVICE"
+    echoComment "You need to install $SERVICE."
     installService "$SERVICE"
   fi
 }
@@ -236,7 +236,7 @@ echoComment () {
 #-------------------------------------------------------------------------------
 echoScriptExiting () {
   echoSeparator
-  echoComment 'Exiting script with no changes made'
+  echoComment 'Exiting script with no changes made.'
   echoSeparator
 }
 
@@ -287,7 +287,7 @@ generateSshKey () {
   local KEY_PATH="${1:?}"
   local KEY_EMAIL="$2"
 
-  echoComment "Generating an ssh key at $KEY_PATH"
+  echoComment "Generating an ssh key at $KEY_PATH."
   echoSeparator
 
   if [ -z "$KEY_EMAIL" ]; then
@@ -297,7 +297,7 @@ generateSshKey () {
   fi
 
   echoSeparator
-  echoComment 'Key generated'
+  echoComment 'Key generated.'
 }
 
 #-------------------------------------------------------------------------------
@@ -349,19 +349,19 @@ initialiseScript () {
   local CONFIG_KEY="${1:?}"
   local CONFIG_KEY_TF="$(checkSetupConfigOption "$CONFIG_KEY")"
 
-  echoComment "Checking $SETUP_CONF to see if this step has already been performed"
-  echoComment "Check returned $CONFIG_KEY_TF"
+  echoComment "Checking $SETUP_CONF to see if this step has already been performed."
+  echoComment "Check returned $CONFIG_KEY_TF."
 
   if [ "$CONFIG_KEY_TF" = true ]; then
-    echoComment 'You have already performed this step'
+    echoComment 'You have already performed this step.'
     echoScriptExiting
 
     exit 1
   elif [ "$CONFIG_KEY_TF" = false ]; then
-    echoComment 'You have not performed this step. Running script'
+    echoComment 'You have not performed this step. Running script.'
     echoSeparator
   else
-    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
+    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF."
     echoScriptExiting
 
     exit 1
@@ -376,11 +376,11 @@ initialiseScript () {
 installService () {
   local SERVICE="${1:?}"
   
-  echoComment "Installing $SERVICE"
+  echoComment "Installing $SERVICE."
   echoSeparator
   apt install "$SERVICE" -y
   echoSeparator
-  echoComment "$SERVICE installed"
+  echoComment "$SERVICE installed."
 }
 
 #-------------------------------------------------------------------------------
@@ -447,7 +447,7 @@ setPermissions () {
   local PERMISSIONS="${1:?}"
   local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS"
+  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS."
   chmod -R "$PERMISSIONS" "$FILE_FOLDER"
 }
 
@@ -462,7 +462,7 @@ setOwner () {
   local GROUP="$USER"
   local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP"
+  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP."
   chown -R "$USER:$GROUP" "$FILE_FOLDER"
 }
 
@@ -470,7 +470,7 @@ setOwner () {
 # Updates and upgrades installed packages.
 #-------------------------------------------------------------------------------
 updateUpgrade () {
-  echoComment 'Updating and upgrading packages'
+  echoComment 'Updating and upgrading packages.'
   echoSeparator
   apt update && apt upgrade -y
   echoSeparator
@@ -493,9 +493,9 @@ writeSetupConfigOption () {
   local CONF_KEY="${1:?}"
   local CONF_VALUE="${2:?}"
 
-  echoComment "Writing $CONF_KEY to $SETUP_CONF"
+  echoComment "Writing $CONF_KEY to $SETUP_CONF."
   echo "$CONF_KEY $CONF_VALUE" >> "$SETUP_CONF"
-  echoComment 'Config written'
+  echoComment 'Config written.'
 
   setOwner "$SUDO_USER" "$SETUP_CONF"
 }

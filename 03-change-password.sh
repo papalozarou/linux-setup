@@ -22,8 +22,9 @@ CONFIG_KEY='changedPassword'
 # Change the password for the default ubuntu user.
 #-------------------------------------------------------------------------------
 changeUserPassword () {
-  echoComment "Changing password for $SUDO_USER"
-  echoComment 'Please make sure your password is set to a minimum of 24 characters, using a mix of alphanumeric characters and symbols'
+  echoComment "Changing password for $SUDO_USER."
+  echoComment 'Please make sure your password is set to a minimum of 24 characters,'
+  echoComment 'using a mix of alphanumeric characters and symbols.'
   echoSeparator
   passwd "$SUDO_USER"
   echoSeparator
@@ -33,7 +34,7 @@ changeUserPassword () {
 # Display the status of the user's account.
 #-------------------------------------------------------------------------------
 displayUserAccountStatus() {
-  echoComment 'Your password has been successfully changed. Listing your account status'
+  echoComment 'Your password has been successfully changed. Listing your account status:'
   echoSeparator
   echoComment "$(passwd -S "$SUDO_USER")"
   echoSeparator
