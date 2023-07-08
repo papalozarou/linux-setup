@@ -59,6 +59,12 @@ listCurrentSshdConfigs() {
 # If the user doesn't request to delete, the files are left alone.
 #
 # Any input other than "y", "Y", "n" or "N" will re-run this function.
+#
+# N.B.
+# We must run "rm" from a shell, as shell does the expansion of the wildcard,
+# "*", not "rm". As per:
+# 
+# https://stackoverflow.com/a/31559110
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
   echoComment "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?"
@@ -67,7 +73,7 @@ removeCurrentSshdConfigs () {
 
   if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
     echoComment "Deleting files in $SSHD_CONF_DIR."
-    rm "$SSHD_CONF_DIR/*.conf"
+    sh -c 'rm "$SSHD_CONF_DIR/*.conf"'
     echoComment 'Files deleted.'
 
     listCurrentSshdConfigs
