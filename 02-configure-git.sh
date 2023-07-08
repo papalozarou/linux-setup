@@ -37,8 +37,10 @@ SSH_KEY="$SSH_DIR/github"
 # for Github.
 #-------------------------------------------------------------------------------
 getGitDetails () {
-  read -r  "$COMMENT_PREFIX"'What global git username do you want to use with git? ' GIT_USERNAME
-  read -r  "$COMMENT_PREFIX"'What global git email do you want to use with git? ' GIT_EMAIL
+  echoComment 'What global git username do you want to use with git?'
+  read -r GIT_USERNAME
+  echoComment 'What global git email do you want to use with git?'
+  read -r GIT_EMAIL
 }
 
 #-------------------------------------------------------------------------------
@@ -110,13 +112,14 @@ getUserToAddKey () {
 #-------------------------------------------------------------------------------
 checkUserAddedKey () {
   sleep 5
-  read -r "$COMMENT_PREFIX"'Have you added the ssh key to your account (y/n)? ' KEY_ADDED
+  echoComment 'Have you added the ssh key to your account (y/n)?'
+  read -r KEY_ADDED
 
   if [ "$KEY_ADDED" = 'y' -o "$KEY_ADDED" = 'Y' ]; then
     echoComment 'Key added to Github – we will know later if you fibbed…'
   else
     echoComment 'You must add your key to Github proceed. Please add it now via:'
-    echoCOmment 'Settings > Access > SSH and GPG keys'
+    echoComment 'Settings > Access > SSH and GPG keys'
     echoComment 'You will likely need to open a separate command line session to'
     echoComment 'copy the contents.'
     checkUserAddedKey

@@ -59,7 +59,8 @@ EOF
 removeCurrentSetupConfig () {
   echoComment 'Do you want to remove the existing setup config file in:'
   echoComment "$SETUP_CONF_DIR (y/n)?"
-  read -r "$COMMENT_PREFIX"'N.B. This cannot be undone, and we wont ask for confirmation.' SETUP_CONF_YN
+  echoComment 'N.B. This cannot be undone, and we wont ask for confirmation.'
+  read -r SETUP_CONF_YN
 
   if [ "$SETUP_CONF_YN" = 'y' -o "$SETUP_CONF_YN" = 'Y' ]; then
     echoComment "Deleting setup config file in $SETUP_CONF_DIR."
