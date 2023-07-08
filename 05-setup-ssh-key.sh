@@ -43,9 +43,7 @@ addKeyToAuthorizedKeys () {
 #-------------------------------------------------------------------------------
 echoKeyUsage () {
   echoComment "Please copy the private key, $REMOTE_KEY_NAME, to your local"
-  echoComment '~/.ssh directory. You will also want to add the following to your'
-  echoComment 'local ssh config file, either ~/.ssh/ssh_config or ~/.ssh/config,'
-  echoComment 'once you have configured sshd with the next script.'
+  echoComment '~/.ssh directory.'
 }
 
 #-------------------------------------------------------------------------------
