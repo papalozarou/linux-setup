@@ -44,7 +44,7 @@ displayUserAccountStatus() {
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
-main () {
+mainScript () {
   changeUserPassword
   displayUserAccountStatus
 }
