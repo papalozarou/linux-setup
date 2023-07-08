@@ -209,7 +209,7 @@ controlService () {
     ACTIONING="$(changeCase "$ACTION" sentence)ing"
   fi
 
-  echoComment "$COMMENT_PREFIX$ACTIONING $SERVICE."
+  echoComment "$ACTIONING $SERVICE."
   echoSeparator
 
   if [ "$SERVICE" = 'ufw' ]; then
