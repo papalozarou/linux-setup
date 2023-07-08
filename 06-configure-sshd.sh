@@ -160,7 +160,7 @@ restartSshd () {
   read -r SSHD_RESTART_YN
 
   if [ "$SSHD_RESTART_YN" = 'y' -o "$SSHD_RESTART_YN" = 'Y' ]; then
-    controlService restart sshd
+    controlService 'restart' 'sshd'
   elif [ "$SSHD_RESTART_YN" = 'n' -o "$SSHD_RESTART_YN" = 'N' ]; then
     echo "$COMMENT_PREFIX"'sshd will not be restarted.'
   else
@@ -174,7 +174,7 @@ restartSshd () {
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
   local IP_ADDRESS="$(getIPAddress)"
-  local SSH_KEY_FILE="$(readSetupConfigOption sshKeyFile)"
+  local SSH_KEY_FILE="$(readSetupConfigOption "sshKeyFile")"
 
   echoComment 'To enable easy connection from your local machine, add the'
   echoComment 'following to your local ssh config file at either:'
