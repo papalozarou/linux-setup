@@ -73,7 +73,7 @@ removeCurrentSshdConfigs () {
 
   if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
     echoComment "Deleting files in $SSHD_CONF_DIR."
-    sh -c 'rm "$SSHD_CONF_DIR/*.conf"'
+    sh -c "rm $SSHD_CONF_DIR/*.conf"
     echoComment 'Files deleted.'
 
     listCurrentSshdConfigs
