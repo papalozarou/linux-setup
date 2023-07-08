@@ -46,7 +46,7 @@ SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
 listCurrentSshdConfigs() {
   echoComment "Listing $SSHD_CONF_DIR…"
   echoSeparator
-  ls -lna $SSHD_CONF_DIR
+  ls -lna "$SSHD_CONF_DIR"
   echoSeparator
 }
 
@@ -165,8 +165,8 @@ restartSshd () {
 # Displays the values a user needs to add to their local ssh config file.
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
-  local IP_ADDRESS=$(getIPAddress)
-  local SSH_KEY_FILE=$(readSetupConfigOption sshKeyFile)
+  local IP_ADDRESS="$(getIPAddress)"
+  local SSH_KEY_FILE="$(readSetupConfigOption sshKeyFile)"
 
   echoComment 'To enable easy connection from your local machine, add the'
   echoComment 'following to your local ssh config file at either:'
@@ -189,9 +189,9 @@ mainScript () {
   removeCurrentSshdConfigs
   checkSshdConfig
   createHardenedSShdConfig
-  setPermissions 600 $SSHD_CONF_DIR
+  setPermissions "600" "$SSHD_CONF_DIR"
   restartSshd
-  writeSetupConfigOption sshPort $SSH_PORT
+  writeSetupConfigOption "sshPort" "$SSH_PORT"
   echoLocalSshConfig
 }
 
