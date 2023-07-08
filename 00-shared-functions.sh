@@ -213,7 +213,7 @@ controlService () {
   echoSeparator
 
   if [ "$SERVICE" = 'ufw' ]; then
-    "$SERVICE $ACTION"
+    "$SERVICE" "$ACTION"
   else
     systemctl "$ACTION" "$SERVICE"
   fi

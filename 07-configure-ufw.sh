@@ -35,8 +35,8 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 mainScript () {
   checkForServiceAndInstall "$SERVICE"
 
-  addRuleToUfw 'default' "deny incoming"
-  addRuleToUfw 'default' "allow outgoing"
+  "$SERVICE" default deny incoming
+  "$SERVICE" default allow outgoing
   addRuleToUfw 'deny' '22'
   
   echoComment 'Reading ssh port.'
