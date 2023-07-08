@@ -395,6 +395,8 @@ installService () {
 # https://stackoverflow.com/a/1478245
 # 
 # N.B.
+# "$CONFIG" is not quoted as we need word splitting in this instance. 
+#
 # The config option key must be formatted exactly as in the config option file,
 # i.e. using camelCase. A list of the config keys can be found in 
 # "setup.conf.example".
@@ -403,38 +405,9 @@ readSetupConfigOption () {
   local CONFIG_KEY="${1:?}"
   local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
 
-  set -f "$CONFIG"
+  set -f $CONFIG
   
   echo "$2"
-}
-
-#-------------------------------------------------------------------------------
-# Runs the main body of the script, defined in the function "main" within each 
-# script. Takes one mandatory argument:
-# 
-# 1. "${1:?}" – the "$CONFIG_KEY" variable from "initialiseScript".
-#  
-# Before running "main" a check is performed to see if the script is 
-# configuring a service.
-#-------------------------------------------------------------------------------
-runScript () {
-  local CONFIG_KEY="${1:?}"
-
-  if [ -z "${CONFIG_KEY##configured*}" ]; then
-    local SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" 'lower')"
-
-    checkForServiceAndInstall "$SERVICE"
-
-    main "$SERVICE"
-  else
-    main
-  fi
-
-  writeSetupConfigOption "$CONFIG_KEY" true
-
-  echoSeparator
-  echoComment 'Script finished.'
-  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
