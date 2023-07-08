@@ -21,8 +21,10 @@ CONFIG_KEY="setupSshKey"
 # Get the name of the ssh key, and set the variable "$SSH_KEY".
 #-------------------------------------------------------------------------------
 getSshKeyDetails () {
-  read -p "$COMMENT_PREFIX"'What do you want to call your ssh key?' REMOTE_KEY_NAME
-  read -p "$COMMENT_PREFIX"'What email do you want to add to your ssh key?' SSH_EMAIL
+  echoComment 'What do you want to call your ssh key?'
+  read -r REMOTE_KEY_NAME
+  echoComment 'What email do you want to add to your ssh key?'
+  read -r SSH_EMAIL
 
   SSH_KEY="$SSH_DIR/$REMOTE_KEY_NAME"
 }
@@ -48,6 +50,9 @@ echoKeyUsage () {
 
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script.
+# 
+# N.B.
+# We also write the ssh key filename to the config file.
 #-------------------------------------------------------------------------------
 mainScript () {
   getSshKeyDetails
