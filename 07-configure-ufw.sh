@@ -43,6 +43,7 @@ mainScript () {
 
   controlService 'enable' "$SERVICE"
 
+  echoSeparator
   "$SERVICE" status numbered
   echoSeparator
 }
