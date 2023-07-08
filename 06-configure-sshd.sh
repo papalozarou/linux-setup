@@ -63,7 +63,7 @@ listCurrentSshdConfigs() {
 removeCurrentSshdConfigs () {
   echoComment "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?"
   echoComment 'N.B. This cannot be undone, and we wont ask for confirmation.'
-  read -p SSHD_CONFS_YN
+  read -r SSHD_CONFS_YN
 
   if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
     echoComment "Deleting files in $SSHD_CONF_DIR."
@@ -151,7 +151,7 @@ restartSshd () {
   echoComment 'To enable the new sshd configutation, you will need to restart'
   echoComment 'sshd. This can potentially interupt your connection.'
   echoComment 'Do you want to restart sshd (y/n)?'
-  read -p SSHD_RESTART_YN
+  read -r SSHD_RESTART_YN
 
   if [ "$SSHD_RESTART_YN" = 'y' -o "$SSHD_RESTART_YN" = 'Y' ]; then
     controlService restart sshd
