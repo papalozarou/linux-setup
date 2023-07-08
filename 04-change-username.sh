@@ -58,7 +58,8 @@ createTempUser () {
 # Get the desired new username and group.
 #-------------------------------------------------------------------------------
 getNewUserName () {
-  read -r "$COMMENT_PREFIX"'What is your new user name? ' NEW_USER
+  echoComment 'What is your new user name?' 
+  read -r NEW_USER
 }
 
 #-------------------------------------------------------------------------------
@@ -96,7 +97,8 @@ killProcesses () {
     echoSeparator
     echoComment 'Warning: This will log you out.'
     echoSeparator
-    read -r "$COMMENT_PREFIX Ready to kill all processes (y)?" KILL_PROCESSES_YN
+    echoComment 'Ready to kill all processes (y)?'
+    read -r KILL_PROCESSES_YN
 
     if [ "$KILL_PROCESSES_YN" = 'y' -o "$KILL_PROCESSES_YN" = 'Y' ]; then
       echoSeparator
