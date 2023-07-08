@@ -150,6 +150,8 @@ mainScript () {
     echoSeparator
 
     killProcesses
+
+    exit
   fi
 }
 
