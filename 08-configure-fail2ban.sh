@@ -14,7 +14,7 @@
 # /etc/fail2ban/jail.local
 #
 # N.B.
-# We check for `fail2ban-server`, not `fail2ban`.
+# We check for "fail2ban-server", not "fail2ban".
 # 
 # This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
