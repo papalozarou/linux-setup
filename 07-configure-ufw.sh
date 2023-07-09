@@ -1,10 +1,18 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Install and configure ufw to only accept traffic on required ports for ssh.
+# Installs and configures ufw by:
+# 
+# 1. checking if ufw is installed, installs if not;
+# 2. explicitly denying incoming traffic;
+# 3. explicitly allowing outgoing traffic;
+# 4. denying all traffic on port 22;
+# 5. adding the "$SSH_PORT" configured in the previous step;
+# 6. enabling ufw; and
+# 7. listing the current ufw configuration.
 #
 # N.B.
-# This script needs to be run as `sudo`.
+# This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -13,52 +21,39 @@
 . ./00-shared-functions.sh
 
 #-------------------------------------------------------------------------------
-# Runs if this step hasn't been completed before. The script:
-#
-# 1. checks if ufw is installed, installs if not;
-# 2. denies incoming traffic;
-# 3. allows outgoing traffic;
-# 4. denies all traffic on port 22;
-# 5. adds the ssh port configured in the previous step;
-# 6. enables ufw; and
-# 7. lists the current ufw configuration.
+# Config key and service variables.
 #-------------------------------------------------------------------------------
-runScript () {
-  local SERVICE='ufw'
-  checkForServiceAndInstall $SERVICE
+CONFIG_KEY='configuredUfw'
+SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
-  echo "$COMMENT_PREFIX"'Explicitly denying incoming traffic.'
-  echo "$COMMENT_SEPARATOR"
-  $SERVICE default deny incoming
-  echo "$COMMENT_SEPARATOR"
+#-------------------------------------------------------------------------------
+# Runs the main functions of the script.
+#
+# N.B.
+# Default allow/deny commands are double quoted to prevent word splitting.
+#-------------------------------------------------------------------------------
+mainScript () {
+  checkForServiceAndInstall "$SERVICE"
 
-  echo "$COMMENT_PREFIX"'Explicitly allowing outgoing traffic.'
-  echo "$COMMENT_SEPARATOR"
-  $SERVICE default allow outgoing
-  echo "$COMMENT_SEPARATOR"
-
-  echo "$COMMENT_PREFIX"'Explicitly denying port 22.'
-  echo "$COMMENT_SEPARATOR"
-  addRuleToUfw deny 22
-  echo "$COMMENT_SEPARATOR"
+  "$SERVICE" default deny incoming
+  "$SERVICE" default allow outgoing
+  addRuleToUfw 'deny' '22'
   
-  echo "$COMMENT_PREFIX"'Reading ssh port.'
+  echoComment 'Reading ssh port.'
   local SSH_PORT=$(readSetupConfigOption sshPort)
-  echo "$COMMENT_PREFIX"'Current port is '"$SSH_PORT"'.'
+  echoComment "Current port is $SSH_PORT."
+  addRuleToUfw 'allow' "$SSH_PORT" 'tcp'
 
-  addRuleToUfw allow $SSH_PORT tcp
+  controlService 'enable' "$SERVICE"
 
-  controlService enable $SERVICE
-
-  $SERVICE status numbered
-  echo "$COMMENT_SEPARATOR"
-
-  writeSetupConfigOption configuredUfw true
-
-  echoScriptFinished "setting up $SERVICE"
+  echoSeparator
+  "$SERVICE" status numbered
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
-# Performas the initial check to see if this step has already been completed.
+# Run the script.
 #-------------------------------------------------------------------------------
-initialiseScript configuredUfw
+initialiseScript "$CONFIG_KEY"
+mainScript
+finaliseScript "$CONFIG_KEY"

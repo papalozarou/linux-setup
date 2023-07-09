@@ -28,79 +28,85 @@ COMMENT_SEPARATOR='-------------------------------------------------------------
 #---------------------------------------
 # Directory variables.
 #---------------------------------------
-USER_DIR=/home/$SUDO_USER
-SSH_DIR=$USER_DIR/.ssh
-CONF_DIR=$USER_DIR/.config
-SETUP_CONF_DIR=$CONF_DIR/linux-setup
+USER_DIR="/home/$SUDO_USER"
+SSH_DIR="$USER_DIR/.ssh"
+CONF_DIR="$USER_DIR/.config"
+SETUP_CONF_DIR="$CONF_DIR/linux-setup"
 
 #---------------------------------------
 # File variables.
 #---------------------------------------
-SETUP_CONF=$SETUP_CONF_DIR/setup.conf
+SETUP_CONF="$SETUP_CONF_DIR/setup.conf"
 
 #-------------------------------------------------------------------------------
 # Adds a port to ufw. Takes three arguments:
 #
-# - `${1:?}` a mandatory action, either `allow`, `deny` or `limit`;
-# - `${2:?}` a mandatory port number; and
-# - `$3` an optional protocol
+# 1. "${1:?}" – a mandatory action, either "allow", "deny" or "limit";
+# 2. "${2:?}" – a mandatory port number; and
+# 3. "$3" – an optional protocol
 #-------------------------------------------------------------------------------
 addRuleToUfw () {
-  local ACTION=${1:?}
-  local PORT=${2:?}
-  local PROTOCOL=$3
+  local ACTION="${1:?}"
+  local PORT="${2:?}"
+  local PROTOCOL="$3"
 
-  if [ -z $PROTOCOL ]; then
-      echoComment "Adding rule $ACTION $PORT to UFW"
+  if [ -z "$PROTOCOL" ]; then
+      echoComment "Adding rule $ACTION $PORT to UFW."
       echoSeparator
-      ufw $ACTION $PORT
+      ufw "$ACTION" "$PORT"
       echoSeparator
   else
-    echoComment "Adding rule $ACTION $PORT/$PROTOCOL to UFW"
+    echoComment "Adding rule $ACTION $PORT/$PROTOCOL to UFW."
     echoSeparator
-    ufw $ACTION "$PORT/$PROTOCOL"
+    ufw "$ACTION" "$PORT/$PROTOCOL"
     echoSeparator
   fi
 
-  echoComment 'Rule added'
+  echoComment 'Rule added.'
 }
 
 #-------------------------------------------------------------------------------
-# Changes the case of text. Takes two mandatory arguements, the text string,
-# `${1:?}`, and the required case, `${2:?}`. Based on the following articles:
+# Changes the case of text. Takes two mandatory arguements:
+# 
+# 1. "${1:?}" – a text string; and
+# 2. "${2:?}" – the required case.
+# 
+# Based on the following articles:
 #
 # - https://medium.com/mkdir-awesome/case-transformation-in-bash-and-posix-with-examples-acdc1e0d0bc4
 # - https://tech.io/snippet/JCFhOEk
 # - https://unix.stackexchange.com/a/554909
 #-------------------------------------------------------------------------------
 changeCase () {
-  local STRING=${1:?}
-  local CASE=${2:?}
+  local STRING="${1:?}"
+  local CASE="${2:?}"
 
-  if [ $CASE = 'upper' ]; then
+  if [ "$CASE" = 'upper' ]; then
     STRING=$(echo "$STRING" | tr '[:lower:]' '[:upper:]')
-  elif [ $CASE = 'lower' ]; then
+  elif [ "$CASE" = 'lower' ]; then
     STRING=$(echo "$STRING" | tr '[:upper:]' '[:lower:]')
-  elif [ $CASE = 'sentence' ]; then
+  elif [ "$CASE" = 'sentence' ]; then
     STRING=$(echo "$STRING" | sed 's/\<\([[:lower:]]\)\([^[:punct:]]*\)/\u\1\2/g')
   fi
 
-  echo $STRING
+  echo "$STRING"
 }
 
 #-------------------------------------------------------------------------------
 # Checks whether a given service is already installed. Takes one mandatory
-# argument, `${1:?}`, which defines the service to be checked. Returns false if 
-# the service is not installed, returns true if the service is installed.
-#
-# As per:
+# argument:
+# 
+# 1. "${1:?}" – the service to be checked. 
+# 
+# Returns false if the service is not installed, returns true if the service is 
+# installed. As per:
 #
 # https://stackoverflow.com/a/7522866
 #-------------------------------------------------------------------------------
 checkForService () {
-  local SERVICE=${1:?}
+  local SERVICE="${1:?}"
 
-  if ! type $SERVICE > /dev/null; then
+  if ! type "$SERVICE" > /dev/null; then
     echo false
   else
     echo true   
@@ -109,56 +115,44 @@ checkForService () {
 
 #-------------------------------------------------------------------------------
 # Uses the above function to check for a service and if not installed installs
-# it. Takes one mandatory argument, `${1:?}`, defining the service.
+# it. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the service.
 #-------------------------------------------------------------------------------
 checkForServiceAndInstall () {
-  local SERVICE=${1:?}
-  echoComment "Starting setup of $SERVICE"
+  local SERVICE="${1:?}"
+  echoComment "Starting setup of $SERVICE."
 
-  local SERVICE_CHECK=$(checkForService $SERVICE)
-  echoComment "Checking for $SERVICE"
-  echoComment "Check returned $SERVICE_CHECK"
+  local SERVICE_CHECK="$(checkForService "$SERVICE")"
+  echoComment "Checking for $SERVICE."
+  echoComment "Check returned $SERVICE_CHECK."
 
-  if [ $SERVICE_CHECK = true ]; then
-    echoComment "You have already installed $SERVICE"
-  elif [ $SERVICE_CHECK = false ]; then
-    echoComment "You need to install $SERVICE"
-    installService $SERVICE
-  fi
-}
-
-#-------------------------------------------------------------------------------
-# Checks for a setup config option. Takes one mandatory argument, defined by 
-# `${1:?}`, which defines the key of the config option.
-#
-# The function returns `TRUE` or `FALSE` depending on if the config option is 
-# present in the config file.
-#-------------------------------------------------------------------------------
-checkSetupConfigOption () {
-  local CONFIG_KEY=${1:?}
-  local CONFIG=$(grep $CONFIG_KEY $SETUP_CONF)
-
-  if [ -z $CONFIG ]; then
-    echo false
-  else
-    echo true
+  if [ "$SERVICE_CHECK" = true ]; then
+    echoComment "You have already installed $SERVICE."
+  elif [ "$SERVICE_CHECK" = false ]; then
+    echoComment "You need to install $SERVICE."
+    installService "$SERVICE"
   fi
 }
 
 #-------------------------------------------------------------------------------
 # Check to see if the port number has already been used for another service.
-# Takes two mandatory arguement, defined by `${1:?}` and `${2:?}`, which define 
-# the port to check and the config option key for the service to check against.
+# Takes two mandatory arguement:
+# 
+# 1. "${1:?}" – the port to check; and
+# 2. "${2:?}" – the config option key for the service to check against.
 # 
 # N.B.
-# The config option key must be formatted exactly as in the config option file.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
 #-------------------------------------------------------------------------------
 checkPortNumber () {
-  local PORT=${1:?}
-  local SERVICE=${2:?}
-  local SERVICE_PORT=$(readSetupConfigOption $SERVICE)
+  local PORT="${1:?}"
+  local SERVICE="${2:?}"
+  local SERVICE_PORT="$(readSetupConfigOption "$SERVICE")"
 
-  if [ $PORT = $SERVICE_PORT]; then
+  if [ "$PORT" = "$SERVICE_PORT" ]; then
     echo true
   else 
     echo false
@@ -166,67 +160,83 @@ checkPortNumber () {
 }
 
 #-------------------------------------------------------------------------------
-# Starts, stops or restarts a service. Takes two mandatory arguments which 
-# specify the action, `${1:?}`, and the service, `{$2:?}`.
+# Checks for a setup config option. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the key of the config option.
+#
+# The function returns true or false depending on if the config option is 
+# present in the config file.
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
+#-------------------------------------------------------------------------------
+checkSetupConfigOption () {
+  local CONFIG_KEY="${1:?}"
+  local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
+
+  if [ -z "$CONFIG" ]; then
+    echo false
+  else
+    echo true
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Starts, stops or restarts a service. Takes two mandatory arguments:
+#  
+# 1. "${1:?}" – specifying the action; and
+# 2. "${2:?}" – the service.
 #-------------------------------------------------------------------------------
 controlService () {
-  local ACTION=${1:?}
-  local SERVICE=${2:?}
+  local ACTION="${1:?}"
+  local SERVICE="${2:?}"
 
-  if [ $ACTION = 'enable' ]; then
+  if [ "$ACTION" = 'enable' ]; then
     ACTIONING="Enabling"
-  elif [ $ACTION = 'disable' ]; then
+  elif [ "$ACTION" = 'disable' ]; then
     ACTIONING="Disabling"
-  elif [ $ACTION = 'start']; then
+  elif [ "$ACTION" = 'start' ]; then
     ACTIONING="Starting"
-  elif [ $ACTION = 'stop']; then
+  elif [ "$ACTION" = 'stop' ]; then
     ACTIONING="Stopping"
-  elif [ $ACTION = 'restart']; then
+  elif [ "$ACTION" = 'restart' ]; then
     ACTIONING="Restarting"
-  elif [ $ACTION = 'status' ]; then
+  elif [ "$ACTION" = 'status' ]; then
     ACTIONING='Checking status of'
   else
-    ACTIONING=$(changeCase $ACTION sentence)'ing'
+    ACTIONING="$(changeCase "$ACTION" sentence)ing"
   fi
 
-  echoComment "$COMMENT_PREFIX$ACTIONING $SERVICE"
+  echoComment "$ACTIONING $SERVICE."
   echoSeparator
 
-  if [ $SERVICE = 'ufw' ]; then
-    $SERVICE $ACTION
+  if [ "$SERVICE" = 'ufw' ]; then
+    "$SERVICE" "$ACTION"
   else
-    systemctl $ACTION $SERVICE
+    systemctl "$ACTION" "$SERVICE"
   fi
   echoSeparator
 }
 
 #-------------------------------------------------------------------------------
-# Echoes comments. Takes one mandatory argument, `${1:?}`, which is the comment.
+# Echoes comments. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – a comment.
 #-------------------------------------------------------------------------------
 echoComment () {
-  local COMMENT=${1:?}
+  local COMMENT="${1:?}"
 
-  echo "$COMMENT_PREFIX $COMMENT"'.'
+  echo "$COMMENT_PREFIX $COMMENT"
 }
 
 #-------------------------------------------------------------------------------
-# Echose that the script is exiting. Takes no arguments.
+# Echoes that the script is exiting. Takes no arguments.
 #-------------------------------------------------------------------------------
 echoScriptExiting () {
   echoSeparator
-  echoComment 'Exiting script with no changes made'
-  echoSeparator
-}
-
-#-------------------------------------------------------------------------------
-# Echoes that the script has finished. Takes one mandatory argument, `${1:?}`, 
-# which is a comment.
-#-------------------------------------------------------------------------------
-echoScriptFinished () {
-  local COMMENT=${1:?}
-
-  echoSeparator
-  echoComment "Finished $COMMENT"
+  echoComment 'Exiting script with no changes made.'
   echoSeparator
 }
 
@@ -235,6 +245,27 @@ echoScriptFinished () {
 #-------------------------------------------------------------------------------
 echoSeparator () {
   echoComment "$COMMENT_SEPARATOR"
+}
+
+#-------------------------------------------------------------------------------
+# Finishes the script by writing in the config key and echoing the script has
+# finished. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the config key to be written.
+#
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
+#-------------------------------------------------------------------------------
+finaliseScript () {
+  local CONFIG_KEY="${1:?}"
+
+  writeSetupConfigOption "$CONFIG_KEY" true
+
+  echoSeparator
+  echoComment 'Script finished.'
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
@@ -247,24 +278,26 @@ generatePortNumber () {
 }
 
 #-------------------------------------------------------------------------------
-# Generates an ssh key. Takes two arguments which specify a file path, `${1:?}`,
-# and an optional email address, `$2`, for the key.
+# Generates an ssh key. Takes two arguments:
+#
+# 1. "${1:?}" – specify a file path; and
+# 2. "$2" – an optional email address for the key.
 #-------------------------------------------------------------------------------
 generateSshKey () {
-  local KEY_PATH=${1:?}
-  local KEY_EMAIL=$2
+  local KEY_PATH="${1:?}"
+  local KEY_EMAIL="$2"
 
-  echoComment "Generating an ssh key at $KEY_PATH"
+  echoComment "Generating an ssh key at $KEY_PATH."
   echoSeparator
 
   if [ -z "$KEY_EMAIL" ]; then
-    ssh-keygen -t ed25519 -f $KEY_PATH
+    ssh-keygen -t ed25519 -f "$KEY_PATH"
   else
-    ssh-keygen -t ed25519 -f $KEY_PATH -C "$KEY_EMAIL"
+    ssh-keygen -t ed25519 -f "$KEY_PATH" -C "$KEY_EMAIL"
   fi
 
   echoSeparator
-  echoComment 'Key generated'
+  echoComment 'Key generated.'
 }
 
 #-------------------------------------------------------------------------------
@@ -275,118 +308,167 @@ getIPAddress () {
 }
 
 #-------------------------------------------------------------------------------
-# Initialises a given script by checking the config file to see if the script
-# has been run and completed before. Takes one mandatory argument, `${1:?}`
-# which defines the key to be checked in the `setup.conf` file.
+# Gets a service name from a given config key. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the config option key to be used.
 #
-# If the script has been run before, the script will exit. If not it will run.
-# If there is an error, we ask the user to check the setup config file.
+# If the config key contains a service, "$SERVICE" is returned. If not, nothing
+# is returned.
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
 #-------------------------------------------------------------------------------
-initialiseScript () {
-  local CONFIG_KEY=${1:?}
-  local CONFIG_KEY_TF=$(checkSetupConfigOption $CONFIG_KEY)
+getServiceFromConfigKey () {
+  local CONFIG_KEY="${1:?}"
 
-  echoComment "Checking $SETUP_CONF to see if this step has already been performed"
-  echoComment "Check returned $CONFIG_KEY_TF"
+  if [ -z "${CONFIG_KEY##configured*}" ]; then
+    local SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" 'lower')"
 
-  if [ $CONFIG_KEY_TF = true ]; then
-    echoComment 'You have already performed this step'
-    echoScriptExiting
-  elif [ $CONFIG_KEY_TF = false ]; then
-    echoComment 'You have not performed this step. Running script'
-    echoSeparator
-    runScript
-  else
-    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF"
+    echo "$SERVICE"
   fi
 }
 
 #-------------------------------------------------------------------------------
-# Installs a given service. Takes one mandatory argument, defined by `${1:?}`
-# which defines the service to be installed.
+# Checks the config file to see if the script has been run and completed before.
+# Takes one mandatory arguement:
+#
+# 1. "${1:?}" – the config option key to be used.
+#
+# If the script has been run before, the script will exit. If not it will run.
+# If there is an error, we ask the user to check the setup config file and then
+# exit the script.
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
 #-------------------------------------------------------------------------------
-installService () {
-  local SERVICE=${1:?}
-  
-  echoComment "Installing $SERVICE"
-  echoSeparator
-  apt install $SERVICE -y
-  echoSeparator
-  echoComment "$SERVICE installed"
+initialiseScript () {
+  local CONFIG_KEY="${1:?}"
+  local CONFIG_KEY_TF="$(checkSetupConfigOption "$CONFIG_KEY")"
+
+  echoComment "Checking $SETUP_CONF to see if this step has already been performed."
+  echoComment "Check returned $CONFIG_KEY_TF."
+
+  if [ "$CONFIG_KEY_TF" = true ]; then
+    echoComment 'You have already performed this step.'
+    echoScriptExiting
+
+    exit 1
+  elif [ "$CONFIG_KEY_TF" = false ]; then
+    echoComment 'You have not performed this step. Running script.'
+    echoSeparator
+  else
+    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF."
+    echoScriptExiting
+
+    exit 1
+  fi
 }
 
 #-------------------------------------------------------------------------------
-# Reads a setup config option. Takes one mandatory argument, defined by 
-# `${1:?}`, which defines the key of the config option.
+# Installs a given service. Takes one mandatory argument:
 # 
-# The config line is read by `grep`` and stored in `$CONFIG`. This is split by 
-# `set` into it's key, $1, and it's value, $2 – the `-f` flag prevents pathname 
+# 1. "${1:?}" – the service to be installed.
+#-------------------------------------------------------------------------------
+installService () {
+  local SERVICE="${1:?}"
+  
+  echoComment "Installing $SERVICE."
+  echoSeparator
+  apt install "$SERVICE" -y
+  echoSeparator
+  echoComment "$SERVICE installed."
+}
+
+#-------------------------------------------------------------------------------
+# Reads a setup config option. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the key of the config option.
+# 
+# The config line is read by "grep" and stored in "$CONFIG". This is split by 
+# "set" into it's key, "$1", and it's value, "$2" – the "-f" flag prevents pathname 
 # expansion for safety. Taken from:
 #
 # https://stackoverflow.com/a/1478245
-#
+# 
 # N.B.
-# A list of the config keys can be found in `setup.conf.example`.
+# "$CONFIG" is not quoted as we need word splitting in this instance. 
+#
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
 #-------------------------------------------------------------------------------
 readSetupConfigOption () {
-  local CONFIG_KEY=${1:?}
-  local CONFIG="$(grep $CONFIG_KEY $SETUP_CONF)"
+  local CONFIG_KEY="${1:?}"
+  local CONFIG="$(grep "$CONFIG_KEY" "$SETUP_CONF")"
 
   set -f $CONFIG
   
-  echo $2
+  echo "$2"
 }
 
 #-------------------------------------------------------------------------------
-# Sets permissions of a file or directory. Takes two mandatory arguments, 
-# defined by `${1:?}` and `${2:?}`, which specify a user and a path of the file
-# or directory.
+# Sets permissions of a file or directory. Takes two mandatory arguments:
+# 
+# 1. "${1:?}" – a user; and
+# 2. "${2:?}" – the path of the file or directory.
 #-------------------------------------------------------------------------------
 setPermissions () {
-  local PERMISSIONS=${1:?}
-  local FILE_FOLDER=${2:?}
+  local PERMISSIONS="${1:?}"
+  local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS"
-  chmod -R $PERMISSIONS $FILE_FOLDER
+  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS."
+  chmod -R "$PERMISSIONS" "$FILE_FOLDER"
 }
 
 #-------------------------------------------------------------------------------
-# Sets ownership of a file or directory. Takes two mandatory arguments, defined
-# by `${1:?}` and `${2:?}`, which specify the owner – also used for the group –
-# and the path of the file or directory.
+# Sets ownership of a file or directory. Takes two mandatory arguments:
+# 
+# 1. "${1:?}" – the owner, also used for the group; and
+# 2. "${2:?}" – the path of the file or directory.
 #-------------------------------------------------------------------------------
 setOwner () {
-  local USER=${1:?}
-  local GROUP=$USER
-  local FILE_FOLDER=${2:?}
+  local USER="${1:?}"
+  local GROUP="$USER"
+  local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP"
-  chown -R $USER:$GROUP $FILE_FOLDER
+  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP."
+  chown -R "$USER:$GROUP" "$FILE_FOLDER"
 }
 
 #-------------------------------------------------------------------------------
 # Updates and upgrades installed packages.
 #-------------------------------------------------------------------------------
 updateUpgrade () {
-  echoComment 'Updating and upgrading packages'
+  echoComment 'Updating and upgrading packages.'
   echoSeparator
   apt update && apt upgrade -y
   echoSeparator
 }
 
 #-------------------------------------------------------------------------------
-# Writes a setup config option. Takes two mandatory arguments, the key of the 
-# config option, `${1:?}`, and the value of the config option, `${2:?}`.
+# Writes a setup config option. Takes two mandatory arguments:
 #
-# Once the config option is written, the file ownership is set to `$SUDO_USER`.
+# 1. "${1:?}" – the key of the config option; and
+# 2. "${2:?}" – the value of the config option.
+#
+# Once the config option is written, the file ownership is set to "$SUDO_USER".
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
 #-------------------------------------------------------------------------------
 writeSetupConfigOption () {
-  local CONF_KEY=${1:?}
-  local CONF_VALUE=${2:?}
+  local CONF_KEY="${1:?}"
+  local CONF_VALUE="${2:?}"
 
-  echoComment "Writing $CONF_KEY to $SETUP_CONF"
-  echo "$CONF_KEY $CONF_VALUE" >> $SETUP_CONF
-  echoComment 'Config written'
+  echoComment "Writing $CONF_KEY to $SETUP_CONF."
+  echo "$CONF_KEY $CONF_VALUE" >> "$SETUP_CONF"
+  echoComment 'Config written.'
 
-  setOwner $SUDO_USER $SETUP_CONF
+  setOwner "$SUDO_USER" "$SETUP_CONF"
 }
