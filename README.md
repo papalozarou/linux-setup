@@ -28,7 +28,7 @@ sudo ./01-initialise-setup.sh
 
 Once completed, run subsequent scripts following instructions and prompts.
 
-When all scripts have been run, it's save to delete the repo with:
+When all scripts have been executed, it's safe to delete the repo with:
 
 ```
 sudo rm -R ~/linux-setup
