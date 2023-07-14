@@ -38,4 +38,4 @@ This leaves the `.config/linux-setup` directory in place for reference.
 
 ## N.B.
 
-Script `04-change-username.sh` kills all processes and requires reconnecting with a temporary user – this is part of the setup.
+Script `04-change-username.sh` kills all processes – logging the current user out – and requires reconnecting with a temporary user.
