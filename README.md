@@ -36,5 +36,5 @@ sudo rm -R ~/linux-setup
 
 This leaves the `.config/linux-setup` directory in place for reference.
 
-**N.B.**
-Script `04-change-username.sh` kills all processes and requires a reconnecting with a temporary user. This is part of the setup.
+### N.B.
+Script `04-change-username.sh` kills all processes and requires a reconnecting with a temporary user – this is part of the setup.
