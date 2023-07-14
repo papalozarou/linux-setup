@@ -33,7 +33,7 @@ CONFIG_KEY='configuredSshd'
 #-------------------------------------------------------------------------------
 # sshd related variables.
 #-------------------------------------------------------------------------------
-GLOBAL_SSH_DIR="/etc/ssh"
+GLOBAL_SSH_DIR='/etc/ssh'
 SSHD_CONF="$GLOBAL_SSH_DIR/sshd_config"
 SSHD_CONF_DIR="$GLOBAL_SSH_DIR/sshd_config.d"
 SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
@@ -102,7 +102,7 @@ removeCurrentSshdConfigs () {
 checkSshdConfig () {
   echoComment "Checking for include line in $SSHD_CONF."
 
-  local INCLUDES="$(cat "$SSHD_CONF" | grep "Include")"
+  local INCLUDES="$(grep "Include" "$SSHD_CONF")"
 
   if [ -z "$INCLUDES" ]; then
     echoComment "Include line not present so adding to $SSHD_CONF."
@@ -110,7 +110,7 @@ checkSshdConfig () {
     sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" "$SSHD_CONF"
     echoComment "Added include line to $SSHD_CONF."
     echoSeparator
-    echo $(cat ./sshd_config | grep "Include")
+    echo $(grep "Include" "$SSHD_CONF")
     echoSeparator
   else
     echoComment "Include line already present in $SSHD_CONF."

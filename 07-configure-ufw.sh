@@ -40,7 +40,7 @@ mainScript () {
   addRuleToUfw 'deny' '22'
   
   echoComment 'Reading ssh port.'
-  local SSH_PORT=$(readSetupConfigOption sshPort)
+  local SSH_PORT="$(readSetupConfigOption sshPort)"
   echoComment "Current port is $SSH_PORT."
   addRuleToUfw 'allow' "$SSH_PORT" 'tcp'
 
