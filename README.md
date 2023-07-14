@@ -7,8 +7,8 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 3. changing the default user's password;
 4. changing the default user's name;
 5. setting up ssh keys for remote connection;
-6. configuring the ssh server;;
-7. configuring ufw; and;
+6. configuring the ssh server;
+7. configuring ufw; and
 8. configuring fail2ban.
 
 ## Usage
@@ -16,14 +16,14 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 Clone the repository, and change to the repository directory with:
 
 ```
-$ git clone https://github.com/papalozarou/linux-setup.git
-$ cd ~/linux-setup
+git clone https://github.com/papalozarou/linux-setup.git && \
+cd ~/linux-setup
 ```
 
 Run the first script:
 
 ```
-$ sudo ./01-initialise-setup.sh
+sudo ./01-initialise-setup.sh
 ```
 
 Once completed, run subsequent scripts following instructions and prompts.
