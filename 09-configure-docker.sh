@@ -1,14 +1,14 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Install and configure docker by:
-# 
-# 1. checking if docker is installed, installs if not;
-# 
+# Install and configure "docker" by:
 #
-# N.B.
-# We check for "fail2ban-server", not "fail2ban".
-# 
+# 1. installing dependencies;
+# 2. adding the official GPG key for "docker";
+# 3. adding the official docker repository; and
+# 4. installing docker.
+#
+# N.B. 
 # This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
@@ -23,15 +23,22 @@
 CONFIG_KEY='configuredDocker'
 SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
+#-------------------------------------------------------------------------------
+# Installs the dependencies necessary to run Docker.
+#
+# N.B.
+# Some of the dependencies may already be installed.
+#-------------------------------------------------------------------------------
 installDockerDependencies () {
   echoComment "Installing dependencies for $SERVICE."
   echoSeparator
-  apt install ca-certificates \
-              curl \
-              gnupg
+  apt install 
   echoSeparator
 }
 
+#-------------------------------------------------------------------------------
+# Adds the GPG key for Docker.
+#-------------------------------------------------------------------------------
 installDockerGpgKey () {
   echoComment "Adding official GPG key for $SERVICE."
   install -m 0755 -d /etc/apt/keyrings
@@ -39,6 +46,9 @@ installDockerGpgKey () {
   chmod a+r /etc/apt/keyrings/docker.gpg
 }
 
+#-------------------------------------------------------------------------------
+# Sets up the repository for Docker to enable install via "apt install".
+#-------------------------------------------------------------------------------
 installDockerRepository () {
   echoComment "Setting up the repository for $SERVICE."
   echoSeparator
@@ -66,14 +76,17 @@ mainScript () {
     exit 1
   elif [ "$SERVICE_CHECK" = false ]; then
     echoComment "You need to install $SERVICE."
-    updateUpgrade
 
-    installDockerDependencies
+    echoComment "Installing dependencies for $SERVICE."
+    updateUpgrade
+    installService "ca-certificates \
+                    curl \
+                    gnupg"
+
     installDockerGpgKey
     installDockerRepository
 
     updateUpgrade
-
     installService "docker-ce \
               docker-ce-cli \
               containerd.io \
