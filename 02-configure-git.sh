@@ -50,7 +50,7 @@ getGitDetails () {
 # As the script is run as "sudo" it is necessary to execute the git commands
 # as the "$SUDO_USER", as per:
 #
-#
+# https://stackoverflow.com/a/1988255
 #-------------------------------------------------------------------------------
 setGitDetails () {
   echoComment "Setting global git username to $GIT_USERNAME."
