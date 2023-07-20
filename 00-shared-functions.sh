@@ -453,6 +453,7 @@ updateUpgrade () {
   echoSeparator
   apt update && apt upgrade -y
   echoSeparator
+  echoComment 'Packages updated and upgraded.'
 }
 
 #-------------------------------------------------------------------------------

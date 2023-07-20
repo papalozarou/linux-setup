@@ -24,7 +24,19 @@ CONFIG_KEY='configuredDocker'
 SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
-# Installs the dependencies necessary to run Docker.
+# Installs all components of docker, after updating and upgrading packages to
+# ensure use of the added docker repository.
+#-------------------------------------------------------------------------------
+installDocker () {
+  echoComment "Installing $SERVICE."
+  echoSeparator
+  updateUpgrade
+  installService "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
+}
+
+#-------------------------------------------------------------------------------
+# Installs the dependencies necessary to run docker, after updating and 
+# upgrading packages.
 #
 # N.B.
 # Some of the dependencies may already be installed.
@@ -32,12 +44,12 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 installDockerDependencies () {
   echoComment "Installing dependencies for $SERVICE."
   echoSeparator
-  apt install 
-  echoSeparator
+  updateUpgrade
+  installService "ca-certificates" "curl" "gnupg"
 }
 
 #-------------------------------------------------------------------------------
-# Adds the GPG key for Docker.
+# Adds the GPG key for docker.
 #-------------------------------------------------------------------------------
 installDockerGpgKey () {
   echoComment "Adding official GPG key for $SERVICE."
@@ -47,7 +59,7 @@ installDockerGpgKey () {
 }
 
 #-------------------------------------------------------------------------------
-# Sets up the repository for Docker to enable install via "apt install".
+# Sets up the repository for docker to enable install via "apt install".
 #-------------------------------------------------------------------------------
 installDockerRepository () {
   echoComment "Setting up the repository for $SERVICE."
@@ -57,6 +69,13 @@ installDockerRepository () {
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Verifies that the 
+#-------------------------------------------------------------------------------
+verifyDockerInstall() {
+
 }
 
 #-------------------------------------------------------------------------------
@@ -77,15 +96,14 @@ mainScript () {
   elif [ "$SERVICE_CHECK" = false ]; then
     echoComment "You need to install $SERVICE."
 
-    echoComment "Installing dependencies for $SERVICE."
-    updateUpgrade
-    installService "ca-certificates" "curl" "gnupg"
+    installDockerDependencies
 
     installDockerGpgKey
     installDockerRepository
 
-    updateUpgrade
-    installService "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
+    installDocker
+
+    verifyDockerInstall
   fi
 }
 
