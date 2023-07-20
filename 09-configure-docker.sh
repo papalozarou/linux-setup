@@ -79,19 +79,13 @@ mainScript () {
 
     echoComment "Installing dependencies for $SERVICE."
     updateUpgrade
-    installService "ca-certificates \
-                    curl \
-                    gnupg"
+    installService "ca-certificates" "curl" "gnupg"
 
     installDockerGpgKey
     installDockerRepository
 
     updateUpgrade
-    installService "docker-ce \
-              docker-ce-cli \
-              containerd.io \
-              docker-buildx-plugin \
-              docker-compose-plugin"
+    installService "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
   fi
 }
 

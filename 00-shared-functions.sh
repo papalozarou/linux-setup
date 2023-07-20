@@ -369,18 +369,20 @@ initialiseScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Installs a given service. Takes one mandatory argument:
+# Installs a given service. Takes at one or more arguments:
 # 
-# 1. "${1:?}" – the service to be installed.
+# 1. "$@" – one or more services to be installed.
+# 
+# The function loops through each passed argument and installs each service.
 #-------------------------------------------------------------------------------
 installService () {
-  local SERVICE="${1:?}"
-  
-  echoComment "Installing $SERVICE."
-  echoSeparator
-  apt install "$SERVICE" -y
-  echoSeparator
-  echoComment "$SERVICE installed."
+  for i in "$@"; do
+    echoComment "Installing $i."
+    echoSeparator
+    apt install "$i" -y
+    echoSeparator
+    echoComment "$i installed."
+  done
 }
 
 #-------------------------------------------------------------------------------
