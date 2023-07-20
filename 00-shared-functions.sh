@@ -422,7 +422,9 @@ setPermissions () {
   local PERMISSIONS="${1:?}"
   local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting permissions of $FILE_FOLDER to $PERMISSIONS."
+  echoComment "Setting permissions of:"
+  echoComment "$FILE_FOLDER"
+  echoComment "to $PERMISSIONS."
   chmod -R "$PERMISSIONS" "$FILE_FOLDER"
 }
 
@@ -437,7 +439,9 @@ setOwner () {
   local GROUP="$USER"
   local FILE_FOLDER="${2:?}"
 
-  echoComment "Setting ownership of $FILE_FOLDER to $USER:$GROUP."
+  echoComment "Setting ownership of:"
+  echoComment "$FILE_FOLDER"
+  echoComment "to $USER:$GROUP."
   chown -R "$USER:$GROUP" "$FILE_FOLDER"
 }
 
