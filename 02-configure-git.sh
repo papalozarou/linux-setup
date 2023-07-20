@@ -48,10 +48,10 @@ getGitDetails () {
 #-------------------------------------------------------------------------------
 setGitDetails () {
   echoComment "Setting global git username to $GIT_USERNAME."
-  git config --global user.name "$GIT_USERNAME"
+  -u $SUDO_USER git config --global user.name "$GIT_USERNAME"
 
   echoComment "Setting global git email to $GIT_EMAIL"
-  git config --global user.email "$GIT_EMAIL"
+  -u $SUDO_USER git config --global user.email "$GIT_EMAIL"
 }
 
 #-------------------------------------------------------------------------------
