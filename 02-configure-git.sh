@@ -45,6 +45,12 @@ getGitDetails () {
 
 #-------------------------------------------------------------------------------
 # Set global git username and email, using values from getGitDetails.
+#
+# N.B.
+# As the script is run as "sudo" it is necessary to execute the git commands
+# as the "$SUDO_USER", as per:
+#
+#
 #-------------------------------------------------------------------------------
 setGitDetails () {
   echoComment "Setting global git username to $GIT_USERNAME."
