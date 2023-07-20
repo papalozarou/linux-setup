@@ -72,7 +72,15 @@ installDockerRepository () {
 }
 
 #-------------------------------------------------------------------------------
-# Verifies that the 
+# Removes any existing install of docker.
+#-------------------------------------------------------------------------------
+removeExistingDocker () {
+
+}
+
+#-------------------------------------------------------------------------------
+# Verifies that the docker install worked correctly by running a "Hello world"
+# container, then removing it.
 #-------------------------------------------------------------------------------
 verifyDockerInstall() {
 
