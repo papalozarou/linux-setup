@@ -83,7 +83,17 @@ removeExistingDocker () {
 # container, then removing it.
 #-------------------------------------------------------------------------------
 verifyDockerInstall() {
-
+  echoComment "Verifying $SERVICE install."
+  echoSeparator
+  docker run hello-world
+  echoSeparator
+  echoComment "If $SERVICE was installed correctly, Hello World will appear above."
+  
+  echoComment "Removing verification data and container."
+  echoSeparator
+  docker system prune -af
+  echoSeparator
+  echoComment "Verification data and container removed."
 }
 
 #-------------------------------------------------------------------------------
