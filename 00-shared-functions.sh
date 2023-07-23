@@ -193,17 +193,7 @@ controlService () {
   local ACTION="${1:?}"
   local SERVICE="${2:?}"
 
-  if [ "$ACTION" = 'enable' ]; then
-    ACTIONING="Enabling"
-  elif [ "$ACTION" = 'disable' ]; then
-    ACTIONING="Disabling"
-  elif [ "$ACTION" = 'status' ]; then
-    ACTIONING='Checking status of'
-  else
-    ACTIONING="$(changeCase "$ACTION" sentence)ing"
-  fi
-
-  echoComment "$ACTIONING $SERVICE."
+  echoComment "Performing $ACTION for $SERVICE."
   echoSeparator
 
   if [ "$SERVICE" = 'ufw' ]; then
@@ -378,6 +368,41 @@ installService () {
     echoComment "$i installed."
   done
 }
+
+#-------------------------------------------------------------------------------
+# Installs or removes a given package. Takes at least two or more arguments:
+# 
+# 1. "${1:?}" - the action to be taken, either "install" or "remove"
+# 2. "$i" – one or more packages to be installed.
+# 
+# The function tests to see if the an accepted value has been passed as the
+# first argument then stores it as the action to be taken. It then shifts the 
+# argument position by 1, and loops through each of the rest of the arguments. 
+# As per:
+# 
+# https://unix.stackexchange.com/a/225951
+#-------------------------------------------------------------------------------
+installRemovePackages () {
+  if [ "${1:?}" = 'install' -o "${1:?}" = 'remove' ]; then
+    local ACTION="${1:?}"
+  
+    shift
+  else
+    echoComment "You must pass either install or remove as the first argument."
+    echoScriptExiting
+    
+    exit 1
+  fi
+
+  for i; do
+    echoComment "Performing $ACTION for $i."
+    echoSeparator
+    "$ACTION" "$i" -y
+    echoSeparator
+    echoComment "Completed $ACTION for $i"
+  done
+}
+
 
 #-------------------------------------------------------------------------------
 # Reads a setup config option. Takes one mandatory argument:
