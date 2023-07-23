@@ -197,12 +197,6 @@ controlService () {
     ACTIONING="Enabling"
   elif [ "$ACTION" = 'disable' ]; then
     ACTIONING="Disabling"
-  elif [ "$ACTION" = 'start' ]; then
-    ACTIONING="Starting"
-  elif [ "$ACTION" = 'stop' ]; then
-    ACTIONING="Stopping"
-  elif [ "$ACTION" = 'restart' ]; then
-    ACTIONING="Restarting"
   elif [ "$ACTION" = 'status' ]; then
     ACTIONING='Checking status of'
   else
