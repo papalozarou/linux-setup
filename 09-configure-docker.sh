@@ -73,6 +73,10 @@ installDockerRepository () {
 
 #-------------------------------------------------------------------------------
 # Removes any existing install of docker.
+#
+# N.B.
+# There are two remove commands, one for older installs, and another for any
+# install performed by this script.
 #-------------------------------------------------------------------------------
 removeExistingDocker () {
   echoComment "Do you want to remove the existing install of $SERVICE (y/n)?"
@@ -81,6 +85,7 @@ removeExistingDocker () {
   if [ "$DOCKER_REMOVE_YN" = 'y' -o "$DOCKER_REMOVE_YN" = 'Y' ]; then
     echoComment "Removing existing installation of $SERVICE."
     installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
+    installRemovePackages "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 
     mainScript
   elif [ "$DOCKER_REMOVE_YN" = 'n' -o "$DOCKER_REMOVE_YN" = 'N' ]; then
