@@ -271,7 +271,8 @@ generateSshKey () {
   local KEY_PATH="${1:?}"
   local KEY_EMAIL="$2"
 
-  echoComment "Generating an ssh key at $KEY_PATH."
+  echoComment 'Generating an ssh key at:' 
+  echoComment "$KEY_PATH."
   echoSeparator
 
   if [ -z "$KEY_EMAIL" ]; then
@@ -333,7 +334,8 @@ initialiseScript () {
   local CONFIG_KEY="${1:?}"
   local CONFIG_KEY_TF="$(checkSetupConfigOption "$CONFIG_KEY")"
 
-  echoComment "Checking $SETUP_CONF to see if this step has already been performed."
+  echoComment 'Checking the setup config to see if this step has already been'
+  echoComment 'performed.'
   echoComment "Check returned $CONFIG_KEY_TF."
 
   if [ "$CONFIG_KEY_TF" = true ]; then
@@ -345,7 +347,8 @@ initialiseScript () {
     echoComment 'You have not performed this step. Running script.'
     echoSeparator
   else
-    echoComment "Something went wrong. Please check your setup config at $SETUP_CONF."
+    echoComment 'Something went wrong. Please check your setup config at:'
+    echoComment "$SETUP_CONF."
     echoScriptExiting
 
     exit 1
@@ -491,7 +494,8 @@ writeSetupConfigOption () {
   local CONF_KEY="${1:?}"
   local CONF_VALUE="${2:?}"
 
-  echoComment "Writing $CONF_KEY to $SETUP_CONF."
+  echoComment 'Writing $CONF_KEY to:'
+  echoComment "$SETUP_CONF."
   echo "$CONF_KEY $CONF_VALUE" >> "$SETUP_CONF"
   echoComment 'Config written.'
 
