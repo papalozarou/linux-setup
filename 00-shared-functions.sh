@@ -400,7 +400,7 @@ installRemovePackages () {
   for i; do
     echoComment "Performing $ACTION for $i."
     echoSeparator
-    "$ACTION" "$i" -y
+    apt "$ACTION" "$i" -y
     echoSeparator
     echoComment "Completed $ACTION for $i"
   done
