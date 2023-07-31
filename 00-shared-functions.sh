@@ -194,14 +194,14 @@ controlService () {
   local SERVICE="${2:?}"
 
   echoComment "Performing $ACTION for $SERVICE."
-  echoSeparator
 
   if [ "$SERVICE" = 'ufw' ]; then
     "$SERVICE" "$ACTION"
   else
     systemctl "$ACTION" "$SERVICE"
   fi
-  echoSeparator
+  
+  echoComment "$ACTION performed for $SERVICE."
 }
 
 #-------------------------------------------------------------------------------
