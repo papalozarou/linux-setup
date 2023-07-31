@@ -78,12 +78,12 @@ removeExistingDocker () {
   echoComment "Do you want to remove the existing install of $SERVICE (y/n)?"
   read -r DOCKER_REMOVE_YN
 
-  if [ "DOCKER_REMOVE_YN" = 'y' -o "DOCKER_REMOVE_YN" = 'Y' ]; then
+  if [ "$DOCKER_REMOVE_YN" = 'y' -o "$DOCKER_REMOVE_YN" = 'Y' ]; then
     echoComment "Removing existing installation of $SERVICE."
     installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
 
     mainScript
-  elif [ "$SSHD_CONFS_YN" = 'n' -o "$SSHD_CONFS_YN" = 'N' ]; then
+  elif [ "$DOCKER_REMOVE_YN" = 'n' -o "$DOCKER_REMOVE_YN" = 'N' ]; then
     echoComment "Leaving current $SERVICE installation intact."
     echoScriptExiting
 
