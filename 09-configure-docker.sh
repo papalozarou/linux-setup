@@ -85,7 +85,7 @@ removeExistingDocker () {
   if [ "$DOCKER_REMOVE_YN" = 'y' -o "$DOCKER_REMOVE_YN" = 'Y' ]; then
     echoComment "Removing existing installation of $SERVICE."
     installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
-    installRemovePackages "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
+    installRemovePackages "remove" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 
     mainScript
   elif [ "$DOCKER_REMOVE_YN" = 'n' -o "$DOCKER_REMOVE_YN" = 'N' ]; then
