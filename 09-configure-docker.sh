@@ -56,6 +56,7 @@ installDockerGpgKey () {
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   chmod a+r /etc/apt/keyrings/docker.gpg
+  echoComment 'GPG key added.'
 }
 
 #-------------------------------------------------------------------------------
@@ -63,12 +64,11 @@ installDockerGpgKey () {
 #-------------------------------------------------------------------------------
 installDockerRepository () {
   echoComment "Setting up the repository for $SERVICE."
-  echoSeparator
   echo \
   "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  echoSeparator
+  echoComment 'Repository set up.'
 }
 
 #-------------------------------------------------------------------------------
@@ -101,13 +101,13 @@ removeExistingDocker () {
 verifyDockerInstall() {
   echoComment "Verifying $SERVICE install."
   echoSeparator
-  docker run hello-world
+  "$SERVICE" run hello-world
   echoSeparator
   echoComment "If $SERVICE was installed correctly, Hello World will appear above."
   
   echoComment "Removing verification data and container."
   echoSeparator
-  docker system prune -af
+  "$SERVICE" system prune -af
   echoSeparator
   echoComment "Verification data and container removed."
 }
