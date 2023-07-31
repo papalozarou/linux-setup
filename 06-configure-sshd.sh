@@ -100,20 +100,21 @@ removeCurrentSshdConfigs () {
 # "\\\" in the command.
 #-------------------------------------------------------------------------------
 checkSshdConfig () {
-  echoComment "Checking for include line in $SSHD_CONF."
+  echoComment 'Checking for include line in:'
+  echoComment "$SSHD_CONF"
 
   local INCLUDES="$(grep "Include" "$SSHD_CONF")"
 
   if [ -z "$INCLUDES" ]; then
-    echoComment "Include line not present so adding to $SSHD_CONF."
+    echoComment 'Include line not present so adding it.'
 
     sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" "$SSHD_CONF"
-    echoComment "Added include line to $SSHD_CONF."
+    echoComment "Added include line."
     echoSeparator
     echo $(grep "Include" "$SSHD_CONF")
     echoSeparator
   else
-    echoComment "Include line already present in $SSHD_CONF."
+    echoComment "Include line already present."
   fi
 }
 
@@ -124,7 +125,8 @@ checkSshdConfig () {
 createHardenedSShdConfig () {
   SSH_PORT="$(generatePortNumber)"
 
-  echoComment "Generating sshd config file at $SSHD_DEFAULT_CONF." 
+  echoComment 'Generating sshd config file at:' 
+  echoComment "$SSHD_DEFAULT_CONF" 
   cat <<EOF > "$SSHD_DEFAULT_CONF"
 Port $SSH_PORT
 AddressFamily inet
