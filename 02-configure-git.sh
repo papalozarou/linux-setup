@@ -65,7 +65,7 @@ setGitDetails () {
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
   echoComment 'Setting global default branch to main.'
-  git config --global init.defaultBranch main
+  su -c "git config --global init.defaultBranch main" $SUDO_USER
 }
 
 #-------------------------------------------------------------------------------
