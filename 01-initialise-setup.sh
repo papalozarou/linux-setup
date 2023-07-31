@@ -24,9 +24,11 @@ CONFIG_KEY='initialisedSetup'
 # Creates the setup config directory at "$SETUP_CONF_DIR".
 #-------------------------------------------------------------------------------
 createSetupDir () {
-  echoComment "Creating setup config directory at $SETUP_CONF_DIR."
+  echoComment 'Creating setup config directory at:'
+  echoComment "$SETUP_CONF_DIR."
   mkdir -p "$SETUP_CONF_DIR"
 
+  echoComment 'Listing setup config directory:'
   echoSeparator
   ls -lna "$SETUP_CONF_DIR"
   echoSeparator
@@ -38,7 +40,7 @@ createSetupDir () {
 # Creates the basic setup config file in "$SETUP_CONF_DIR".
 #-------------------------------------------------------------------------------
 createSetupConfig () {
-  echoComment "Creating setup config file in $SETUP_CONF_DIR."
+  echoComment 'Creating setup config file.'
 
   cat <<EOF > "$SETUP_CONF"
 initialisedSetup true
@@ -63,11 +65,11 @@ removeCurrentSetupConfig () {
   read -r SETUP_CONF_YN
 
   if [ "$SETUP_CONF_YN" = 'y' -o "$SETUP_CONF_YN" = 'Y' ]; then
-    echoComment "Deleting setup config file in $SETUP_CONF_DIR."
+    echoComment 'Deleting setup config file.'
     rm "$SETUP_CONF"
     echoComment 'Setup config file deleted.'
   elif [ "$SETUP_CONF_YN" = 'n' -o "$SETUP_CONF_YN" = 'N' ]; then
-    echoComment "Leaving setup config file in $SETUP_CONF_DIR intact."
+    echoComment 'Leaving setup config file intact.'
   else
     echoComment 'You must answer y or n.'
     removeCurrentSetupConfig
@@ -80,12 +82,13 @@ removeCurrentSetupConfig () {
 # "$SUDO_USER".
 #-------------------------------------------------------------------------------
 checkForSetupConfigDir () {
-  echoComment "Checking for the setup config directory at $SETUP_CONF_DIR."
+  echoComment 'Checking for the setup config directory at:'
+  echoComment "$SETUP_CONF_DIR."
 
   if [ -d "$SETUP_CONF_DIR" ]; then
-    echoComment "The setup config directory exists at $SETUP_CONF_DIR."
+    echoComment 'The setup config directory exists.'
   else
-    echoComment "The setup config directory does not exist at $SETUP_CONF_DIR."
+    echoComment 'The setup config directory does not exist.'
     createSetupDir
 
     setOwner "$SUDO_USER" "$CONF_DIR"
@@ -98,18 +101,20 @@ checkForSetupConfigDir () {
 # does exist, ask if the user wants to remove it.
 #-------------------------------------------------------------------------------
 checkForSetupConfigFile () {
-  echoComment "Checking for a setup config file in $SETUP_CONF_DIR."
+  echoComment 'Checking for a setup config file in:' 
+  echoComment "$SETUP_CONF_DIR."
 
   if [ -f "$SETUP_CONF" ]; then
-    echoComment "A setup config file exists in $SETUP_CONF_DIR."
+    echoComment 'A setup config file exists'
     removeCurrentSetupConfig
   else
-    echoComment "No setup config file exists in $SETUP_CONF_DIR."
+    echoComment 'No setup config file exists.'
     createSetupConfig
 
     setPermissions 600 "$SETUP_CONF"
     setOwner "$SUDO_USER" "$SETUP_CONF"
 
+    echoComment 'Listing setup config directory:'
     echoSeparator
     ls -lna "$SETUP_CONF_DIR"
     echoSeparator

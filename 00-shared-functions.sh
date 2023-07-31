@@ -403,7 +403,6 @@ installRemovePackages () {
   done
 }
 
-
 #-------------------------------------------------------------------------------
 # Reads a setup config option. Takes one mandatory argument:
 # 
