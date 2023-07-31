@@ -27,29 +27,54 @@ CONFIG_KEY='configuredUfw'
 SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
-# Runs the main functions of the script.
+# Adds a default set of ufw rules, by:
 #
+# 1. denying all incoming traffic;
+# 2. allowing all outgoing traffic; and
+# 3. denying port 22 explicitly.
+# 
 # N.B.
-# Default allow/deny commands are double quoted to prevent word splitting.
+# The first two rules are set without using the "addRuleToUfw" function as
+# the function needs re-writing to allow for "default" rules with no port.
 #-------------------------------------------------------------------------------
-mainScript () {
-  checkForServiceAndInstall "$SERVICE"
-
+setUfwDefaults () {
   "$SERVICE" default deny incoming
   "$SERVICE" default allow outgoing
   addRuleToUfw 'deny' '22'
-  
-  echoComment 'Reading ssh port.'
-  local SSH_PORT="$(readSetupConfigOption sshPort)"
-  echoComment "Current port is $SSH_PORT."
-  addRuleToUfw 'allow' "$SSH_PORT" 'tcp'
+}
 
-  controlService 'enable' "$SERVICE"
-
+#-------------------------------------------------------------------------------
+# Lists current ufw rules, with numbers.
+#-------------------------------------------------------------------------------
+listUfwRules () {
   echoComment "Listing $SERVICE rules…"
   echoSeparator
   "$SERVICE" status numbered
   echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Adds the ssh port defined in "06-configure-sshd.sh" to ufw.
+#-------------------------------------------------------------------------------
+allowSshPort () {
+  echoComment 'Reading ssh port.'
+  local SSH_PORT="$(readSetupConfigOption sshPort)"
+  echoComment "Current port is $SSH_PORT."
+  addRuleToUfw 'allow' "$SSH_PORT" 'tcp'
+}
+
+#-------------------------------------------------------------------------------
+# Runs the main functions of the script.
+#-------------------------------------------------------------------------------
+mainScript () {
+  checkForServiceAndInstall "$SERVICE"
+
+  setUfwDefaults
+  allowSshPort  
+
+  controlService 'enable' "$SERVICE"
+
+  listUfwRules
 }
 
 #-------------------------------------------------------------------------------
