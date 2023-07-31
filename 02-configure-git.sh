@@ -84,7 +84,8 @@ addSshKeytoAgent () {
 # Generate an ssh config file.
 #-------------------------------------------------------------------------------
 generateSshConfig () {
-  echoComment 'Generating ssh config file at ~/.ssh/config.'
+  echoComment 'Generating ssh config file at:'
+  echoComment "$SSH_CONF"
   cat <<EOF > "$SSH_CONF"
 Host github.com
   Hostname github.com
@@ -102,8 +103,7 @@ getUserToAddKey () {
   echoComment 'account via:'
   echoComment 'Settings > Access > SSH and GPG keys'
   echoComment 'You will likely need to open a separate command line session to'
-  echoComment 'copy the contents.'
-  echoComment 'We will wait a while you go add the key…'
+  echoComment 'copy the contents. We will wait a while you go add the key…'
 }
 
 #-------------------------------------------------------------------------------
@@ -146,13 +146,13 @@ listGitConfig () {
 # Test ssh connection.
 #-------------------------------------------------------------------------------
 testGitSsh () {
-  echoComment 'Testing ssh connection to git, which should show a success message.'
+  echoComment 'Testing ssh connection to git:'
   echoSeparator
   ssh -T git@github.com
   echoSeparator
-  echoComment 'If you saw a success message, you are good to go.'
-  echoComment 'If you saw an error about permissions when this script exits you'
-  echoComment 'can try:'
+SETUP SCRIPT: 
+  echoComment 'If you saw a success message, you are good to go. If you saw an' 
+  echoComment 'error about permissions, when this script exits you can try:'
   echoComment 'ssh -T git@github.com'
   echoComment 'If that still does not work, you fibbed about adding your key…'
 }
