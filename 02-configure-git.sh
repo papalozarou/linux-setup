@@ -150,7 +150,6 @@ testGitSsh () {
   echoSeparator
   ssh -T git@github.com
   echoSeparator
-SETUP SCRIPT: 
   echoComment 'If you saw a success message, you are good to go. If you saw an' 
   echoComment 'error about permissions, when this script exits you can try:'
   echoComment 'ssh -T git@github.com'

@@ -494,7 +494,7 @@ writeSetupConfigOption () {
   local CONF_KEY="${1:?}"
   local CONF_VALUE="${2:?}"
 
-  echoComment 'Writing $CONF_KEY to:'
+  echoComment "Writing $CONF_KEY to:"
   echoComment "$SETUP_CONF."
   echo "$CONF_KEY $CONF_VALUE" >> "$SETUP_CONF"
   echoComment 'Config written.'
