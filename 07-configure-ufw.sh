@@ -46,6 +46,7 @@ mainScript () {
 
   controlService 'enable' "$SERVICE"
 
+  echoComment "Listing $SERVICE rules…"
   echoSeparator
   "$SERVICE" status numbered
   echoSeparator
