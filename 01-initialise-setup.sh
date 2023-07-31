@@ -41,11 +41,7 @@ createSetupDir () {
 #-------------------------------------------------------------------------------
 createSetupConfig () {
   echoComment 'Creating setup config file.'
-
-  cat <<EOF > "$SETUP_CONF"
-initialisedSetup true
-EOF
-
+  touch "$SETUP_CONF"
   echoComment 'Setup config file created.'
 }
 

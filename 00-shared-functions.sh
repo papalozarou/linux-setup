@@ -335,7 +335,7 @@ initialiseScript () {
   local CONFIG_KEY_TF="$(checkSetupConfigOption "$CONFIG_KEY")"
 
   echoComment 'Checking the setup config to see if this step has already been'
-  echoComment 'performed.'
+  echoComment 'performed…'
   echoComment "Check returned $CONFIG_KEY_TF."
 
   if [ "$CONFIG_KEY_TF" = true ]; then
