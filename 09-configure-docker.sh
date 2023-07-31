@@ -75,7 +75,9 @@ installDockerRepository () {
 # Removes any existing install of docker.
 #-------------------------------------------------------------------------------
 removeExistingDocker () {
-
+  echoComment "Removing any existing installation of $SERVICE."
+  echoComment "N.B. This may show that none of these packages are installed."
+  installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
 }
 
 #-------------------------------------------------------------------------------
@@ -114,6 +116,8 @@ mainScript () {
   elif [ "$SERVICE_CHECK" = false ]; then
     echoComment "You need to install $SERVICE."
 
+    removeExistingDocker
+    
     installDockerDependencies
 
     installDockerGpgKey
