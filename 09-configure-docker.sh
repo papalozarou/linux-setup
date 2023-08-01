@@ -141,7 +141,7 @@ mainScript () {
 
     installDocker
 
-    verifyDockerInstall
+    # verifyDockerInstall
   fi
 }
 
