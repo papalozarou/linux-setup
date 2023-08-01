@@ -8,8 +8,9 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 4. changing the default user's name;
 5. setting up ssh keys for remote connection;
 6. configuring the ssh server;
-7. configuring ufw; and
-8. configuring fail2ban.
+7. configuring ufw;
+8. configuring fail2ban; and
+9. installing docker.
 
 ## Usage
 
@@ -38,6 +39,11 @@ This leaves the `.config/linux-setup` directory in place for reference.
 
 ### N.B.
 
-Script `04-change-username.sh` kills all processes – logging the current user out – and requires reconnecting with a temporary user which is set up as part of the script.
+Script `04-change-username.sh` kills all processes and requires reconnecting with a temporary user which is set up as part of the script.
 
 The scripts are not particularly robust in terms of error handling. Soz like.
+
+## Todo
+- [ ] Fix docker validation
+- [ ] Move all service installs to using `installRemovePackage` function
+- [ ] Robust error handling
