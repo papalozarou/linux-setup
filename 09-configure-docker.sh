@@ -8,7 +8,7 @@
 # 3. adding the official docker repository; and
 # 4. installing docker.
 #
-# N.B. 
+# N.B.
 # This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
@@ -102,17 +102,20 @@ removeExistingDocker () {
 #-------------------------------------------------------------------------------
 # Verifies that the docker install worked correctly by running a "Hello world"
 # container, then removing it.
+#
+# N.B.
+# Had to add a shell command to get docker to run from this function.
 #-------------------------------------------------------------------------------
 verifyDockerInstall() {
   echoComment "Verifying $SERVICE install."
   echoSeparator
-  "$SERVICE" run hello-world
+  sh -c "$SERVICE run hello-world"
   echoSeparator
   echoComment "If $SERVICE was installed correctly, Hello World will appear above."
   
   echoComment "Removing verification data and container."
   echoSeparator
-  "$SERVICE" system prune -af
+  sh -c "$SERVICE system prune -af"
   echoSeparator
   echoComment "Verification data and container removed."
 }
@@ -133,7 +136,7 @@ mainScript () {
     removeExistingDocker
   elif [ "$SERVICE_CHECK" = false ]; then
     echoComment "You need to install $SERVICE."
-    
+  
     installDockerDependencies
 
     installDockerGpgKey
@@ -141,7 +144,7 @@ mainScript () {
 
     installDocker
 
-    # verifyDockerInstall
+    verifyDockerInstall
   fi
 }
 

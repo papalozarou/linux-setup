@@ -44,6 +44,6 @@ Script `04-change-username.sh` kills all processes and requires reconnecting wit
 The scripts are not particularly robust in terms of error handling. Soz like.
 
 ## Todo
-- [ ] Fix docker validation
+- [x] Fix docker validation
 - [ ] Move all service installs to using `installRemovePackage` function
 - [ ] Robust error handling
