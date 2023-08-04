@@ -47,3 +47,4 @@ The scripts are not particularly robust in terms of error handling. Soz like.
 - [x] Fix docker validation
 - [ ] Move all service installs to using `installRemovePackage` function
 - [ ] Robust error handling
+- [ ] Add timezone and NTP setup
