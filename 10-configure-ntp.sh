@@ -102,9 +102,11 @@ setNewTimezone () {
   echoComment 'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'
   echoComment 'Which timezone would you like to switch to (Region/City)?'
   read -r NEW_TIMEZONE
-  
-  echoComment 'Checking $NEW_TIMEZONE is valid.'
+
+  echoComment "Checking $NEW_TIMEZONE is valid…"
   local TIMEZONE_VALID="$(checkTimezone "$NEW_TIMEZONE")"
+
+  echoComment "Timezone valid = $TIMEZONE_VALID"
 
   if [ "$TIMEZONE_VALID" = true ]; then
     echoComment 'Timezone is valid.'
