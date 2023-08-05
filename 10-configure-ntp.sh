@@ -106,8 +106,6 @@ setNewTimezone () {
   echoComment "Checking $NEW_TIMEZONE is valid…"
   local TIMEZONE_VALID="$(checkTimezone "$NEW_TIMEZONE")"
 
-  echoComment "Timezone valid = $TIMEZONE_VALID"
-
   if [ "$TIMEZONE_VALID" = true ]; then
     echoComment 'Timezone is valid.'
 
