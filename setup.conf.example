@@ -8,4 +8,6 @@ configuredSshd true
 sshPort 00000
 configuredUfw true
 configuredFail2ban true
+timezone Europe/London
+configuredNtp true
 configuredDocker true
