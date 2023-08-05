@@ -63,12 +63,10 @@ checkTimezone () {
   local TIMEZONE="${1:?}"
   local TIMEZONE_CHECK="$(timedatectl list-timezones | grep "$TIMEZONE")"
 
-  echoComment "Timezone check = $TIMEZONE_CHECK"
-
-  if ! type "$TIMEZONE_CHECK" > /dev/null; then
-    echo false
+  if [ "$TIMEZONE" = "$TIMEZONE_CHECK" ]; then
+    echo true
   else
-    echo true   
+    echo false
   fi
 }
 
