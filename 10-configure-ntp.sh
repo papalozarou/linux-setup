@@ -27,8 +27,8 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 CURRENT_TIMEZONE="$(timedatectl show | grep "Timezone")"
 
 #-------------------------------------------------------------------------------
-# Listing the current settings, then asking if the user would like to change 
-# the timezone.
+# Lists the current settings, then asks if the user would like to change 
+# the timezone. If not, no settings are changed.
 # 
 # Any input other than "y", "Y", "n" or "N" will re-run this function.
 #-------------------------------------------------------------------------------
@@ -98,6 +98,8 @@ listTimeDate () {
 # If the user inputs an invalid timezone the function is run again.
 #-------------------------------------------------------------------------------
 setNewTimezone () {
+  echoComment 'You can find a list of timezones at:'
+  echoComment 'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'
   echoComment 'Which timezone would you like to switch to (Region/City)?'
   read -r NEW_TIMEZONE
   
