@@ -22,6 +22,55 @@ CONFIG_KEY='configuredNtp'
 SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
+# Timezone related variables.
+#-------------------------------------------------------------------------------
+CURRENT_TIMEZONE="$(timedatectl show | grep "Timezone")"
+
+#-------------------------------------------------------------------------------
+# Listing the current settings, then asking if the user would like to change 
+# the timezone.
+# 
+# Any input other than "y", "Y", "n" or "N" will re-run this function.
+#-------------------------------------------------------------------------------
+changeTimezone () {
+  listTimeDate
+  echoComment 'Your current timezone is:'
+  echoComment "$CURRENT_TIMEZONE"
+
+  echoComment 'Would you like to change the timezone?'
+  read -r TIMEZONE_SET_YN
+
+  if [  "$TIMEZONE_SET_YN" = 'y' -o "$TIMEZONE_SET_YN" = 'Y' ]; then
+    setNewTimezone
+  elif [ "$TIMEZONE_SET_YN" = 'n' -o "$TIMEZONE_SET_YN" = 'N' ]; then
+    echoComment 'No changes made to timezone settings.'
+
+    writeSetupConfigOption "timezone" "$CURRENT_TIMEZONE"
+
+    exit 1
+  else
+    echoComment 'You must answer y or n.'
+    setTimezone
+  fi 
+}
+
+#-------------------------------------------------------------------------------
+# Checks the user inputted timezone. Takes one mandatory arguement:
+#
+# 1. ${1:?} - the user inputted timezone
+#-------------------------------------------------------------------------------
+checkTimezone () {
+  local TIMEZONE="${1:?}"
+  local TIMEZONE_CHECK="$(timedatectl list-timezones | grep "$TIMEZONE")"
+
+  if ! type "$TIMEZONE_CHECK" > /dev/null; then
+    echo false
+  else
+    echo true   
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Outputs ntpq settings.
 #-------------------------------------------------------------------------------
 listNtpSettings () {
@@ -43,46 +92,38 @@ listTimeDate () {
 }
 
 #-------------------------------------------------------------------------------
-# Sets the timezone, listing the current settings, then asking if the user would
-# like to change the timezone.
+# Sets a new, user inputted, timezone, first checking the input is valid, then
+# setting the new timezone.
+#
+# If the user inputs an invalid timezone the function is run again.
 #-------------------------------------------------------------------------------
-setTimezone () {
-  local CURRENT_TIMEZONE="$(timedatectl show | grep "Timezone")"
+setNewTimezone () {
+  echoComment 'Which timezone would you like to switch to (Region/City)?'
+  read -r NEW_TIMEZONE
+  
+  echoComment 'Checking $NEW_TIMEZONE is valid.'
+  local TIMEZONE_VALID="$(checkTimezone "$NEW_TIMEZONE")"
 
-  listTimeDate
-  echoComment 'Your current timezone is:'
-  echoComment "$CURRENT_TIMEZONE"
+  if [ "$TIMEZONE_VALID" = true ]; then
+    echoComment 'Timezone is valid.'
 
-  echoComment 'Would you like to change the timezone?'
-  read -r TIMEZONE_SET_YN
-
-  if [  "$TIMEZONE_SET_YN" = 'y' -o "$TIMEZONE_SET_YN" = 'Y' ]; then
-    echoComment 'Which timezone would you like to switch to (Region/City)?'
-    read -r NEW_TIMEZONE
-    
     echoComment "Setting timezone to $NEW_TIMEZONE."
     sudo timedatectl set-timezone "$NEW_TIMEZONE"
     echoComment "Timezone set."
     listTimeDate
 
     writeSetupConfigOption "timezone" "$NEW_TIMEZONE"
-  elif [ "$TIMEZONE_SET_YN" = 'n' -o "$TIMEZONE_SET_YN" = 'N' ]; then
-    echoComment 'No changes made to timezone settings.'
-
-    writeSetupConfigOption "timezone" "$CURRENT_TIMEZONE"
-
-    exit 1
-  else
-    echoComment 'You must answer y or n.'
-    setTimezone
-  fi 
+  elif [ "$TIMEZONE_VALID" = false ]; then
+    echoComment 'Timezone is invalid. You must use a valid timezone.'
+    setNewTimezone
+  fi
 }
 
 #-------------------------------------------------------------------------------
 # Runs the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  setTimezone
+  changeTimezone
 
   echoComment 'Ensuring set-ntp is off.'
   sudo timedatectl set-ntp no
