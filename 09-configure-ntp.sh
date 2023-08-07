@@ -54,7 +54,7 @@ changeTimezone () {
     exit 1
   else
     echoComment 'You must answer y or n.'
-    setTimezone
+    changeTimezone
   fi 
 }
 
