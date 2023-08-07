@@ -9,8 +9,9 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 5. setting up ssh keys for remote connection;
 6. configuring the ssh server;
 7. configuring ufw;
-8. configuring fail2ban; and
-9. installing docker.
+8. configuring fail2ban;
+9. configuring the timezone; and
+10. installing docker.
 
 ## Usage
 
@@ -47,4 +48,4 @@ The scripts are not particularly robust in terms of error handling. Soz like.
 - [x] Fix docker validation
 - [ ] Move all service installs to using `installRemovePackage` function
 - [ ] Robust error handling
-- [ ] Add timezone and NTP setup
+- [x] Add timezone and NTP setup
