@@ -11,8 +11,9 @@
 # - 06-configure-sshd.sh
 # - 07-configure-ufw.sh
 # - 08-configure-fail2ban.sh
-# - 09-configure-ntp.sh
-# - 10-configure-docker.sh
+# - 09-configure-hostname.sh
+# - 10-configure-ntp.sh
+# - 11-configure-docker.sh
 #
 # N.B.
 # To make this setup as portable as possible, all scripts are POSIX compliant,
