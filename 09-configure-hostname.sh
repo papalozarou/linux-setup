@@ -37,6 +37,7 @@ changeHostname () {
     setNewHostname
   elif [ "$HOSTNAME_CHANGE_YN" = 'n' -o "$HOSTNAME_CHANGE_YN" = 'N' ]; then
     echoComment 'No changes made to hostname.'
+    echoScriptExiting
     exit 1
   else
     echoComment 'You must answer y or n.'
