@@ -48,8 +48,8 @@ changeTimezone () {
     setNewTimezone
   elif [ "$TIMEZONE_SET_YN" = 'n' -o "$TIMEZONE_SET_YN" = 'N' ]; then
     echoComment 'No changes made to timezone settings.'
-
-    writeSetupConfigOption "timezone" "$CURRENT_TIMEZONE"
+    
+    echoScriptExiting
 
     exit 1
   else
