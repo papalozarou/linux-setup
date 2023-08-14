@@ -31,7 +31,7 @@ installDocker () {
   echoComment "Installing $SERVICE."
   echoSeparator
   updateUpgrade
-  installService "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
+  installRemovePackages "install" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 }
 
 #-------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ installDockerDependencies () {
   echoComment "Installing dependencies for $SERVICE."
   echoSeparator
   updateUpgrade
-  installService "ca-certificates" "curl" "gnupg"
+  installRemovePackages "install" "ca-certificates" "curl" "gnupg"
 }
 
 #-------------------------------------------------------------------------------
