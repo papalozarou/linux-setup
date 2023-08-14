@@ -422,8 +422,8 @@ readSetupConfigOption () {
 }
 
 #-------------------------------------------------------------------------------
-# Adds an environment variable to either ".bashrc", ".bash_profile" or 
-# ".profile". Takes two mandatory arguments:
+# Adds an environment variable to either ".bashrc" or ".bash_profile". Takes two
+# mandatory arguments:
 # 
 # 1. "{1:?}" - the name of the environment variable; and
 # 2. "{2:?}" - the value of the environment variable.
