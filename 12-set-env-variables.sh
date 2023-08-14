@@ -1,20 +1,19 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Adds the host IP address as an environment variable, "HOST_IP_ADDRESS", by:
+# Sets a few environment variables for use with docker projects:
 #
-# 1. getting the IP address; and
-# 2. writing it to either ".bashrc", ".bash_profile" or ".profile".
+# 1. "HOST_IP_ADDRESS"
+# 2. "HOST_TIMEZONE"
+# 3. "HOST_DOMAIN"
+# 4. "HOST_SUBDOMAIN"
 # 
-# This variable is then used in later scripts and in Docker ".env" files when 
-# building images. As per:
+# These variables can then be used in other projects and in Docker ".env" files
+# when building images. As per:
 # 
 # https://dev.to/natterstefan/docker-tip-how-to-get-host-s-ip-address-inside-a-docker-container-5anh
 # 
-# N.B.
-# For the shell to pick this up it requires the user to log out and back in,
-# which is done as part of "04-change-username.sh".
-# 
+# N.B. 
 # This script needs to be run as "sudo".
 #-------------------------------------------------------------------------------
 
@@ -29,33 +28,24 @@
 CONFIG_KEY='setEnvVariables'
 
 #-------------------------------------------------------------------------------
-# File variables.
-#-------------------------------------------------------------------------------
-PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" -o -name ".profile" \))"
-
-#-------------------------------------------------------------------------------
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
   local IP_ADDRESS="$(getIPAddress)"
-  local EXPORT="export HOST_IP_ADDRESS=$IP_ADDRESS"
+  local TIMEZONE="$(timedatectl show | grep "Timezone")"
+  local HOSTNAME="$(hostname)"
+  local SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
+  local DOMAIN="${HOSTNAME#$SUBDOMAIN}"
 
-  echoComment "Adding host IP address $IP_ADDRESS to:"
-  echoComment "$PROFILE"
-  echo "$EXPORT" >> "$FILE"
-  
-  echoComment 'Checking value added.'
-  echoSeparator
-  grep "$IP_ADDRESS" "$PROFILE"
-  echoSeparator
-  echoComment 'IP address added'
-
-  setPermissions 644 "$PROFILE"
-  setOwner "$SUDO_UID" "$PROFILE"
+  setEnvVariable "HOST_IP_ADDRESS" "$IP_ADDRESS"
+  setEnvVariable "HOST_TIMEZONE" "$TIMEZONE" 
+  setEnvVariable "HOST_DOMAIN" "$DOMAIN"
+  setEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
 
   echoSeparator
-  echoComment 'This variable will not be recognised until you log out and back in,'
-  echoComment 'which is done as part of step 4 when changing your username.'
+  echoComment '****** N.B. ******'
+  echoComment 'As stated above these variables will not be usable until you have'
+  echoComment 'logged out and back in.'
 }
 
 #-------------------------------------------------------------------------------

@@ -41,6 +41,7 @@ SETUP_CONF_DIR="$CONF_DIR/linux-setup"
 # File variables.
 #---------------------------------------
 SETUP_CONF="$SETUP_CONF_DIR/setup.conf"
+PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" -o -name ".profile" \))"
 
 #-------------------------------------------------------------------------------
 # Adds a port to ufw. Takes three arguments:
@@ -418,6 +419,38 @@ readSetupConfigOption () {
   set -f $CONFIG
   
   echo "$2"
+}
+
+#-------------------------------------------------------------------------------
+# Adds an environment variable to either ".bashrc", ".bash_profile" or 
+# ".profile". Takes two mandatory arguments:
+# 
+# 1. "{1:?}" - the name of the environment variable; and
+# 2. "{2:?}" - the value of the environment variable.
+# 
+# N.B.
+# For the shell to pick this up it requires the user to log out and back in.
+#-------------------------------------------------------------------------------
+setEnvVariable () {
+  local ENV_VARIABLE=
+  local ENV_VALUE=
+  local EXPORT="export $ENV_VARIABLE=$ENV_VALUE"
+
+  echoComment "Adding $ENV_VARIABLE=$ENV_VALUE to:"
+  echoComment "$PROFILE"
+  echo "$EXPORT" >> "$PROFILE"
+
+  echoComment 'Checking value added.'
+  echoSeparator
+  grep "$ENV_VARIABLE" "$PROFILE"
+  echoSeparator
+  echoComment '$ENV_VARIABLE added.'
+
+  setPermissions 644 "$PROFILE"
+  setOwner "$SUDO_UID" "$PROFILE"
+
+  echoSeparator
+  echoComment 'This variable will not be recognised unti you log out and back in.'
 }
 
 #-------------------------------------------------------------------------------
