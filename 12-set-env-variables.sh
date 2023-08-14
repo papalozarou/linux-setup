@@ -46,7 +46,7 @@ IP_ADDRESS="$(getIPAddress)"
 TIMEZONE="$(timedatectl show | grep "Timezone" | cut -d'=' -f2)"
 HOSTNAME="$(hostname)"
 SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
-DOMAIN="${HOSTNAME#$SUBDOMAIN.}"
+DOMAIN="${HOSTNAME#"$SUBDOMAIN".}"
 
 #-------------------------------------------------------------------------------
 # Check for the "@includedir" line in "$SUDOERS". If it is present, confirm it's
@@ -58,7 +58,7 @@ checkSudoersConf () {
   echoComment 'Checking for include line in:'
   echoComment "$SUDOERS"
 
-  local INCLUDES="$(grep "Include" "$SUDOERS")"
+  local INCLUDES="$(grep "@includedir" "$SUDOERS")"
 
   if [ -z "$INCLUDES" ]; then
     echoComment 'Include line not present so adding it. You may be asked for'
@@ -68,7 +68,7 @@ checkSudoersConf () {
 
     echoComment "Added include line."
     echoSeparator
-    echo $(grep "Include" "$SUDOERS")
+    grep "@includedir" "$SUDOERS"
     echoSeparator
   else
     echoComment "Include line already present."

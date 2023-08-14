@@ -111,7 +111,7 @@ checkSshdConfig () {
     sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" "$SSHD_CONF"
     echoComment "Added include line."
     echoSeparator
-    echo $(grep "Include" "$SSHD_CONF")
+    grep "Include" "$SSHD_CONF"
     echoSeparator
   else
     echoComment "Include line already present."
