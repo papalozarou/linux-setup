@@ -1,5 +1,5 @@
 initialisedSetup true
-ipEnvVariableSet true
+setIpEnvVariable true
 configuredGit true
 changedPassword true
 changedUsername true

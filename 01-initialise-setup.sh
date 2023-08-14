@@ -21,11 +21,6 @@
 CONFIG_KEY='initialisedSetup'
 
 #-------------------------------------------------------------------------------
-# File variables.
-#-------------------------------------------------------------------------------
-PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" -o -name ".profile" \))"
-
-#-------------------------------------------------------------------------------
 # Creates the setup config directory at "$SETUP_CONF_DIR".
 #-------------------------------------------------------------------------------
 createSetupDir () {
@@ -123,51 +118,12 @@ checkForSetupConfigFile () {
 }
 
 #-------------------------------------------------------------------------------
-# Adds the host IP address as an environment variable, "EXTERNAL_IP_ADDRESS", to 
-# the user profile, either ".bashrc", ".bash_profile" or ".profile".
-# 
-# This variable is then used in later scripts and in Docker ".env" files when 
-# building images. As per:
-# 
-# https://dev.to/natterstefan/docker-tip-how-to-get-host-s-ip-address-inside-a-docker-container-5anh
-# 
-# N.B.
-# For the shell to pick this up it requires the user to log out and back in,
-# which is done as part of "04-change-username.sh".
-#-------------------------------------------------------------------------------
-setIPEnvVariable () {
-  local IP_ADDRESS="$(getIPAddress)"
-  local EXPORT="export EXTERNAL_IP_ADDRESS=$IP_ADDRESS"
-
-  echoComment "Adding external IP address $IP_ADDRESS to:"
-  echoComment "$PROFILE"
-  echo "$EXPORT" >> "$FILE"
-  
-  echoComment 'Checking value added.'
-  echoSeparator
-  grep "$IP_ADDRESS" "$PROFILE"
-  echoSeparator
-  echoComment 'IP address added'
-
-  setPermissions 644 "$PROFILE"
-  setOwner "$SUDO_UID" "$PROFILE"
-
-  writeSetupConfigOption "ipEnvVariableSet" true
-
-  echoSeparator
-  echoComment '****** N.B. ******'
-  echoComment 'This variable will not be recognised until you log out and back in,'
-  echoComment 'which is done as part of step 4 when changing your username.'
-}
-
-#-------------------------------------------------------------------------------
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
   updateUpgrade
   checkForSetupConfigDir
   checkForSetupConfigFile
-  setIPEnvVariable
 }
 
 #-------------------------------------------------------------------------------
