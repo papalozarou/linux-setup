@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Sets a few environment variables for use with docker projects:
+# Sets a few environment variables for the root user:
 #
 # 1. "HOST_IP_ADDRESS"
 # 2. "HOST_TIMEZONE"
@@ -51,9 +51,6 @@ mainScript () {
   setHostEnvVariable "HOST_TIMEZONE" "$TIMEZONE" 
   setHostEnvVariable "HOST_DOMAIN" "$DOMAIN"
   setHostEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
-
-  setPermissions 644 "$PROFILE"
-  setOwner "$SUDO_UID" "$PROFILE"
 
   echoSeparator
   echoComment '****** N.B. ******'

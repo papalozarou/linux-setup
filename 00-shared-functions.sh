@@ -41,7 +41,7 @@ SETUP_CONF_DIR="$CONF_DIR/linux-setup"
 # File variables.
 #---------------------------------------
 SETUP_CONF="$SETUP_CONF_DIR/setup.conf"
-PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" -o -name ".profile" \))"
+PROFILE="$(find "/root" -type f \( -name ".bashrc" -o -name ".bash_profile" \))"
 
 #-------------------------------------------------------------------------------
 # Adds a port to ufw. Takes three arguments:
@@ -432,8 +432,8 @@ readSetupConfigOption () {
 # For the shell to pick this up it requires the user to log out and back in.
 #-------------------------------------------------------------------------------
 setHostEnvVariable () {
-  local ENV_VARIABLE=
-  local ENV_VALUE=
+  local ENV_VARIABLE="${1:?}"
+  local ENV_VALUE="${2:?}"
   local EXPORT="export $ENV_VARIABLE=$ENV_VALUE"
 
   echoComment "Adding $ENV_VARIABLE=$ENV_VALUE to:"
