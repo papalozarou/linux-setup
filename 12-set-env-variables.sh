@@ -30,7 +30,7 @@ CONFIG_KEY='setHostEnvVariables'
 #-------------------------------------------------------------------------------
 SUDOERS='/etc/sudoers'
 SUDOERS_CONF_DIR="$SUDOERS.d/"
-SUDOERS_DEFAULT_CONF="$SUDOERS_CONF_DIR/99-default-env-keep.conf"
+SUDOERS_DEFAULT_CONF="$SUDOERS_CONF_DIR/99-default-env-keep"
 
 #-------------------------------------------------------------------------------
 # Environment variable values. Set as follows:
@@ -49,8 +49,10 @@ SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
 DOMAIN="${HOSTNAME#$SUBDOMAIN.}"
 
 #-------------------------------------------------------------------------------
-# Check for the "@includedir" line in "$SUDOERS". If not present, add it at the
-# end of the file. If it is present, confirm it's present.
+# Check for the "@includedir" line in "$SUDOERS". If it is present, confirm it's
+# present. If not present, add it at the end of the file, as per:
+# 
+# https://stackoverflow.com/a/28382838
 #-------------------------------------------------------------------------------
 checkSudoersConf () {
   echoComment 'Checking for include line in:'
@@ -74,7 +76,9 @@ checkSudoersConf () {
 }
 
 #-------------------------------------------------------------------------------
-# Creates the default environment config file for sudoers.
+# Creates the default environment config file for sudoers. As per:
+# 
+# https://stackoverflow.com/a/8636711
 #-------------------------------------------------------------------------------
 createSudoersConf () {
   echoComment 'Generating sudoers config file at:'
