@@ -431,7 +431,7 @@ readSetupConfigOption () {
 # N.B.
 # For the shell to pick this up it requires the user to log out and back in.
 #-------------------------------------------------------------------------------
-setEnvVariable () {
+setHostEnvVariable () {
   local ENV_VARIABLE=
   local ENV_VALUE=
   local EXPORT="export $ENV_VARIABLE=$ENV_VALUE"

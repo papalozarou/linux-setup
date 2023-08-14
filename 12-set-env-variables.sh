@@ -47,10 +47,10 @@ DOMAIN="${HOSTNAME#$SUBDOMAIN.}"
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  setEnvVariable "HOST_IP_ADDRESS" "$IP_ADDRESS"
-  setEnvVariable "HOST_TIMEZONE" "$TIMEZONE" 
-  setEnvVariable "HOST_DOMAIN" "$DOMAIN"
-  setEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
+  setHostEnvVariable "HOST_IP_ADDRESS" "$IP_ADDRESS"
+  setHostEnvVariable "HOST_TIMEZONE" "$TIMEZONE" 
+  setHostEnvVariable "HOST_DOMAIN" "$DOMAIN"
+  setHostEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
 
   setPermissions 644 "$PROFILE"
   setOwner "$SUDO_UID" "$PROFILE"
