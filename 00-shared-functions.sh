@@ -134,7 +134,7 @@ checkForServiceAndInstall () {
     echoComment "You have already installed $SERVICE."
   elif [ "$SERVICE_CHECK" = false ]; then
     echoComment "You need to install $SERVICE."
-    installService "$SERVICE"
+    installRemovePackages "install" "$SERVICE"
   fi
 }
 
