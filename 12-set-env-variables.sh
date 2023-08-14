@@ -41,6 +41,11 @@ SUDOERS_DEFAULT_CONF="$SUDOERS_CONF_DIR/99-default-env-keep"
 #   first segment, "f1".
 # - "HOST_SUBDOMAIN" - trimming "$SUBDOMAIN", with a trailing period, from
 #   "$HOSTNAME"
+# 
+# Usage of cut and trim as per:
+# 
+# - cut - https://unix.stackexchange.com/a/312281
+# - trim - https://stackoverflow.com/a/10520718
 #-------------------------------------------------------------------------------
 IP_ADDRESS="$(getIPAddress)"
 TIMEZONE="$(timedatectl show | grep "Timezone" | cut -d'=' -f2)"

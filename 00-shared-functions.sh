@@ -448,6 +448,10 @@ readSetupConfigOption () {
 # If the variable is already in "$PROFILE" no changes are made. If the variable
 # is not present in "$PROFILE" it is added.
 # 
+# Variables are added as per:
+# 
+# https://askubuntu.com/a/211718
+# 
 # N.B.
 # For the shell to pick this up it requires the user to log out and back in.
 #-------------------------------------------------------------------------------
