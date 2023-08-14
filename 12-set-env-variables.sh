@@ -87,7 +87,7 @@ checkSudoersConf () {
 #-------------------------------------------------------------------------------
 createSudoersConf () {
   echoComment 'Generating sudoers config file at:'
-  echocomment "$SUDOERS_DEFAULT_CONF"
+  echoComment "$SUDOERS_DEFAULT_CONF"
   cat <<EOF > "$SUDOERS_DEFAULT_CONF"
 Defaults env_keep += "HOST_IP_ADDRESS"
 Defaults env_keep += "HOST_TIMEZONE"
@@ -115,6 +115,7 @@ mainScript () {
   echoNb
   echoComment 'As stated above these variables will not be usable until you have'
   echoComment 'logged out and back in.'
+  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
