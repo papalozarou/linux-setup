@@ -54,10 +54,10 @@ getGitDetails () {
 #-------------------------------------------------------------------------------
 setGitDetails () {
   echoComment "Setting global git username to $GIT_USERNAME."
-  su -c "git config --global user.name "$GIT_USERNAME"" $SUDO_USER
+  su -c "git config --global user.name "$GIT_USERNAME"" "$SUDO_USER"
 
   echoComment "Setting global git email to $GIT_EMAIL"
-  su -c "git config --global user.email "$GIT_EMAIL"" $SUDO_USER
+  su -c "git config --global user.email "$GIT_EMAIL"" "$SUDO_USER"
 }
 
 #-------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ setGitDetails () {
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
   echoComment 'Setting global default branch to main.'
-  su -c "git config --global init.defaultBranch main" $SUDO_USER
+  su -c "git config --global init.defaultBranch main" "$SUDO_USER"
 }
 
 #-------------------------------------------------------------------------------
