@@ -359,23 +359,6 @@ initialiseScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Installs a given service. Takes at one or more arguments:
-# 
-# 1. "$@" – one or more services to be installed.
-# 
-# The function loops through each passed argument and installs each service.
-#-------------------------------------------------------------------------------
-installService () {
-  for i in "$@"; do
-    echoComment "Installing $i."
-    echoSeparator
-    apt install "$i" -y
-    echoSeparator
-    echoComment "$i installed."
-  done
-}
-
-#-------------------------------------------------------------------------------
 # Installs or removes a given package. Takes at least two or more arguments:
 # 
 # 1. "${1:?}" - the action to be taken, either "install" or "remove"
