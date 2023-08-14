@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Adds the host IP address as an environment variable, "EXTERNAL_IP_ADDRESS", by:
+# Adds the host IP address as an environment variable, "HOST_IP_ADDRESS", by:
 #
 # 1. getting the IP address; and
 # 2. writing it to either ".bashrc", ".bash_profile" or ".profile".
@@ -26,7 +26,7 @@
 #-------------------------------------------------------------------------------
 # Config key variable.
 #-------------------------------------------------------------------------------
-CONFIG_KEY='setIpEnvVariable'
+CONFIG_KEY='setEnvVariables'
 
 #-------------------------------------------------------------------------------
 # File variables.
@@ -38,9 +38,9 @@ PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" 
 #-------------------------------------------------------------------------------
 mainScript () {
   local IP_ADDRESS="$(getIPAddress)"
-  local EXPORT="export EXTERNAL_IP_ADDRESS=$IP_ADDRESS"
+  local EXPORT="export HOST_IP_ADDRESS=$IP_ADDRESS"
 
-  echoComment "Adding external IP address $IP_ADDRESS to:"
+  echoComment "Adding host IP address $IP_ADDRESS to:"
   echoComment "$PROFILE"
   echo "$EXPORT" >> "$FILE"
   

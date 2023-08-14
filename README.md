@@ -3,15 +3,16 @@
 A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above server, by:
 
 1. Updating and upgrading the fresh install;
-2. configuring git;
 3. changing the default user's password;
 4. changing the default user's name;
 5. setting up ssh keys for remote connection;
 6. configuring the ssh server;
 7. configuring ufw;
 8. configuring fail2ban;
-9. configuring the timezone; and
-10. installing docker.
+9. configuring the timezone;
+10. configuring git;
+11. installing docker; and
+12. setting some environment variables for docker usage.
 
 ## Usage
 

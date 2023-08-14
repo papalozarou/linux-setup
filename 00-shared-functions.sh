@@ -4,16 +4,17 @@
 # Shared functons and variables used across the following server setup scripts:
 #
 # - 01-initialise-setup.sh
-# - 02-configure-git.sh
-# - 03-change-password.sh
-# - 04-change-username.sh
-# - 05-setup-ssh-key.sh
-# - 06-configure-sshd.sh
-# - 07-configure-ufw.sh
-# - 08-configure-fail2ban.sh
-# - 09-configure-hostname.sh
-# - 10-configure-ntp.sh
+# - 02-change-password.sh
+# - 03-change-username.sh
+# - 04-setup-ssh-key.sh
+# - 05-configure-sshd.sh
+# - 06-configure-ufw.sh
+# - 07-configure-fail2ban.sh
+# - 08-configure-hostname.sh
+# - 09-configure-timezone.sh
+# - 10-configure-git.sh
 # - 11-configure-docker.sh
+# - 12-set-env-variables.sh
 #
 # N.B.
 # To make this setup as portable as possible, all scripts are POSIX compliant,

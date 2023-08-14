@@ -1,6 +1,5 @@
 initialisedSetup true
 changedPassword true
-setIpEnvVariable true
 changedUsername true
 setupSshKey true
 sshKeyFile myKeyFile
@@ -9,6 +8,7 @@ sshPort 00000
 configuredUfw true
 configuredFail2ban true
 configuredHostname true
-configuredNtp true
+configuredTimezone true
 configuredGit true
 configuredDocker true
+setEnvVariables true
