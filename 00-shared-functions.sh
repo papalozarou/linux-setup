@@ -41,7 +41,7 @@ SETUP_CONF_DIR="$CONF_DIR/linux-setup"
 # File variables.
 #---------------------------------------
 SETUP_CONF="$SETUP_CONF_DIR/setup.conf"
-PROFILE="$(find "/root" -type f \( -name ".bashrc" -o -name ".bash_profile" \))"
+PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" \))"
 
 #-------------------------------------------------------------------------------
 # Adds a port to ufw. Takes three arguments:
@@ -95,6 +95,23 @@ changeCase () {
   fi
 
   echo "$STRING"
+}
+
+#-------------------------------------------------------------------------------
+# Checks for a given environment variable in "$PROFILE". Returns true if the 
+# variable is present, returns false if not. Takes one mandatory argument:
+# 
+# 1. "{1:?}" - the name of the environment variable.
+#-------------------------------------------------------------------------------
+checkForHostEnvVariable () {
+  local ENV_VARIABLE="${1:?}"
+  local ENV_CHECK="$(grep "$ENV_VARIABLE" "$PROFILE")"
+
+  if [ -z "$ENV_CHECK" ]; then
+    echo false
+  else
+    echo true
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -422,11 +439,14 @@ readSetupConfigOption () {
 }
 
 #-------------------------------------------------------------------------------
-# Adds an environment variable to either ".bashrc" or ".bash_profile". Takes two
+# Checks for, then adds, an environment variable to "$PROFILE". Takes two
 # mandatory arguments:
 # 
 # 1. "{1:?}" - the name of the environment variable; and
 # 2. "{2:?}" - the value of the environment variable.
+# 
+# If the variable is already in "$PROFILE" no changes are made. If the variable
+# is not present in "$PROFILE" it is added.
 # 
 # N.B.
 # For the shell to pick this up it requires the user to log out and back in.
@@ -434,20 +454,25 @@ readSetupConfigOption () {
 setHostEnvVariable () {
   local ENV_VARIABLE="${1:?}"
   local ENV_VALUE="${2:?}"
+  local ENV_CHECK="$(checkForHostEnvVariable "$ENV_VARIABLE")"
   local EXPORT="export $ENV_VARIABLE=$ENV_VALUE"
 
-  echoComment "Adding $ENV_VARIABLE=$ENV_VALUE to:"
-  echoComment "$PROFILE"
-  echo "$EXPORT" >> "$PROFILE"
+  if [ "$ENV_CHECK" = true ]; then
+    echoComment "Already added $ENV_VARIABLE. No changes made."
+  elif [ "$ENV_CHECK" = false ]; then
+    echoComment "Adding $ENV_VARIABLE=$ENV_VALUE to:"
+    echoComment "$PROFILE"
+    echo "$EXPORT" >> "$PROFILE"
 
-  echoComment 'Checking value added.'
-  echoSeparator
-  grep "$ENV_VARIABLE" "$PROFILE"
-  echoSeparator
-  echoComment '$ENV_VARIABLE added.'
+    echoComment 'Checking value added.'
+    echoSeparator
+    grep "$ENV_VARIABLE" "$PROFILE"
+    echoSeparator
+    echoComment "$ENV_VARIABLE added."
 
-  echoSeparator
-  echoComment 'This variable will not be recognised unti you log out and back in.'
+    echoSeparator
+    echoComment 'This variable will not be recognised unti you log out and back in.'
+  fi
 }
 
 #-------------------------------------------------------------------------------

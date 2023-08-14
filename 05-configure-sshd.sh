@@ -120,7 +120,7 @@ checkSshdConfig () {
 
 #-------------------------------------------------------------------------------
 # Creates the hardened config file for sshd. This overides the default values
-# stored in /etc/ssh/sshd_config.
+# stored in "$SSHD_CONF".
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
   SSH_PORT="$(generatePortNumber)"
@@ -197,11 +197,15 @@ echoLocalSshConfig () {
 mainScript () {
   listCurrentSshdConfigs
   removeCurrentSshdConfigs
+
   checkSshdConfig
   createHardenedSShdConfig
   setPermissions "600" "$SSHD_CONF_DIR"
+
   restartSshd
+
   writeSetupConfigOption "sshPort" "$SSH_PORT"
+  
   echoLocalSshConfig
 }
 

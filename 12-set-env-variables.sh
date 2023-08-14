@@ -1,12 +1,10 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Sets a few environment variables for the root user:
+# Sets a few environment variables for the current user, by:
 #
-# 1. "HOST_IP_ADDRESS"
-# 2. "HOST_TIMEZONE"
-# 3. "HOST_DOMAIN"
-# 4. "HOST_SUBDOMAIN"
+# 1. setting the variables; and
+# 2. adding "env_keep" values to "sudoers".
 # 
 # These variables can then be used in other projects and in Docker ".env" files
 # when building images. As per:
@@ -25,7 +23,14 @@
 #-------------------------------------------------------------------------------
 # Config key variable.
 #-------------------------------------------------------------------------------
-CONFIG_KEY='setEnvVariables'
+CONFIG_KEY='setHostEnvVariables'
+
+#-------------------------------------------------------------------------------
+# File and directory variables.
+#-------------------------------------------------------------------------------
+SUDOERS='/etc/sudoers'
+SUDOERS_CONF_DIR="$SUDOERS.d/"
+SUDOERS_DEFAULT_CONF="$SUDOERS_CONF_DIR/99-default-env-keep.conf"
 
 #-------------------------------------------------------------------------------
 # Environment variable values. Set as follows:
@@ -38,10 +43,50 @@ CONFIG_KEY='setEnvVariables'
 #   "$HOSTNAME"
 #-------------------------------------------------------------------------------
 IP_ADDRESS="$(getIPAddress)"
-TIMEZONE="$(timedatectl show | grep "Timezone")"
+TIMEZONE="$(timedatectl show | grep "Timezone" | cut -d'=' -f2)"
 HOSTNAME="$(hostname)"
 SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
 DOMAIN="${HOSTNAME#$SUBDOMAIN.}"
+
+#-------------------------------------------------------------------------------
+# Check for the "@includedir" line in "$SUDOERS". If not present, add it at the
+# end of the file. If it is present, confirm it's present.
+#-------------------------------------------------------------------------------
+checkSudoersConf () {
+  echoComment 'Checking for include line in:'
+  echoComment "$SUDOERS"
+
+  local INCLUDES="$(grep "Include" "$SUDOERS")"
+
+  if [ -z "$INCLUDES" ]; then
+    echoComment 'Include line not present so adding it. You may be asked for'
+    echoComment 'your password.'
+
+    echo "@includedir $SUDOERS_CONF_DIR" | sudo EDITOR='tee -a' visudo
+
+    echoComment "Added include line."
+    echoSeparator
+    echo $(grep "Include" "$SUDOERS")
+    echoSeparator
+  else
+    echoComment "Include line already present."
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Creates the default environment config file for sudoers.
+#-------------------------------------------------------------------------------
+createSudoersConf () {
+  echoComment 'Generating sudoers config file at:'
+  echocomment "$SUDOERS_DEFAULT_CONF"
+  cat <<EOF > "$SUDOERS_DEFAULT_CONF"
+Defaults env_keep += "HOST_IP_ADDRESS"
+Defaults env_keep += "HOST_TIMEZONE"
+Defaults env_keep += "HOST_DOMAIN"
+Defaults env_keep += "HOST_SUBDOMAIN"
+EOF
+  echoComment 'Config file generated.'
+}
 
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script.
@@ -51,6 +96,11 @@ mainScript () {
   setHostEnvVariable "HOST_TIMEZONE" "$TIMEZONE" 
   setHostEnvVariable "HOST_DOMAIN" "$DOMAIN"
   setHostEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
+
+  checkSudoersConf
+  createSudoersConf
+  setPermissions "440" "$SUDOERS"
+  setOwner "$USER" "$SUDOERS_DEFAULT_CONF"
 
   echoSeparator
   echoComment '****** N.B. ******'

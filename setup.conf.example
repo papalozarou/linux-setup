@@ -11,4 +11,4 @@ configuredHostname true
 configuredTimezone true
 configuredGit true
 configuredDocker true
-setEnvVariables true
+setHostEnvVariables true
