@@ -66,11 +66,12 @@ setNewHostname () {
   echoComment 'What is your new hostname (my.hostname.com)?'
   read -r HOSTNAME
 
-  echoComment "Setting hostname to $HOSTNAME. You may be asked to authenticate."
-  echoSeparator
+  echoComment 'Setting hostname to:'
+  echoComment "$HOSTNAME"
+  echoComment 'You may be asked to authenticate.'
   hostnamectl set-hostname "$HOSTNAME"
-  echoSeparator
-  echoComment 'Hostname set.'
+  echoComment 'Hostname is now set to:'
+  hostname
 }
 
 #-------------------------------------------------------------------------------
