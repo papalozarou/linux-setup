@@ -112,7 +112,7 @@ mainScript () {
   setOwner "$USER" "$SUDOERS_DEFAULT_CONF"
 
   echoSeparator
-  echoComment '****** N.B. ******'
+  echoNb
   echoComment 'As stated above these variables will not be usable until you have'
   echoComment 'logged out and back in.'
 }

@@ -237,6 +237,10 @@ echoComment () {
   echo "$COMMENT_PREFIX $COMMENT"
 }
 
+echoNb () {
+  echo "$COMMENT_PREFIX ****** N.B. ******"
+}
+
 #-------------------------------------------------------------------------------
 # Echoes that the script is exiting. Takes no arguments.
 #-------------------------------------------------------------------------------
