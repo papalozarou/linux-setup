@@ -22,8 +22,8 @@
 #-------------------------------------------------------------------------------
 # Config key and service variables.
 #-------------------------------------------------------------------------------
-CONFIG_KEY='configuredNtp'
-SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
+CONFIG_KEY='configuredTimezone'
+SERVICE="ntp"
 
 #-------------------------------------------------------------------------------
 # Timezone related variables.
