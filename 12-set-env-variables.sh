@@ -28,13 +28,20 @@
 CONFIG_KEY='setEnvVariables'
 
 #-------------------------------------------------------------------------------
-# Environment variable values.
+# Environment variable values. Set as follows:
+#
+# - "HOST_IP_ADDRESS" - using the "getIPAddress" function.
+# - "HOST_TIMEZONE" - grepping "Timezone" from the output of "timedatectl show".
+# - "HOST_DOMAIN" - cutting "$HOSTNAME" using "." as a delimiter, and taking the 
+#   first segment, "f1".
+# - "HOST_SUBDOMAIN" - trimming "$SUBDOMAIN", with a trailing period, from
+#   "$HOSTNAME"
 #-------------------------------------------------------------------------------
 IP_ADDRESS="$(getIPAddress)"
 TIMEZONE="$(timedatectl show | grep "Timezone")"
 HOSTNAME="$(hostname)"
 SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
-DOMAIN="${HOSTNAME#$SUBDOMAIN}"
+DOMAIN="${HOSTNAME#$SUBDOMAIN.}"
 
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script.
