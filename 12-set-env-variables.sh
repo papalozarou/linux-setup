@@ -42,6 +42,9 @@ mainScript () {
   setEnvVariable "HOST_DOMAIN" "$DOMAIN"
   setEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
 
+  # setPermissions 644 "$PROFILE"
+  # setOwner "$SUDO_UID" "$PROFILE"
+
   echoSeparator
   echoComment '****** N.B. ******'
   echoComment 'As stated above these variables will not be usable until you have'

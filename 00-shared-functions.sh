@@ -446,9 +446,6 @@ setEnvVariable () {
   echoSeparator
   echoComment '$ENV_VARIABLE added.'
 
-  setPermissions 644 "$PROFILE"
-  setOwner "$SUDO_UID" "$PROFILE"
-
   echoSeparator
   echoComment 'This variable will not be recognised unti you log out and back in.'
 }
