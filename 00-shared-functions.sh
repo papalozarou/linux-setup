@@ -143,7 +143,7 @@ changeCase () {
 #-------------------------------------------------------------------------------
 checkAgainstExistingPortNumber () {
   local PORT="${1:?}"
-  local SERVICE="${2:?}"
+  local SERVICE="${2:?}Port"
   local SERVICE_PORT="$(readSetupConfigOption "$SERVICE")"
 
   if [ "$PORT" = "$SERVICE_PORT" ]; then
@@ -350,7 +350,7 @@ createFiles () {
     echoSeparator
     listDirectories "$FILE"
     echoSeparator
-    ecoComment 'File created.'
+    echoComment 'File created.'
   done
 }
 
@@ -428,6 +428,27 @@ finaliseScript () {
   echoSeparator
   echoComment 'Script finished.'
   echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Generates a port number then checks against a given service. If the check
+# returns true, re-run the function to generate a new port number. If the check 
+# returns false, return the generated port number. Takes one mandatory argument:
+# 
+# 1. "{1:?}" – the service to check against.
+#-------------------------------------------------------------------------------
+generateAndCheckPort () {
+  local CHECK_AGAINST="${1:?}"
+  local PORT_NO="$(generatePortNumber)"
+  local PORT_CHECK="$(checkAgainstExistingPortNumber "$PORT_NO" "$CHECK_AGAINST")"
+
+  if [ "PORT_CHECK" = true ]; then
+    echoComment "Port check returned $PORT_CHECK. Re-running to generate" 
+    echoComment 'another port number.'
+    checkAndSetPort
+  elif [ "PORT_CHECK" = false ]; then
+    echo "$PORT_NO"    
+  fi
 }
 
 #-------------------------------------------------------------------------------
