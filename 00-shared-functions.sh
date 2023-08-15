@@ -200,12 +200,15 @@ checkForSetupConfigDir () {
 
   if [ -d "$SETUP_CONF_DIR" ]; then
     echoComment 'The setup config directory exists.'
+    listDirectories "$SETUP_CONF_DIR"
   else
     echoComment 'The setup config directory does not exist.'
     createDirectory "$SETUP_CONF_DIR"
 
     setOwner "$SUDO_USER" "$CONF_DIR"
     setOwner "$SUDO_USER" "$SETUP_CONF_DIR"
+
+    listDirectories "$SETUP_CONF_DIR"
   fi
 }
 
@@ -218,7 +221,8 @@ checkForSetupConfigFile () {
   echoComment "$SETUP_CONF_DIR."
 
   if [ -f "$SETUP_CONF" ]; then
-    echoComment 'A setup config file exists'
+    echoComment 'A setup config file exists.'
+    listDirectories "$SETUP_CONF_DIR"
   else
     echoComment 'No setup config file exists.'
     createFiles "$SETUP_CONF"
@@ -226,10 +230,7 @@ checkForSetupConfigFile () {
     setPermissions 600 "$SETUP_CONF"
     setOwner "$SUDO_USER" "$SETUP_CONF"
 
-    echoComment 'Listing setup config directory:'
-    echoSeparator
-    ls -lna "$SETUP_CONF_DIR"
-    echoSeparator
+    listDirectories "$SETUP_CONF_DIR"
   fi
 }
 
