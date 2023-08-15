@@ -439,15 +439,15 @@ finaliseScript () {
 #-------------------------------------------------------------------------------
 generateAndCheckPort () {
   local CHECK_AGAINST="${1:?}"
-  local PORT_NO="$(generatePortNumber)"
-  local PORT_CHECK="$(checkAgainstExistingPortNumber "$PORT_NO" "$CHECK_AGAINST")"
+  local PORT_NUMBER="$(generatePortNumber)"
+  local PORT_CHECK="$(checkAgainstExistingPortNumber "$PORT_NUMBER" "$CHECK_AGAINST")"
 
-  if [ "PORT_CHECK" = true ]; then
+  if [ "$PORT_CHECK" = true ]; then
     echoComment "Port check returned $PORT_CHECK. Re-running to generate" 
     echoComment 'another port number.'
     checkAndSetPort
-  elif [ "PORT_CHECK" = false ]; then
-    echo "$PORT_NO"    
+  elif [ "$PORT_CHECK" = false ]; then
+    echo "$PORT_NUMBER"    
   fi
 }
 
