@@ -23,8 +23,8 @@
 # - "checkFooBar" - checks if a value or object exists;
 # - "createFooBar" - creates an object;
 # - "generateFooBar" - generates a value or object automatically;
-# - "getFooBar" - asks the user for input to set a value, or gets a second value
-#   from an existing value;
+# - "getFooBar" - asks the user for input to set a value, or gets a substring
+#   from an existing value or object;
 # - "readFooBar" - reads an already set value; and
 # - "setFooBar" - sets a value.
 #
