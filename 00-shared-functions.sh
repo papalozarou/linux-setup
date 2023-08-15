@@ -130,6 +130,30 @@ changeCase () {
 }
 
 #-------------------------------------------------------------------------------
+# Check to see if the port number has already been used for another service.
+# Takes two mandatory arguement:
+# 
+# 1. "${1:?}" – the port to check; and
+# 2. "${2:?}" – the config option key for the service to check against.
+# 
+# N.B.
+# The config option key must be formatted exactly as in the config option file,
+# i.e. using camelCase. A list of the config keys can be found in 
+# "setup.conf.example".
+#-------------------------------------------------------------------------------
+checkAgainstExistingPortNumber () {
+  local PORT="${1:?}"
+  local SERVICE="${2:?}"
+  local SERVICE_PORT="$(readSetupConfigOption "$SERVICE")"
+
+  if [ "$PORT" = "$SERVICE_PORT" ]; then
+    echo true
+  else 
+    echo false
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Checks for a given environment variable in "$PROFILE". Returns true if the 
 # variable is present, returns false if not. Takes one mandatory argument:
 # 
@@ -230,30 +254,6 @@ checkForSetupConfigFile () {
   fi
 
   listDirectories "$SETUP_CONF_DIR"
-}
-
-#-------------------------------------------------------------------------------
-# Check to see if the port number has already been used for another service.
-# Takes two mandatory arguement:
-# 
-# 1. "${1:?}" – the port to check; and
-# 2. "${2:?}" – the config option key for the service to check against.
-# 
-# N.B.
-# The config option key must be formatted exactly as in the config option file,
-# i.e. using camelCase. A list of the config keys can be found in 
-# "setup.conf.example".
-#-------------------------------------------------------------------------------
-checkPortNumber () {
-  local PORT="${1:?}"
-  local SERVICE="${2:?}"
-  local SERVICE_PORT="$(readSetupConfigOption "$SERVICE")"
-
-  if [ "$PORT" = "$SERVICE_PORT" ]; then
-    echo true
-  else 
-    echo false
-  fi
 }
 
 #-------------------------------------------------------------------------------
