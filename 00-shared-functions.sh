@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #-------------------------------------------------------------------------------
-# Shared functons and variables used across the following server setup scripts:
+# Shared functions and variables used across the following server setup scripts:
 #
 # - 01-initialise-setup.sh
 # - 02-change-password.sh
