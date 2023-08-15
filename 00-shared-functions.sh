@@ -447,7 +447,7 @@ installRemovePackages () {
 # Reads and returns the IP address of the host machine.
 #-------------------------------------------------------------------------------
 readIPAddress () {
-  echo "$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')"
+  ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+'
 }
 
 #-------------------------------------------------------------------------------
