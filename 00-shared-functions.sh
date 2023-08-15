@@ -36,12 +36,32 @@ USER_DIR="/home/$SUDO_USER"
 SSH_DIR="$USER_DIR/.ssh"
 CONF_DIR="$USER_DIR/.config"
 SETUP_CONF_DIR="$CONF_DIR/linux-setup"
+SUDOERS_CONF_DIR="$SUDOERS.d"
 
 #---------------------------------------
 # File variables.
 #---------------------------------------
 SETUP_CONF="$SETUP_CONF_DIR/setup.conf"
 PROFILE="$(find "$USER_DIR" -type f \( -name ".bashrc" -o -name ".bash_profile" \))"
+SUDOERS='/etc/sudoers'
+SUDOERS_DEFAULT_CONF="$SUDOERS_CONF_DIR/99-default-env-keep"
+
+#-------------------------------------------------------------------------------
+# Adds a "env_keep" statement for a given environment variable. Takes one 
+# mandatory arguement:
+# 
+# 1. "${1:?}" -the  name of the environment variable.
+# 
+# N.B.
+# This function assumes that the sudoers config file exists as it is created 
+# in "set-env-variables.sh".
+#-------------------------------------------------------------------------------
+addHostEnvVariableToSudoersConf () {
+  local ENV_VARIABLE="${1:?}"
+  local ENV_KEEP="Defaults env_keep += \"$ENV_VARIABLE\""
+
+  echo "$ENV_KEEP" >> "$SUDOERS_DEFAULT_CONF"
+}
 
 #-------------------------------------------------------------------------------
 # Adds a port to ufw. Takes three arguments:

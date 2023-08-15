@@ -26,13 +26,6 @@
 CONFIG_KEY='setHostEnvVariables'
 
 #-------------------------------------------------------------------------------
-# File and directory variables.
-#-------------------------------------------------------------------------------
-SUDOERS='/etc/sudoers'
-SUDOERS_CONF_DIR="$SUDOERS.d"
-SUDOERS_DEFAULT_CONF="$SUDOERS_CONF_DIR/99-default-env-keep"
-
-#-------------------------------------------------------------------------------
 # Environment variable values. Set as follows:
 #
 # - "HOST_IP_ADDRESS" - using the "getIPAddress" function.

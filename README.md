@@ -41,7 +41,7 @@ This leaves the `.config/linux-setup` directory in place for reference.
 
 ### N.B.
 
-Script `03-change-username.sh` kills all processes and requires logging in with a temporary user which is set up as part of the script.
+Script `change-username.sh` kills all processes and requires logging in with a temporary user which is set up as part of the script.
 
 The scripts are not particularly robust in terms of error handling. Soz like.
 
