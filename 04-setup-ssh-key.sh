@@ -95,28 +95,21 @@ getSshKeyDetails () {
 # We also write the ssh key filename to the config file.
 #-------------------------------------------------------------------------------
 mainScript () {
-  # if [ -f "$EXISTING_SSH_KEY" ]; then
-  #   checkPrivateSshKeyCopied
-  # else
-  #   getSshKeyDetails
-  #   generateSshKey "$SSH_KEY" "$SSH_EMAIL"
-  #   setOwner "$SUDO_USER" "$SSH_KEY"
-  #   setOwner "$SUDO_USER" "$SSH_KEY.pub"
-  #   addKeyToAuthorizedKeys
-  #   echoKeyUsage
-  #   writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
-
-  #   echoSeparator
-  #   echoComment 'Script finished. Please ensure you copied the private key and'
-  #   echoComment 'run this script again.'
-
-  #   exit 1
-  # fi
   if [ -f "$EXISTING_SSH_KEY" ]; then
-    echoComment 'Key already exists'
-    exit 1
+    checkPrivateSshKeyCopied
   else
-    echoComment 'Key does not exist'
+    getSshKeyDetails
+    generateSshKey "$SSH_KEY" "$SSH_EMAIL"
+    setOwner "$SUDO_USER" "$SSH_KEY"
+    setOwner "$SUDO_USER" "$SSH_KEY.pub"
+    addKeyToAuthorizedKeys
+    echoKeyUsage
+    writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
+
+    echoSeparator
+    echoComment 'Script finished. Please ensure you copied the private key and'
+    echoComment 'run this script again.'
+
     exit 1
   fi
 }
