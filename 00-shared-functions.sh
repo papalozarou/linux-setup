@@ -16,7 +16,7 @@
 # - 11-configure-docker.sh
 # - 12-set-env-variables.sh
 #
-# Function try to use the following naming conventions:
+# Function try to use "verbValue/Object" as naming conventions:
 #
 # - "addFooBar" – adds a value to an existing object;
 # - "changeFooBar" - changes an already set value;
