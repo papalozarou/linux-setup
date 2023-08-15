@@ -20,7 +20,7 @@ CONFIG_KEY="setupSshKey"
 #-------------------------------------------------------------------------------
 # File variables.
 #-------------------------------------------------------------------------------
-EXISTING_KEY_NAME="$(readSetupConfigOption "$CONFIG_KEY")"
+EXISTING_KEY_NAME="$(readSetupConfigOption "sshKeyFile")"
 EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 
 #-------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ mainScript () {
   #   setOwner "$SUDO_USER" "$SSH_KEY.pub"
   #   addKeyToAuthorizedKeys
   #   echoKeyUsage
-  #   writeSetupConfigOption sshKeyFile "$REMOTE_KEY_NAME"
+  #   writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
 
   #   echoSeparator
   #   echoComment 'Script finished. Please ensure you copied the private key and'
