@@ -21,31 +21,6 @@
 CONFIG_KEY='initialisedSetup'
 
 #-------------------------------------------------------------------------------
-# Creates the setup config directory at "$SETUP_CONF_DIR".
-#-------------------------------------------------------------------------------
-createSetupDir () {
-  echoComment 'Creating setup config directory at:'
-  echoComment "$SETUP_CONF_DIR."
-  mkdir -p "$SETUP_CONF_DIR"
-
-  echoComment 'Listing setup config directory:'
-  echoSeparator
-  ls -lna "$SETUP_CONF_DIR"
-  echoSeparator
-
-  echoComment 'Setup config directory created.'
-}
-
-#-------------------------------------------------------------------------------
-# Creates the basic setup config file in "$SETUP_CONF_DIR".
-#-------------------------------------------------------------------------------
-createSetupConfig () {
-  echoComment 'Creating setup config file.'
-  touch "$SETUP_CONF"
-  echoComment 'Setup config file created.'
-}
-
-#-------------------------------------------------------------------------------
 # Removes the setup config file within "$SETUP_CONF", based on the users input.
 #
 # If the user requests to delete, the file is deleted.
@@ -85,7 +60,8 @@ checkForSetupConfigDir () {
     echoComment 'The setup config directory exists.'
   else
     echoComment 'The setup config directory does not exist.'
-    createSetupDir
+    createDirectory "$SETUP_CONF_DIR"
+    listDirectories "$SETUP_CONF_DIR"
 
     setOwner "$SUDO_USER" "$CONF_DIR"
     setOwner "$SUDO_USER" "$SETUP_CONF_DIR"
@@ -105,15 +81,12 @@ checkForSetupConfigFile () {
     removeCurrentSetupConfig
   else
     echoComment 'No setup config file exists.'
-    createSetupConfig
+    createFile "$SETUP_CONF"
 
     setPermissions 600 "$SETUP_CONF"
     setOwner "$SUDO_USER" "$SETUP_CONF"
 
-    echoComment 'Listing setup config directory:'
-    echoSeparator
-    ls -lna "$SETUP_CONF_DIR"
-    echoSeparator
+    listDirectories "$SETUP_CONF_DIR"
   fi
 }
 

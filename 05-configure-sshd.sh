@@ -39,22 +39,10 @@ SSHD_CONF_DIR="$GLOBAL_SSH_DIR/sshd_config.d"
 SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
 
 #-------------------------------------------------------------------------------
-# Lists the current contents of "$SSD_CONF_DIR" as a percursor to allowing the
-# user to delete them if required, e.g. if a Cloud provider or distro has auto 
-# installed files here.
-#-------------------------------------------------------------------------------
-listCurrentSshdConfigs() {
-  echoComment "Listing $SSHD_CONF_DIR…"
-  echoSeparator
-  ls -lna "$SSHD_CONF_DIR"
-  echoSeparator
-}
-
-#-------------------------------------------------------------------------------
 # Removes the config files within "$SSHD_CONF_DIR", based on the users input.
 #
 # If the user requests to delete, the files are deleted and the folder is listed
-# again to confirm deletion, using "listCurrentSshdConfigs".
+# again to confirm deletion, using "listDirectories".
 #
 # If the user doesn't request to delete, the files are left alone.
 #
@@ -76,7 +64,7 @@ removeCurrentSshdConfigs () {
     sh -c "rm $SSHD_CONF_DIR/*.conf"
     echoComment 'Files deleted.'
 
-    listCurrentSshdConfigs
+    listDirectories "$SSHD_CONF_DIR"
   elif [ "$SSHD_CONFS_YN" = 'n' -o "$SSHD_CONFS_YN" = 'N' ]; then
     echoComment "Leaving files in $SSHD_CONF_DIR intact."
   else
@@ -149,7 +137,7 @@ AcceptEnv LANG LC_*
 EOF
   echoComment 'Config file generated.'
 
-  listCurrentSshdConfigs
+  listDirectories "$SSHD_CONF_DIR"
 }
 
 #-------------------------------------------------------------------------------
@@ -195,7 +183,7 @@ echoLocalSshConfig () {
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  listCurrentSshdConfigs
+  listDirectories "$SSHD_CONF_DIR"
   removeCurrentSshdConfigs
 
   checkSshdConfig

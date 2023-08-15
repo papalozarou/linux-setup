@@ -82,9 +82,7 @@ echo "$COMMENT_PREFIX Once logged in re-run:"
 echo "$COMMENT_PREFIX cd linux-setup && sudo ~/linux-setup/03-change-username.sh"
 EOF
 
-  echoSeparator
-  ls -lna "$RENAME_SCRIPT_PATH"
-  echoSeparator
+  listDirectories "$RENAME_SCRIPT_PATH"
   echoComment 'Script created.'
 }
 
