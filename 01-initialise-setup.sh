@@ -48,49 +48,6 @@ removeCurrentSetupConfig () {
 }
 
 #-------------------------------------------------------------------------------
-# Check for a setup config directory. If one exists, do nothing. If one doesn't
-# exist, create it and it's parent if necessary, then set ownership to 
-# "$SUDO_USER".
-#-------------------------------------------------------------------------------
-checkForSetupConfigDir () {
-  echoComment 'Checking for the setup config directory at:'
-  echoComment "$SETUP_CONF_DIR."
-
-  if [ -d "$SETUP_CONF_DIR" ]; then
-    echoComment 'The setup config directory exists.'
-  else
-    echoComment 'The setup config directory does not exist.'
-    createDirectory "$SETUP_CONF_DIR"
-    listDirectories "$SETUP_CONF_DIR"
-
-    setOwner "$SUDO_USER" "$CONF_DIR"
-    setOwner "$SUDO_USER" "$SETUP_CONF_DIR"
-  fi
-}
-
-#-------------------------------------------------------------------------------
-# Check for a current setup config file. If one doesn't exist, create it. If one
-# does exist, ask if the user wants to remove it.
-#-------------------------------------------------------------------------------
-checkForSetupConfigFile () {
-  echoComment 'Checking for a setup config file in:' 
-  echoComment "$SETUP_CONF_DIR."
-
-  if [ -f "$SETUP_CONF" ]; then
-    echoComment 'A setup config file exists'
-    removeCurrentSetupConfig
-  else
-    echoComment 'No setup config file exists.'
-    createFile "$SETUP_CONF"
-
-    setPermissions 600 "$SETUP_CONF"
-    setOwner "$SUDO_USER" "$SETUP_CONF"
-
-    listDirectories "$SETUP_CONF_DIR"
-  fi
-}
-
-#-------------------------------------------------------------------------------
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {

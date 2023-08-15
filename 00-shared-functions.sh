@@ -190,6 +190,50 @@ checkForServiceAndInstall () {
 }
 
 #-------------------------------------------------------------------------------
+# Check for a setup config directory. If one exists, do nothing. If one doesn't
+# exist, create it and it's parent if necessary, then set ownership to 
+# "$SUDO_USER".
+#-------------------------------------------------------------------------------
+checkForSetupConfigDir () {
+  echoComment 'Checking for the setup config directory at:'
+  echoComment "$SETUP_CONF_DIR."
+
+  if [ -d "$SETUP_CONF_DIR" ]; then
+    echoComment 'The setup config directory exists.'
+  else
+    echoComment 'The setup config directory does not exist.'
+    createDirectory "$SETUP_CONF_DIR"
+
+    setOwner "$SUDO_USER" "$CONF_DIR"
+    setOwner "$SUDO_USER" "$SETUP_CONF_DIR"
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Check for a current setup config file. If one exists, do nothing. If one 
+# doesn't exist, create it, then set ownership to "$SUDO_USER".
+#-------------------------------------------------------------------------------
+checkForSetupConfigFile () {
+  echoComment 'Checking for a setup config file in:' 
+  echoComment "$SETUP_CONF_DIR."
+
+  if [ -f "$SETUP_CONF" ]; then
+    echoComment 'A setup config file exists'
+  else
+    echoComment 'No setup config file exists.'
+    createFiles "$SETUP_CONF"
+
+    setPermissions 600 "$SETUP_CONF"
+    setOwner "$SUDO_USER" "$SETUP_CONF"
+
+    echoComment 'Listing setup config directory:'
+    echoSeparator
+    ls -lna "$SETUP_CONF_DIR"
+    echoSeparator
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Check to see if the port number has already been used for another service.
 # Takes two mandatory arguement:
 # 
