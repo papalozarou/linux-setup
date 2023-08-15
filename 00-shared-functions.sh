@@ -16,6 +16,18 @@
 # - 11-configure-docker.sh
 # - 12-set-env-variables.sh
 #
+# Function try to use the following naming conventions:
+#
+# - "addFooBar" – adds a value to an existing object;
+# - "changeFooBar" - changes an already set value;
+# - "checkFooBar" - checks if a value or object exists;
+# - "createFooBar" - creates an object;
+# - "generateFooBar" - generates a value or object automatically;
+# - "getFooBar" - asks the user for input to set a value, or gets a second value
+#   from an existing value;
+# - "readFooBar" - reads an already set value; and
+# - "setFooBar" - sets a value.
+#
 # N.B.
 # To make this setup as portable as possible, all scripts are POSIX compliant,
 # i.e they use #!/bin/sh not #!/bin/bash.
