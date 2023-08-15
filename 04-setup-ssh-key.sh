@@ -64,7 +64,7 @@ removePrivateSshKey () {
   echoComment 'Removing the private key at:'
   echoComment "$EXISTING_SSH_KEY"
   rm "$EXISTING_SSH_KEY"
-  echoCOmment "Key removed."
+  echoComment "Key removed."
 }
 
 #-------------------------------------------------------------------------------
@@ -117,6 +117,6 @@ mainScript () {
 #-------------------------------------------------------------------------------
 # Run the script.
 #-------------------------------------------------------------------------------
-# initialiseScript "$CONFIG_KEY"
+initialiseScript "$CONFIG_KEY"
 mainScript
 finaliseScript "$CONFIG_KEY"
