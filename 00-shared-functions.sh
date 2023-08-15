@@ -347,13 +347,6 @@ generateSshKey () {
 }
 
 #-------------------------------------------------------------------------------
-# Gets the IP address of the host machine.
-#-------------------------------------------------------------------------------
-getIPAddress () {
-  echo "$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')"
-}
-
-#-------------------------------------------------------------------------------
 # Gets a service name from a given config key. Takes one mandatory argument:
 # 
 # 1. "${1:?}" – the config option key to be used.
@@ -451,7 +444,14 @@ installRemovePackages () {
 }
 
 #-------------------------------------------------------------------------------
-# Reads a setup config option. Takes one mandatory argument:
+# Reads and returns the IP address of the host machine.
+#-------------------------------------------------------------------------------
+readIPAddress () {
+  echo "$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')"
+}
+
+#-------------------------------------------------------------------------------
+# Reads and returns a setup config option. Takes one mandatory argument:
 # 
 # 1. "${1:?}" – the key of the config option.
 # 

@@ -28,7 +28,7 @@ CONFIG_KEY='setHostEnvVariables'
 #-------------------------------------------------------------------------------
 # Environment variable values. Set as follows:
 #
-# - "HOST_IP_ADDRESS" - using the "getIPAddress" function.
+# - "HOST_IP_ADDRESS" - using the "readIPAddress" function.
 # - "HOST_TIMEZONE" - grepping "Timezone" from the output of "timedatectl show".
 # - "HOST_DOMAIN" - cutting "$HOSTNAME" using "." as a delimiter, and taking the 
 #   first segment, "f1".
@@ -40,7 +40,7 @@ CONFIG_KEY='setHostEnvVariables'
 # - cut - https://unix.stackexchange.com/a/312281
 # - trim - https://stackoverflow.com/a/10520718
 #-------------------------------------------------------------------------------
-IP_ADDRESS="$(getIPAddress)"
+IP_ADDRESS="$(readIPAddress)"
 TIMEZONE="$(timedatectl show | grep "Timezone" | cut -d'=' -f2)"
 HOSTNAME="$(hostname)"
 SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
