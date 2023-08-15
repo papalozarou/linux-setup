@@ -139,7 +139,7 @@ removeTempUser () {
 # 
 # N.B.
 # When the "tempuser" is created, all processes for the current user are 
-# terminated, including the current ssh session.
+# terminated, which may include the current ssh session.
 #-------------------------------------------------------------------------------
 mainScript () {
   if id tempuser; then
