@@ -152,7 +152,7 @@ restartSshd () {
   if [ "$SSHD_RESTART_YN" = 'y' -o "$SSHD_RESTART_YN" = 'Y' ]; then
     controlService 'restart' 'sshd'
   elif [ "$SSHD_RESTART_YN" = 'n' -o "$SSHD_RESTART_YN" = 'N' ]; then
-    echo "$COMMENT_PREFIX"'sshd will not be restarted.'
+    echoComment 'sshd will not be restarted.'
   else
     echoComment 'You must answer y or n.'
     restartSshd
