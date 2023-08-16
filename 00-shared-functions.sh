@@ -349,7 +349,6 @@ createFiles () {
 
     echoSeparator
     listDirectories "$FILE"
-    echoSeparator
     echoComment 'File created.'
   done
 }
