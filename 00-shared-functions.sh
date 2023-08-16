@@ -161,9 +161,9 @@ checkAgainstExistingPortNumber () {
 #-------------------------------------------------------------------------------
 checkForHostEnvVariable () {
   local ENV_VARIABLE="${1:?}"
-  local ENV_CHECK="$(grep "$ENV_VARIABLE" "$PROFILE")"
+  local ENV_TF="$(grep "$ENV_VARIABLE" "$PROFILE")"
 
-  if [ -z "$ENV_CHECK" ]; then
+  if [ -z "$ENV_TF" ]; then
     echo false
   else
     echo true
@@ -201,13 +201,13 @@ checkForServiceAndInstall () {
   local SERVICE="${1:?}"
   echoComment "Starting setup of $SERVICE."
 
-  local SERVICE_CHECK="$(checkForService "$SERVICE")"
+  local SERVICE_TF="$(checkForService "$SERVICE")"
   echoComment "Checking for $SERVICE."
-  echoComment "Check returned $SERVICE_CHECK."
+  echoComment "Check returned $SERVICE_TF."
 
-  if [ "$SERVICE_CHECK" = true ]; then
+  if [ "$SERVICE_TF" = true ]; then
     echoComment "You have already installed $SERVICE."
-  elif [ "$SERVICE_CHECK" = false ]; then
+  elif [ "$SERVICE_TF" = false ]; then
     echoComment "You need to install $SERVICE."
     installRemovePackages "install" "$SERVICE"
   fi
@@ -440,13 +440,13 @@ finaliseScript () {
 generateAndCheckPort () {
   local CHECK_AGAINST="${1:?}"
   local PORT_NO="$(generatePortNumber)"
-  local PORT_CHECK="$(checkAgainstExistingPortNumber "$PORT_NO" "$CHECK_AGAINST")"
+  local PORT_TF="$(checkAgainstExistingPortNumber "$PORT_NO" "$CHECK_AGAINST")"
 
-  if [ "$PORT_CHECK" = true ]; then
-    echoComment "Port check returned $PORT_CHECK. Re-running to generate" 
+  if [ "$PORT_TF" = true ]; then
+    echoComment "Port check returned $PORT_TF. Re-running to generate" 
     echoComment 'another port number.'
     checkAndSetPort
-  elif [ "$PORT_CHECK" = false ]; then
+  elif [ "$PORT_TF" = false ]; then
     echo "$PORT_NO"    
   fi
 }
@@ -655,12 +655,12 @@ readSetupConfigOption () {
 setHostEnvVariable () {
   local ENV_VARIABLE="${1:?}"
   local ENV_VALUE="${2:?}"
-  local ENV_CHECK="$(checkForHostEnvVariable "$ENV_VARIABLE")"
+  local ENV_TF="$(checkForHostEnvVariable "$ENV_VARIABLE")"
   local EXPORT="export $ENV_VARIABLE=$ENV_VALUE"
 
-  if [ "$ENV_CHECK" = true ]; then
+  if [ "$ENV_TF" = true ]; then
     echoComment "Already added $ENV_VARIABLE. No changes made."
-  elif [ "$ENV_CHECK" = false ]; then
+  elif [ "$ENV_TF" = false ]; then
     echoComment "Adding $ENV_VARIABLE=$ENV_VALUE to:"
     echoComment "$PROFILE"
     echo "$EXPORT" >> "$PROFILE"
