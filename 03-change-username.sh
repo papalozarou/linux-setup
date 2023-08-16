@@ -23,7 +23,7 @@
 CONFIG_KEY='changedUsername'
 
 #-------------------------------------------------------------------------------
-# Set the file variables for the rename script.
+# File variables.
 #-------------------------------------------------------------------------------
 TEMPUSER_DIR="/home/tempuser"
 RENAME_SCRIPT="renameUser.sh"
