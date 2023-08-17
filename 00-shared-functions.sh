@@ -498,7 +498,7 @@ generatePortNumber () {
 #-------------------------------------------------------------------------------
 # Generates a random alphanumeric string of a given length. Takes one arguement:
 # 
-# 1. "${1:?}" – the string length, defaults to 64.
+# 1. "${1:-"64"}" – the string length, defaults to 64.
 #-------------------------------------------------------------------------------
 generateRandomString () {
   local LENGTH="${1:-"64"}"
