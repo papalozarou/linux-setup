@@ -251,7 +251,7 @@ checkForServiceAndInstall () {
 # "$SUDO_USER".
 #-------------------------------------------------------------------------------
 checkForSetupConfigDir () {
-  local SETUP_CONF_DIR_TF="$(checkForDirectory ""$SETUP_CONF_DIR)"
+  local SETUP_CONF_DIR_TF="$(checkForDirectory "$SETUP_CONF_DIR")"
 
   echoComment 'Checking for the setup config directory at:'
   echoComment "$SETUP_CONF_DIR."
@@ -274,7 +274,7 @@ checkForSetupConfigDir () {
 # doesn't exist, create it, then set ownership to "$SUDO_USER".
 #-------------------------------------------------------------------------------
 checkForSetupConfigFile () {
-  local SETUP_CONF_TF="$(checkForDirectory ""$SETUP_CONF)"
+  local SETUP_CONF_TF="$(checkForDirectory "$SETUP_CONF")"
 
   echoComment 'Checking for a setup config file in:' 
   echoComment "$SETUP_CONF_DIR."
