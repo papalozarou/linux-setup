@@ -496,6 +496,19 @@ generatePortNumber () {
 }
 
 #-------------------------------------------------------------------------------
+# Generates a random alphanumeric string of a given length. Takes one arguement:
+# 
+# 1. "${1:?}" – the string length, defaults to 64.
+#-------------------------------------------------------------------------------
+generateRandomString () {
+  local LENGTH="${1:-"64"}"
+
+  STRING="$(tr -cd '[:alnum:]' < /dev/urandom | fold -w "${LENGTH}" | head -n 1 | tr -d '\n')"
+
+  echo "$STRING"
+}
+
+#-------------------------------------------------------------------------------
 # Generates an ssh key. Takes two arguments:
 #
 # 1. "${1:?}" – specify a file path; and
