@@ -154,6 +154,38 @@ checkAgainstExistingPortNumber () {
 }
 
 #-------------------------------------------------------------------------------
+# Checks for a directory. Returns true of the directory is present, false it 
+# not. Takes one mandatory argument.
+# 
+# 1. "{1:?}" - the directory to check for.
+#-------------------------------------------------------------------------------
+checkForDirectory () {
+  local DIR="${1:?}"
+
+  if [ -d "$DIR" ]; then
+    echo false
+  else
+    echo true
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Checks for a file. Returns true of the file is present, false it not. Takes
+# one mandatory argument.
+# 
+# 1. "{1:?}" - the file to check for.
+#-------------------------------------------------------------------------------
+checkForFile () {
+  local FILE="${1:?}"
+
+  if [ -f "$FILE" ]; then
+    echo false
+  else
+    echo true
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Checks for a given environment variable in "$PROFILE". Returns true if the 
 # variable is present, returns false if not. Takes one mandatory argument:
 # 
@@ -219,12 +251,14 @@ checkForServiceAndInstall () {
 # "$SUDO_USER".
 #-------------------------------------------------------------------------------
 checkForSetupConfigDir () {
+  local SETUP_CONF_DIR_TF="$(checkForDirectory ""$SETUP_CONF_DIR)"
+
   echoComment 'Checking for the setup config directory at:'
   echoComment "$SETUP_CONF_DIR."
 
-  if [ -d "$SETUP_CONF_DIR" ]; then
+  if [ "$SETUP_CONF_DIR_TF" = true ]; then
     echoComment 'The setup config directory exists.'
-  else
+  elif [ "$SETUP_CONF_DIR_TF" = false ]; then
     echoComment 'The setup config directory does not exist.'
     createDirectory "$SETUP_CONF_DIR"
 
@@ -240,12 +274,14 @@ checkForSetupConfigDir () {
 # doesn't exist, create it, then set ownership to "$SUDO_USER".
 #-------------------------------------------------------------------------------
 checkForSetupConfigFile () {
+  local SETUP_CONF_TF="$(checkForDirectory ""$SETUP_CONF)"
+
   echoComment 'Checking for a setup config file in:' 
   echoComment "$SETUP_CONF_DIR."
 
-  if [ -f "$SETUP_CONF" ]; then
+  if [ "$SETUP_CONF_TF" = true ]; then
     echoComment 'A setup config file exists.'
-  else
+  elif  [ "$SETUP_CONF_TF" = false ]; then
     echoComment 'No setup config file exists.'
     createFiles "$SETUP_CONF"
 
