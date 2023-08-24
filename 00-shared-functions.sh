@@ -653,9 +653,9 @@ listDirectories () {
 # Lists current ufw rules, with numbers.
 #-------------------------------------------------------------------------------
 listUfwRules () {
-  echoComment "Listing $SERVICE rules…"
+  echoComment 'Listing UFW rules…'
   echoSeparator
-  "$SERVICE" status numbered
+  ufw status numbered
   echoSeparator
 }
 
