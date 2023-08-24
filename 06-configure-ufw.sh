@@ -44,16 +44,6 @@ setUfwDefaults () {
 }
 
 #-------------------------------------------------------------------------------
-# Lists current ufw rules, with numbers.
-#-------------------------------------------------------------------------------
-listUfwRules () {
-  echoComment "Listing $SERVICE rules…"
-  echoSeparator
-  "$SERVICE" status numbered
-  echoSeparator
-}
-
-#-------------------------------------------------------------------------------
 # Adds the ssh port defined in "06-configure-sshd.sh" to ufw.
 #-------------------------------------------------------------------------------
 allowSshPort () {

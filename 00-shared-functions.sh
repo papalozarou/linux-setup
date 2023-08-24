@@ -650,6 +650,16 @@ listDirectories () {
 }
 
 #-------------------------------------------------------------------------------
+# Lists current ufw rules, with numbers.
+#-------------------------------------------------------------------------------
+listUfwRules () {
+  echoComment "Listing $SERVICE rules…"
+  echoSeparator
+  "$SERVICE" status numbered
+  echoSeparator
+}
+
+#-------------------------------------------------------------------------------
 # Reads and returns the IP address of the host machine.
 #-------------------------------------------------------------------------------
 readIPAddress () {
