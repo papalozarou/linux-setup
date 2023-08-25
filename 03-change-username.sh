@@ -126,7 +126,7 @@ removeTempUser () {
   echoComment 'Deleting temporary user, tempuser.'
   echoSeparator
   deluser tempuser
-  removeFilesOrDirectory "$TEMPUSER_DIR"
+  removeFileOrDirectory "$TEMPUSER_DIR"
   echoSeparator
   echoComment 'Temporary user and home folder deleted.'
 }

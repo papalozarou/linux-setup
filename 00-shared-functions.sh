@@ -698,7 +698,7 @@ readSetupConfigOption () {
 # 
 # 1. "${1:?}" – the file or directory path to remove.
 #-------------------------------------------------------------------------------
-removeFilesOrDirectory () {
+removeFileOrDirectory () {
   local FILE_DIR="${1:?}"
 
   echoComment 'Removing file or directory at:'
