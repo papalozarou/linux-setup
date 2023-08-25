@@ -694,6 +694,20 @@ readSetupConfigOption () {
 }
 
 #-------------------------------------------------------------------------------
+# Removes a file or directory. Takes one mandatory argument:
+# 
+# 1. "${1:?}" – the file or directory path to remove.
+#-------------------------------------------------------------------------------
+removeFilesOrDirectory () {
+  local FILE_DIR="${1:?}"
+
+  echoComment 'Removing file or directory at:'
+  echoComment "$FILE_DIR"
+  rm -R $FILE_DIR
+  echoComment 'File or directory removed'
+}
+
+#-------------------------------------------------------------------------------
 # Checks for, then adds, an environment variable to "$PROFILE". Takes two
 # mandatory arguments:
 # 
