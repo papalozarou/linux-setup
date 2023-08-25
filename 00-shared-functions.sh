@@ -703,7 +703,7 @@ removeFilesOrDirectory () {
 
   echoComment 'Removing file or directory at:'
   echoComment "$FILE_DIR"
-  rm -R $FILE_DIR
+  rm -r $FILE_DIR
   echoComment 'File or directory removed'
 }
 
