@@ -27,6 +27,15 @@ CONFIG_KEY='configuredUfw'
 SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
+# Disables IPv6 rules in ufw.
+#-------------------------------------------------------------------------------
+setIpv6No () {
+  local UFW_CONF='/etc/default/ufw'
+
+  sed -i '/IPV6=/c\\IPV6=no' "$UFW_CONF"
+}
+
+#-------------------------------------------------------------------------------
 # Adds a default set of ufw rules, by:
 #
 # 1. denying all incoming traffic;
@@ -58,6 +67,8 @@ allowSshPort () {
 #-------------------------------------------------------------------------------
 mainScript () {
   checkForServiceAndInstall "$SERVICE"
+
+  setIpv6No
 
   setUfwDefaults
   allowSshPort  
