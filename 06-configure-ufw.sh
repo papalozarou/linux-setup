@@ -32,7 +32,14 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 setIpv6No () {
   local UFW_CONF='/etc/default/ufw'
 
+  echoComment 'Turning off IPv6 rules in:'
+  echoComment "$UFW_CONF"
   sed -i '/IPV6=/c\\IPV6=no' "$UFW_CONF"
+
+  echoSeparator
+  grep 'IPV6=' "$UFW_CONF"
+  echoSeparator
+  echoComment 'IPv6 turned off.'
 }
 
 #-------------------------------------------------------------------------------
