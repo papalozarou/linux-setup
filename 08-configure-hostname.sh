@@ -16,9 +16,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
+
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+# . ./linshafun/network.sh
+# . ./linshafun/ownership-permissions.sh
+# . ./linshafun/packages.sh
+# . ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+# . ./linshafun/ssh-keys.sh
+# . ./linshafun/text.sh
+. ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key variable.
@@ -30,14 +50,15 @@ CONFIG_KEY='configuredHostname'
 # no, otherwise re-runs.
 #-------------------------------------------------------------------------------
 changeHostname () {
-  echoComment 'Would you like to change the hostname?'
-  read -r HOSTNAME_CHANGE_YN
+  promptForUserInput 'Would you like to change the hostname?'
+  HOSTNAME_CHANGE_YN="$(getUserInput)"
 
   if [  "$HOSTNAME_CHANGE_YN" = 'y' -o "$HOSTNAME_CHANGE_YN" = 'Y' ]; then
     setNewHostname
   elif [ "$HOSTNAME_CHANGE_YN" = 'n' -o "$HOSTNAME_CHANGE_YN" = 'N' ]; then
     echoComment 'No changes made to hostname.'
     echoScriptExiting
+
     exit 1
   else
     echoComment 'You must answer y or n.'
@@ -63,15 +84,15 @@ checkHostname () {
 # Sets a new user inputed hostname.
 #-------------------------------------------------------------------------------
 setNewHostname () {
-  echoComment 'What is your new hostname (my.hostname.com)?'
-  read -r HOSTNAME
+  promptForUserInput 'What is your new hostname (my.hostname.com)?'
+  HOSTNAME="$(getUserInput)"
 
   echoComment 'Setting hostname to:'
   echoComment "$HOSTNAME"
   echoComment 'You may be asked to authenticate.'
-  hostnamectl set-hostname "$HOSTNAME"
+  sh -c "hostnamectl set-hostname $HOSTNAME"
   echoComment 'Hostname is now set to:'
-  hostname
+  sh -c "hostname"
 }
 
 #-------------------------------------------------------------------------------
