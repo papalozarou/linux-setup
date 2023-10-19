@@ -13,16 +13,17 @@
 #-------------------------------------------------------------------------------
 # Imported variables.
 #-------------------------------------------------------------------------------
-. ./docker.var
-. ./setup.var
+. ./linshafun/docker.var
+. ./linshafun/setup.var
 
 #-------------------------------------------------------------------------------
 # Imported shared functions.
 #-------------------------------------------------------------------------------
-. ./comments.sh
-. ./packages.sh
-. ./setup-config.sh
-. ./setup.sh
+. ./linshafun/comments.sh
+. ./linshafun/files-directories.sh
+. ./linshafun/packages.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
 
 #-------------------------------------------------------------------------------
 # Config key variable.
