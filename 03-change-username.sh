@@ -28,7 +28,7 @@
 # . ./linshafun/firewall.sh
 # . ./linshafun/host-env-variables.sh
 # . ./linshafun/network.sh
-# . ./linshafun/ownership-permissions.sh
+. ./linshafun/ownership-permissions.sh
 # . ./linshafun/packages.sh
 # . ./linshafun/services.sh
 . ./linshafun/setup-config.sh
