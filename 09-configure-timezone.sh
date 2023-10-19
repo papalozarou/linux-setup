@@ -15,10 +15,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
 
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+# . ./linshafun/network.sh
+# . ./linshafun/ownership-permissions.sh
+. ./linshafun/packages.sh
+# . ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+# . ./linshafun/ssh-keys.sh
+# . ./linshafun/text.sh
+. ./linshafun/user-input.sh
 #-------------------------------------------------------------------------------
 # Config key and service variables.
 #-------------------------------------------------------------------------------
@@ -41,8 +60,8 @@ changeTimezone () {
   echoComment 'Your current timezone is:'
   echoComment "$CURRENT_TIMEZONE"
 
-  echoComment 'Would you like to change the timezone?'
-  read -r TIMEZONE_SET_YN
+  promptForUserInput 'Would you like to change the timezone?'
+  TIMEZONE_SET_YN="$(getUserInput)"
 
   if [  "$TIMEZONE_SET_YN" = 'y' -o "$TIMEZONE_SET_YN" = 'Y' ]; then
     setNewTimezone
@@ -80,7 +99,7 @@ checkTimezone () {
 listNtpSettings () {
   echoComment 'Listing ntpq settings.'
   echoSeparator
-  ntpq -p
+  sh -c "ntpq -p"
   echoSeparator
   echoComment 'It may take a moment for connections to be established.'
 }
@@ -91,7 +110,7 @@ listNtpSettings () {
 listTimeDate () {
   echoComment 'Listing time and date settings.'
   echoSeparator
-  timedatectl
+  sh -c "timedatectl"
   echoSeparator
 }
 
@@ -104,8 +123,8 @@ listTimeDate () {
 setNewTimezone () {
   echoComment 'You can find a list of timezones at:'
   echoComment 'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'
-  echoComment 'Which timezone would you like to switch to (Region/City)?'
-  read -r NEW_TIMEZONE
+  promptForUserInput 'Which timezone would you like to switch to (Region/City)?'
+  NEW_TIMEZONE="$(getUserInput)"
 
   echoComment "Checking $NEW_TIMEZONE is valid…"
   local TIMEZONE_VALID="$(checkTimezone "$NEW_TIMEZONE")"
@@ -114,7 +133,7 @@ setNewTimezone () {
     echoComment 'Timezone is valid.'
 
     echoComment "Setting timezone to $NEW_TIMEZONE."
-    sudo timedatectl set-timezone "$NEW_TIMEZONE"
+    sh -c "timedatectl set-timezone $NEW_TIMEZONE"
     echoComment "Timezone set."
     listTimeDate
 
@@ -132,10 +151,10 @@ mainScript () {
   changeTimezone
 
   echoComment 'Ensuring set-ntp is off.'
-  sudo timedatectl set-ntp no
+  sh -c "timedatectl set-ntp no"
   listTimeDate
 
-  checkForServiceAndInstall "$SERVICE"
+  checkForPackageAndInstall "$SERVICE"
 
   listNtpSettings
 }
