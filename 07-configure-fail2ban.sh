@@ -20,9 +20,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
+
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+# . ./linshafun/network.sh
+. ./linshafun/ownership-permissions.sh
+. ./linshafun/packages.sh
+. ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+# . ./linshafun/ssh-keys.sh
+. ./linshafun/text.sh
+# . ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key and service variables.
@@ -59,7 +79,7 @@ EOF
 # Runs the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  checkForServiceAndInstall "$SERVICE"
+  checkForPackagesAndInstall "$SERVICE"
 
   createHardenedFail2banConfig
   setPermissions '644' "$FAIL2BAN_DEFAULT_CONF"
