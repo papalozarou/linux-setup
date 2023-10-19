@@ -8,9 +8,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
+
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+# . ./linshafun/network.sh
+# . ./linshafun/ownership-permissions.sh
+# . ./linshafun/packages.sh
+# . ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+. ./linshafun/ssh-keys.sh
+# . ./linshafun/text.sh
+. ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key variable.
@@ -36,6 +56,9 @@ addKeyToAuthorizedKeys () {
 # Checks that a user has copied the key after running the script before. If yes,
 # remove it, if no or other input direct to copy the key and run this function
 # again.
+# 
+# N.B.
+# "promptForUserInput" is not used here as it's a multiline question.
 #-------------------------------------------------------------------------------
 checkPrivateSshKeyCopied () {
   echoComment "Have you copied the private key, $EXISTING_KEY_NAME, to your"
@@ -43,7 +66,7 @@ checkPrivateSshKeyCopied () {
   echoNb
   echoComment 'If you answer y and have not copied the key, you will lose'
   echoComment 'access via ssh.'
-  read -r KEY_COPIED_YN
+  KEY_COPIED_YN="$(getUserInput)"
 
   if [ "$KEY_COPIED_YN" = 'y' -o "$KEY_COPIED_YN" = 'Y' ]; then
     removePrivateSshKey
@@ -63,7 +86,7 @@ checkPrivateSshKeyCopied () {
 removePrivateSshKey () {
   echoComment 'Removing the private key at:'
   echoComment "$EXISTING_SSH_KEY"
-  rm "$EXISTING_SSH_KEY"
+  sh -c "rm $EXISTING_SSH_KEY"
   echoComment "Key removed."
 }
 
@@ -79,10 +102,10 @@ echoKeyUsage () {
 # Get the name of the ssh key, and set the variable "$SSH_KEY".
 #-------------------------------------------------------------------------------
 getSshKeyDetails () {
-  echoComment 'What do you want to call your ssh key?'
-  read -r REMOTE_KEY_NAME
-  echoComment 'What email do you want to add to your ssh key?'
-  read -r SSH_EMAIL
+  promptForUserInput 'What do you want to call your ssh key?'
+  REMOTE_KEY_NAME="$(getUserInput)"
+  promptForUserInput 'What email do you want to add to your ssh key?'
+  SSH_EMAIL="$(getUserInput)"
 
   SSH_KEY="$SSH_DIR/$REMOTE_KEY_NAME"
 }
