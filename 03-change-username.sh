@@ -13,9 +13,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
+
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+. ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+# . ./linshafun/network.sh
+# . ./linshafun/ownership-permissions.sh
+# . ./linshafun/packages.sh
+# . ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+# . ./linshafun/ssh-keys.sh
+# . ./linshafun/text.sh
+. ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key variable.
@@ -46,11 +66,11 @@ createTempUser () {
   echoNb
   echoComment 'Set a password you can remember easily as you will need it shortly.'
   echoSeparator
-  adduser --gecos GECOS tempuser
+  sh -c "adduser --gecos GECOS tempuser"
   echoSeparator
   echoComment 'Temporary user created. Adding to sudoers.'
   echoSeparator
-  adduser tempuser sudo
+  sh -c "adduser tempuser sudo"
   echoSeparator
   echoComment 'Temporary user added to sudoers file.'
 }
@@ -59,8 +79,8 @@ createTempUser () {
 # Get the desired new username and group.
 #-------------------------------------------------------------------------------
 getNewUserName () {
-  echoComment 'What is your new user name?' 
-  read -r NEW_USER
+  promptForUserInput 'What is your new user name?' 
+  NEW_USER="$(getUserInput)"
 }
 
 #-------------------------------------------------------------------------------
@@ -100,14 +120,15 @@ killProcesses () {
     echoSeparator
     echoComment 'Warning: This will log you out.'
     echoSeparator
-    echoComment 'Ready to kill all processes (y)?'
-    read -r KILL_PROCESSES_YN
+
+    promptForUserInput 'Ready to kill all processes (y)?'
+    KILL_PROCESSES_YN="$(getUserInput)"
 
     if [ "$KILL_PROCESSES_YN" = 'y' -o "$KILL_PROCESSES_YN" = 'Y' ]; then
       echoSeparator
       echoComment "Killing all processes for $SUDO_USER."
       echoSeparator
-      pkill -u "$SUDO_UID"
+      sh -c "pkill -u $SUDO_UID"
 
       exit
     else
@@ -125,7 +146,7 @@ killProcesses () {
 removeTempUser () {
   echoComment 'Deleting temporary user, tempuser.'
   echoSeparator
-  deluser tempuser
+  sh -c "deluser tempuser"
   removeFileOrDirectory "$TEMPUSER_DIR"
   echoSeparator
   echoComment 'Temporary user and home folder deleted.'
