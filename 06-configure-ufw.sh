@@ -32,7 +32,7 @@
 # . ./linshafun/host-env-variables.sh
 . ./linshafun/network.sh
 # . ./linshafun/ownership-permissions.sh
-# . ./linshafun/packages.sh
+. ./linshafun/packages.sh
 . ./linshafun/services.sh
 . ./linshafun/setup-config.sh
 . ./linshafun/setup.sh
@@ -94,7 +94,7 @@ allowSshPort () {
 # Runs the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  checkForServiceAndInstall "$SERVICE"
+  checkForPackagesAndInstall "$SERVICE"
 
   setIpv6No
 
