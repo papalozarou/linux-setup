@@ -100,8 +100,8 @@ setGitDefaultBranch () {
 addSshKeytoAgent () {
   echoComment 'Adding the generated key to the ssh-agent.'
   echoSeparator
-  sh -c "eval "$(ssh-agent -s)""
-  sh -c "ssh-add $SSH_KEY"
+  eval "$(ssh-agent -s)"
+  ssh-add "$SSH_KEY"
   echoSeparator
   echoComment 'Key added to agent.'
 }
@@ -164,7 +164,7 @@ checkUserAddedKey () {
 listGitConfig () {
   echoComment 'Listing git configuration.'
   echoSeparator
-  sh -c "git config --list"
+  git config --list
   echoSeparator
 }
 
@@ -174,7 +174,7 @@ listGitConfig () {
 testGitSsh () {
   echoComment 'Testing ssh connection to git:'
   echoSeparator
-  sh -c "ssh -T git@github.com"
+  ssh -T git@github.com
   echoSeparator
   echoComment 'If you saw a success message, you are good to go. If you saw an' 
   echoComment 'error about permissions, when this script exits you can try:'

@@ -87,7 +87,7 @@ checkSudoersConf () {
 
     echoComment "Added include line."
     echoSeparator
-    sh -c "grep "@includedir" $SUDOERS"
+    grep "@includedir" "$SUDOERS"
     echoSeparator
   else
     echoComment "Include line already present."

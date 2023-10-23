@@ -131,13 +131,13 @@ removeExistingDocker () {
 verifyDockerInstall() {
   echoComment "Verifying $SERVICE install."
   echoSeparator
-  sh -c "$SERVICE run hello-world"
+  $SERVICE run hello-world
   echoSeparator
   echoComment "If $SERVICE was installed correctly, Hello World will appear above."
   
   echoComment "Removing verification data and container."
   echoSeparator
-  sh -c "$SERVICE system prune -af"
+  $SERVICE system prune -af
   echoSeparator
   echoComment "Verification data and container removed."
 }

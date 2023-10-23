@@ -16,10 +16,10 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 
 ## Usage
 
-Clone the repository, and change to the repository directory with:
+Clone the repository, and submodules, then switch to the repository directory with:
 
 ```
-git clone https://github.com/papalozarou/linux-setup.git && \
+git clone --recursive https://github.com/papalozarou/linux-setup.git && \
 cd ~/linux-setup
 ```
 

@@ -46,7 +46,7 @@ changeUserPassword () {
   echoComment 'Please make sure your password is set to a minimum of 24 characters,'
   echoComment 'using a mix of alphanumeric characters and symbols.'
   echoSeparator
-  sh -c "passwd $SUDO_USER"
+  passwd "$SUDO_USER"
   echoSeparator
 }
 

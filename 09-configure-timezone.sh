@@ -99,7 +99,7 @@ checkTimezone () {
 listNtpSettings () {
   echoComment 'Listing ntpq settings.'
   echoSeparator
-  sh -c "ntpq -p"
+  ntpq -p
   echoSeparator
   echoComment 'It may take a moment for connections to be established.'
 }
@@ -110,7 +110,7 @@ listNtpSettings () {
 listTimeDate () {
   echoComment 'Listing time and date settings.'
   echoSeparator
-  sh -c "timedatectl"
+  timedatectl
   echoSeparator
 }
 
@@ -133,7 +133,7 @@ setNewTimezone () {
     echoComment 'Timezone is valid.'
 
     echoComment "Setting timezone to $NEW_TIMEZONE."
-    sh -c "timedatectl set-timezone $NEW_TIMEZONE"
+    timedatectl set-timezone "$NEW_TIMEZONE"
     echoComment "Timezone set."
     listTimeDate
 
@@ -151,7 +151,7 @@ mainScript () {
   changeTimezone
 
   echoComment 'Ensuring set-ntp is off.'
-  sh -c "timedatectl set-ntp no"
+  timedatectl set-ntp no
   listTimeDate
 
   checkForPackageAndInstall "$SERVICE"

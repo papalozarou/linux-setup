@@ -66,11 +66,11 @@ createTempUser () {
   echoNb
   echoComment 'Set a password you can remember easily as you will need it shortly.'
   echoSeparator
-  sh -c "adduser --gecos GECOS tempuser"
+  adduser --gecos GECOS tempuser
   echoSeparator
   echoComment 'Temporary user created. Adding to sudoers.'
   echoSeparator
-  sh -c "adduser tempuser sudo"
+  adduser tempuser sudo
   echoSeparator
   echoComment 'Temporary user added to sudoers file.'
 }
@@ -128,7 +128,7 @@ killProcesses () {
       echoSeparator
       echoComment "Killing all processes for $SUDO_USER."
       echoSeparator
-      sh -c "pkill -u $SUDO_UID"
+      pkill -u "$SUDO_UID"
 
       exit
     else
@@ -146,7 +146,7 @@ killProcesses () {
 removeTempUser () {
   echoComment 'Deleting temporary user, tempuser.'
   echoSeparator
-  sh -c "deluser tempuser"
+  deluser tempuser
   removeFileOrDirectory "$TEMPUSER_DIR"
   echoSeparator
   echoComment 'Temporary user and home folder deleted.'

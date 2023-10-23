@@ -90,9 +90,9 @@ setNewHostname () {
   echoComment 'Setting hostname to:'
   echoComment "$HOSTNAME"
   echoComment 'You may be asked to authenticate.'
-  sh -c "hostnamectl set-hostname $HOSTNAME"
+  hostnamectl set-hostname "$HOSTNAME"
   echoComment 'Hostname is now set to:'
-  sh -c "hostname"
+  hostname
 }
 
 #-------------------------------------------------------------------------------

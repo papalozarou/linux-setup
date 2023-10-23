@@ -57,7 +57,7 @@ setIpv6No () {
   sed -i '/IPV6=/c\\IPV6=no' "$UFW_CONF"
 
   echoSeparator
-  sh -c "grep 'IPV6=' "$UFW_CONF""
+  grep 'IPV6=' "$UFW_CONF"
   echoSeparator
   echoComment 'IPv6 turned off.'
 }
@@ -74,8 +74,8 @@ setIpv6No () {
 # the function needs re-writing to allow for "default" rules with no port.
 #-------------------------------------------------------------------------------
 setUfwDefaults () {
-  sh -c "$SERVICE default deny incoming"
-  sh -c "$SERVICE default allow outgoing"
+  "$SERVICE" default deny incoming
+  "$SERVICE" default allow outgoing
   addRuleToUfw 'deny' '22'
 }
 

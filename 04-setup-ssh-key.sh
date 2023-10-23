@@ -86,7 +86,7 @@ checkPrivateSshKeyCopied () {
 removePrivateSshKey () {
   echoComment 'Removing the private key at:'
   echoComment "$EXISTING_SSH_KEY"
-  sh -c "rm $EXISTING_SSH_KEY"
+  rm "$EXISTING_SSH_KEY"
   echoComment "Key removed."
 }
 
