@@ -45,8 +45,7 @@ CONFIG_KEY='initialisedSetup'
 #-------------------------------------------------------------------------------
 mainScript () {
   updateUpgrade
-  checkForSetupConfigDir
-  checkForSetupConfigFile
+  checkForSetupConfigFileAndDir
 }
 
 #-------------------------------------------------------------------------------
