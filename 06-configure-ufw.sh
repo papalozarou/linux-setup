@@ -83,7 +83,7 @@ setUfwDefaults () {
 # Adds the ssh port defined in "06-configure-sshd.sh" to ufw.
 #-------------------------------------------------------------------------------
 allowSshPort () {
-  local SSH_PORT="$(readSetupConfigOption sshPort)"
+  local SSH_PORT="$(readSetupConfigValue sshPort)"
   
   echoComment 'Reading ssh port.'
   echoComment "Current port is $SSH_PORT."

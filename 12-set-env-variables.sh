@@ -61,7 +61,7 @@ CONFIG_KEY='setHostEnvVariables'
 # - cut - https://unix.stackexchange.com/a/312281
 # - trim - https://stackoverflow.com/a/10520718
 #-------------------------------------------------------------------------------
-IP_ADDRESS="$(readIPAddress)"
+IP_ADDRESS="$(readIpAddress)"
 TIMEZONE="$(timedatectl show | grep "Timezone" | cut -d'=' -f2)"
 HOSTNAME="$(hostname)"
 SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"

@@ -181,8 +181,8 @@ restartSshd () {
 # Displays the values a user needs to add to their local ssh config file.
 #-------------------------------------------------------------------------------
 echoLocalSshConfig () {
-  local IP_ADDRESS="$(readIPAddress)"
-  local SSH_KEY_FILE="$(readSetupConfigOption "sshKeyFile")"
+  local IP_ADDRESS="$(readIpAddress)"
+  local SSH_KEY_FILE="$(readSetupConfigValue "sshKeyFile")"
 
   echoComment 'To enable easy connection from your local machine, add the'
   echoComment 'following to your local ssh config file at either:'
