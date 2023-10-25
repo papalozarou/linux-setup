@@ -16,9 +16,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
+
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+# . ./linshafun/network.sh
+. ./linshafun/ownership-permissions.sh
+# . ./linshafun/packages.sh
+# . ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+. ./linshafun/ssh-keys.sh
+. ./linshafun/text.sh
+. ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key and service variables.
@@ -37,10 +57,10 @@ SSH_KEY="$SSH_DIR/github"
 # for Github.
 #-------------------------------------------------------------------------------
 getGitDetails () {
-  echoComment 'What global git username do you want to use with git?'
-  read -r GIT_USERNAME
-  echoComment 'What global git email do you want to use with git?'
-  read -r GIT_EMAIL
+  promptForUserInput 'What global git username do you want to use with git?'
+  GIT_USERNAME="$(getUserInput)"
+  promptForUserInput 'What global git email do you want to use with git?'
+  GIT_EMAIL="$(getUserInput)"
 }
 
 #-------------------------------------------------------------------------------
@@ -124,8 +144,8 @@ getUserToAddKey () {
 #-------------------------------------------------------------------------------
 checkUserAddedKey () {
   sleep 5
-  echoComment 'Have you added the ssh key to your account (y/n)?'
-  read -r KEY_ADDED
+  promptForUserInput 'Have you added the ssh key to your account (y/n)?'
+  KEY_ADDED="$(getUserInput)"
 
   if [ "$KEY_ADDED" = 'y' -o "$KEY_ADDED" = 'Y' ]; then
     echoComment 'Key added to Github – we will know later if you fibbed…'

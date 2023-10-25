@@ -16,9 +16,30 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+# . ./linshafun/docker.var
+. ./linshafun/setup.var
+
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+. ./linshafun/host-env-variables.sh
+. ./linshafun/network.sh
+. ./linshafun/ownership-permissions.sh
+# . ./linshafun/packages.sh
+# . ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+# . ./linshafun/ssh-keys.sh
+# . ./linshafun/text.sh
+# . ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key variable.

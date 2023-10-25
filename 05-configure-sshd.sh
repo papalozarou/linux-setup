@@ -21,10 +21,29 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Import shared functions.
+# Imported variables.
 #-------------------------------------------------------------------------------
-. ./00-shared-functions.sh
+. ./linshafun/setup.var
 
+#-------------------------------------------------------------------------------
+# Imported shared functions.
+#-------------------------------------------------------------------------------
+. ./linshafun/comments.sh
+# . ./linshafun/docker-env-variables.sh
+# . ./linshafun/docker-images.sh
+# . ./linshafun/docker-services.sh
+# . ./linshafun/files-directories.sh
+# . ./linshafun/firewall.sh
+# . ./linshafun/host-env-variables.sh
+. ./linshafun/network.sh
+. ./linshafun/ownership-permissions.sh
+# . ./linshafun/packages.sh
+. ./linshafun/services.sh
+. ./linshafun/setup-config.sh
+. ./linshafun/setup.sh
+# . ./linshafun/ssh-keys.sh
+# . ./linshafun/text.sh
+. ./linshafun/user-input.sh
 #-------------------------------------------------------------------------------
 # Config key variable.
 #-------------------------------------------------------------------------------
@@ -55,13 +74,12 @@ SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
 # https://stackoverflow.com/a/31559110
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
-  echoComment "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?"
-  echoComment 'N.B. This cannot be undone, and we wont ask for confirmation.'
-  read -r SSHD_CONFS_YN
+  promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
+  SSHD_CONFS_YN="$(getUserInput)"
 
   if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
     echoComment "Deleting files in $SSHD_CONF_DIR."
-    sh -c "rm $SSHD_CONF_DIR/*.conf"
+    rm "$SSHD_CONF_DIR/*.conf"
     echoComment 'Files deleted.'
 
     listDirectories "$SSHD_CONF_DIR"
@@ -146,8 +164,8 @@ EOF
 restartSshd () {
   echoComment 'To enable the new sshd configutation, you will need to restart'
   echoComment 'sshd. This can potentially interupt your connection.'
-  echoComment 'Do you want to restart sshd (y/n)?'
-  read -r SSHD_RESTART_YN
+  promptForUserInput 'Do you want to restart sshd (y/n)?'
+  SSHD_RESTART_YN="$(getUserInput)"
 
   if [ "$SSHD_RESTART_YN" = 'y' -o "$SSHD_RESTART_YN" = 'Y' ]; then
     controlService 'restart' 'sshd'
