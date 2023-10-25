@@ -154,7 +154,7 @@ mainScript () {
   timedatectl set-ntp no
   listTimeDate
 
-  checkForPackageAndInstall "$SERVICE"
+  checkForPackagesAndInstall "$SERVICE"
 
   listNtpSettings
 }
