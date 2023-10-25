@@ -40,7 +40,7 @@ CONFIG_KEY="setupSshKey"
 #-------------------------------------------------------------------------------
 # File variables.
 #-------------------------------------------------------------------------------
-EXISTING_KEY_NAME="$(readSetupConfigOption "sshKeyFile")"
+EXISTING_KEY_NAME="$(readSetupConfigValue "sshKeyFile")"
 EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 
 #-------------------------------------------------------------------------------
