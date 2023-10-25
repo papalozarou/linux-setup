@@ -148,7 +148,7 @@ verifyDockerInstall() {
 mainScript () {
   echoComment "Starting setup of $SERVICE."
 
-  local SERVICE_CHECK="$(checkForService "$SERVICE")"
+  local SERVICE_CHECK="$(checkForSPackage "$SERVICE")"
   echoComment "Checking for $SERVICE."
   echoComment "Check returned $SERVICE_CHECK."
 
