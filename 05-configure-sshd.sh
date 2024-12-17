@@ -40,7 +40,7 @@
 . ./linshafun/files-directories.sh
 # . ./linshafun/firewall.sh
 # . ./linshafun/host-env-variables.sh
-# . ./linshafun/host-information.sh
+. ./linshafun/host-information.sh
 . ./linshafun/network.sh
 . ./linshafun/ownership-permissions.sh
 # . ./linshafun/packages.sh
@@ -62,6 +62,8 @@ GLOBAL_SSH_DIR='/etc/ssh'
 SSHD_CONF="$GLOBAL_SSH_DIR/sshd_config"
 SSHD_CONF_DIR="$GLOBAL_SSH_DIR/sshd_config.d"
 SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
+SSH_SOCKET_CONF_DIR="/etc/systemd/system/ssh.socket.d"
+SSH_SOCKET_OVERRIDE_CONF="$SSHD_SOCKET_DIR/override.conf"
 
 #-------------------------------------------------------------------------------
 # Removes the config files within "$SSHD_CONF_DIR", based on the users input.
@@ -131,6 +133,42 @@ checkSshdConfig () {
 }
 
 #-------------------------------------------------------------------------------
+# Configures the SSH socket on Ubuntu versions above 22.xx. A check is performed
+# to see if the override config file exists. If not it is created.
+# 
+# This is necessary to override the port value in the other config files. 
+# As per:
+# 
+# https://serverfault.com/a/1159600
+#-------------------------------------------------------------------------------
+configureSshSocket () {
+  local SOCKET_CONF_TF="$(checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF")"
+  local SOCKET_CONF_DIR_TF="$(checkForFileOrDirectory "$SSH_SOCKET_CONF_DIR")"
+
+  echoComment 'Checking for the socket config file or directory at:'
+  echoComment "$SSH_SOCKET_CONF_DIR"
+
+  echoComment "Check for config file returned $SOCKET_CONF_TF."
+  echoComment "Check for config directory returned $SOCKET_CONF_DIR_TF."
+
+  if [ "$SOCKET_CONF_TF" = true]; then 
+    echoComment 'The setup config file and directory exist.'
+    echoComment 'You will need to manually add the following to:'
+    echoComment "$SSH_SOCKET_OVERRIDE_CONF"
+    echoSeparator
+    echoComment '[Socket]'
+    echoComment 'ListenStream='
+    echoComment "ListenStream=$SSH_PORT"
+    echoSeparator
+  else
+    echoComment 'The setup config file and directory do not exist. Creating both.'
+
+    createDirectory "$SSH_SOCKET_CONF_DIR"
+    createSocketOverideConfig
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Creates the hardened config file for sshd. This overides the default values
 # stored in "$SSHD_CONF".
 #-------------------------------------------------------------------------------
@@ -162,6 +200,26 @@ EOF
   echoComment 'Config file generated.'
 
   listDirectories "$SSHD_CONF_DIR"
+}
+
+#-------------------------------------------------------------------------------
+# Creates an override config file for the ssh socket on Ubuntu versions above 
+# 22.xx. This is necessary to overide the port value in the config files. 
+# As per:
+# 
+# https://serverfault.com/a/1159600
+#-------------------------------------------------------------------------------
+createSocketOverideConfig () {
+  echoComment 'Generating ssh.socket override config file at:' 
+  echoComment "$SSH_SOCKET_CONF_DIR" 
+  cat <<EOF > "$SSH_SOCKET_OVERRIDE_CONF"
+[Socket]
+ListenStream=
+ListenStream=$SSH_PORT
+EOF
+  echoComment 'Override config file generated.'
+
+  listDirectories "$SSH_SOCKET_CONF_DIR"
 }
 
 #-------------------------------------------------------------------------------
@@ -204,15 +262,25 @@ echoLocalSshConfig () {
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script.
+# Executes the main functions of the script. A check is performed on the version
+# of Ubuntu that the host is running – if higher than 22.xx then the SSH socket
+# is also configured. As per:
+#
+# https://serverfault.com/a/1159600
 #-------------------------------------------------------------------------------
 mainScript () {
+  local UBUNTU_22_TF="$(compareOsVersion "22.04")"
+
   listDirectories "$SSHD_CONF_DIR"
   removeCurrentSshdConfigs
 
   checkSshdConfig
   createHardenedSShdConfig
   setPermissions "600" "$SSHD_CONF_DIR"
+
+  if [ $UBUNTU_22_TF = false ] ; then
+    configureSshSocket
+  if
 
   restartSshd
 
