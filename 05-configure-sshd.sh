@@ -224,7 +224,7 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
-# Asks they user if they want to restart the sshd service. Applies to versions
+# Asks the user if they want to restart the sshd service. Applies to versions
 # of Ubuntu lower than or equal to 22.04.
 #-------------------------------------------------------------------------------
 restartSshd () {
@@ -244,7 +244,7 @@ restartSshd () {
 }
 
 #-------------------------------------------------------------------------------
-# Asks they user if they want to restart the ssh socket. Applies to versions of
+# Asks the user if they want to restart the ssh socket. Applies to versions of
 # Ubuntu greater than 22.04.
 #-------------------------------------------------------------------------------
 restartSshSocket () {
