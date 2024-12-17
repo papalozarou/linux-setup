@@ -78,6 +78,33 @@ checkPrivateSshKeyCopied () {
 }
 
 #-------------------------------------------------------------------------------
+# Checks for a "~/.ssh" directory, and if it doesn't exist, creates one.
+#-------------------------------------------------------------------------------
+checkForSshDir () {
+  local SSH_DIR_TF="$(checkForFileOrDirectory "$SSH_DIR")"
+
+  echoComment 'Checking for the ssh directory at:'
+  echoComment "$SSH_DIR"
+
+  echoComment "Check for ssh directory returned $SSH_DIR_TF."
+
+  if [ "$SSH_DIR_TF" = false ]; then
+    echoComment 'The ssh directory does not exist.'
+
+    createSshDir
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Creates the "~/.ssh" directroy and sets the correct permissions and ownership.
+#-------------------------------------------------------------------------------
+createSshDir () {
+    createDirectory "$SSH_DIR"
+    setPermissions 700 "$SSH_DIR"
+    setOwner "$SUDO_USER" "$SSH_DIR"
+}
+
+#-------------------------------------------------------------------------------
 # Removes the generated private key, once the script has been run.
 #-------------------------------------------------------------------------------
 removePrivateSshKey () {
@@ -118,6 +145,8 @@ mainScript () {
   if [ -f "$EXISTING_SSH_KEY" ]; then
     checkPrivateSshKeyCopied
   else
+    checkForSshDir
+
     getSshKeyDetails
     generateSshKey "$SSH_KEY" "$SSH_EMAIL"
     setOwner "$SUDO_USER" "$SSH_KEY"
