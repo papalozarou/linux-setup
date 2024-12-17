@@ -49,15 +49,6 @@ EXISTING_KEY_NAME="$(readSetupConfigValue "sshKeyFile")"
 EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 
 #-------------------------------------------------------------------------------
-# Adds the newly generated public key to the "authorized_keys" file.
-#-------------------------------------------------------------------------------
-addKeyToAuthorizedKeys () {
-  echoComment "Adding public key to $SSH_DIR/authorized_keys."
-  cat "$SSH_KEY.pub" >> "$SSH_DIR/authorized_keys"
-  echoComment 'Key added.'
-}
-
-#-------------------------------------------------------------------------------
 # Checks that a user has copied the key after running the script before. If yes,
 # remove it, if no or other input direct to copy the key and run this function
 # again.
