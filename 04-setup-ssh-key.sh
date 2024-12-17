@@ -92,6 +92,8 @@ checkForSshDir () {
     echoComment 'The ssh directory does not exist.'
 
     createSshDir
+  else
+    echoComment 'The ssh directory already exists.'
   fi
 }
 
