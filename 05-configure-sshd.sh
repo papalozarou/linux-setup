@@ -66,40 +66,6 @@ SSH_SOCKET_CONF_DIR="/etc/systemd/system/ssh.socket.d"
 SSH_SOCKET_OVERRIDE_CONF="$SSH_SOCKET_CONF_DIR/override.conf"
 
 #-------------------------------------------------------------------------------
-# Removes the config files within "$SSHD_CONF_DIR", based on the users input.
-#
-# If the user requests to delete, the files are deleted and the folder is listed
-# again to confirm deletion, using "listDirectories".
-#
-# If the user doesn't request to delete, the files are left alone.
-#
-# Any input other than "y", "Y", "n" or "N" will re-run this function.
-#
-# N.B.
-# We must run "rm" from a shell, as shell does the expansion of the wildcard,
-# "*", not "rm". As per:
-# 
-# https://stackoverflow.com/a/31559110
-#-------------------------------------------------------------------------------
-removeCurrentSshdConfigs () {
-  promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
-  SSHD_CONFS_YN="$(getUserInput)"
-
-  if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
-    echoComment "Deleting files in $SSHD_CONF_DIR."
-    rm "$SSHD_CONF_DIR"/*.conf
-    echoComment 'Files deleted.'
-
-    listDirectories "$SSHD_CONF_DIR"
-  elif [ "$SSHD_CONFS_YN" = 'n' -o "$SSHD_CONFS_YN" = 'N' ]; then
-    echoComment "Leaving files in $SSHD_CONF_DIR intact."
-  else
-    echoComment 'You must answer y or n.'
-    removeCurrentSShdConfigs
-  fi
-}
-
-#-------------------------------------------------------------------------------
 # Check for the "Include" line in "$SSHD_CONF". If not present, add it after
 # the first comment block at the top of the config file. If it is present,
 # confirm it's present.
@@ -224,6 +190,60 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
+# Displays the values a user needs to add to their local ssh config file.
+#-------------------------------------------------------------------------------
+echoLocalSshConfig () {
+  local IP_ADDRESS="$(readIpAddress)"
+  local SSH_KEY_FILE="$(readSetupConfigValue "sshKeyFile")"
+
+  echoComment 'To enable easy connection from your local machine, add the'
+  echoComment 'following to your local ssh config file at either:'
+  echoComment '~/.ssh/ssh_config'
+  echoComment '~/.ssh/config'
+  echoSeparator
+  echoComment "Host $SSH_KEY_FILE"
+  echoComment "  Hostname $IP_ADDRESS"
+  echoComment "  Port $SSH_PORT"
+  echoComment "  User $SUDO_USER"
+  echoComment "  IdentityFile ~/.ssh/$SSH_KEY_FILE"
+  echoSeparator
+}
+
+#-------------------------------------------------------------------------------
+# Removes the config files within "$SSHD_CONF_DIR", based on the users input.
+#
+# If the user requests to delete, the files are deleted and the folder is listed
+# again to confirm deletion, using "listDirectories".
+#
+# If the user doesn't request to delete, the files are left alone.
+#
+# Any input other than "y", "Y", "n" or "N" will re-run this function.
+#
+# N.B.
+# We must run "rm" from a shell, as shell does the expansion of the wildcard,
+# "*", not "rm". As per:
+# 
+# https://stackoverflow.com/a/31559110
+#-------------------------------------------------------------------------------
+removeCurrentSshdConfigs () {
+  promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
+  SSHD_CONFS_YN="$(getUserInput)"
+
+  if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
+    echoComment "Deleting files in $SSHD_CONF_DIR."
+    rm "$SSHD_CONF_DIR"/*.conf
+    echoComment 'Files deleted.'
+
+    listDirectories "$SSHD_CONF_DIR"
+  elif [ "$SSHD_CONFS_YN" = 'n' -o "$SSHD_CONFS_YN" = 'N' ]; then
+    echoComment "Leaving files in $SSHD_CONF_DIR intact."
+  else
+    echoComment 'You must answer y or n.'
+    removeCurrentSShdConfigs
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Asks the user if they want to restart the sshd service. Applies to versions
 # of Ubuntu lower than or equal to 22.04.
 #-------------------------------------------------------------------------------
@@ -262,26 +282,6 @@ restartSshSocket () {
     echoComment 'You must answer y or n.'
     restartSshd
   fi
-}
-
-#-------------------------------------------------------------------------------
-# Displays the values a user needs to add to their local ssh config file.
-#-------------------------------------------------------------------------------
-echoLocalSshConfig () {
-  local IP_ADDRESS="$(readIpAddress)"
-  local SSH_KEY_FILE="$(readSetupConfigValue "sshKeyFile")"
-
-  echoComment 'To enable easy connection from your local machine, add the'
-  echoComment 'following to your local ssh config file at either:'
-  echoComment '~/.ssh/ssh_config'
-  echoComment '~/.ssh/config'
-  echoSeparator
-  echoComment "Host $SSH_KEY_FILE"
-  echoComment "  Hostname $IP_ADDRESS"
-  echoComment "  Port $SSH_PORT"
-  echoComment "  User $SUDO_USER"
-  echoComment "  IdentityFile ~/.ssh/$SSH_KEY_FILE"
-  echoSeparator
 }
 
 #-------------------------------------------------------------------------------
