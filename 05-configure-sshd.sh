@@ -63,7 +63,7 @@ SSHD_CONF="$GLOBAL_SSH_DIR/sshd_config"
 SSHD_CONF_DIR="$GLOBAL_SSH_DIR/sshd_config.d"
 SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
 SSH_SOCKET_CONF_DIR="/etc/systemd/system/ssh.socket.d"
-SSH_SOCKET_OVERRIDE_CONF="$SSHD_SOCKET_DIR/override.conf"
+SSH_SOCKET_OVERRIDE_CONF="$SSH_SOCKET_CONF_DIR/override.conf"
 
 #-------------------------------------------------------------------------------
 # Removes the config files within "$SSHD_CONF_DIR", based on the users input.
@@ -87,7 +87,7 @@ removeCurrentSshdConfigs () {
 
   if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
     echoComment "Deleting files in $SSHD_CONF_DIR."
-    rm "$SSHD_CONF_DIR/*.conf"
+    rm -R "$SSHD_CONF_DIR/*.conf"
     echoComment 'Files deleted.'
 
     listDirectories "$SSHD_CONF_DIR"
@@ -146,12 +146,13 @@ configureSshSocket () {
   local SOCKET_CONF_DIR_TF="$(checkForFileOrDirectory "$SSH_SOCKET_CONF_DIR")"
 
   echoComment 'Checking for the socket config file or directory at:'
-  echoComment "$SSH_SOCKET_CONF_DIR"
+  # echoComment "$SSH_SOCKET_CONF_DIR"
+  echoComment "$SSH_SOCKET_OVERRIDE_CONF"
 
   echoComment "Check for config file returned $SOCKET_CONF_TF."
   echoComment "Check for config directory returned $SOCKET_CONF_DIR_TF."
 
-  if [ "$SOCKET_CONF_TF" = true]; then 
+  if [ "$SOCKET_CONF_TF" = true ]; then 
     echoComment 'The setup config file and directory exist.'
     echoComment 'You will need to manually add the following to:'
     echoComment "$SSH_SOCKET_OVERRIDE_CONF"
@@ -223,7 +224,8 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
-# Asks they user if they want to restart the sshd service.
+# Asks they user if they want to restart the sshd service. Applies to versions
+# of Ubuntu lower than or equal to 22.04.
 #-------------------------------------------------------------------------------
 restartSshd () {
   echoComment 'To enable the new sshd configutation, you will need to restart'
@@ -235,6 +237,27 @@ restartSshd () {
     controlService 'restart' 'sshd'
   elif [ "$SSHD_RESTART_YN" = 'n' -o "$SSHD_RESTART_YN" = 'N' ]; then
     echoComment 'sshd will not be restarted.'
+  else
+    echoComment 'You must answer y or n.'
+    restartSshd
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Asks they user if they want to restart the ssh socket. Applies to versions of
+# Ubuntu greater than 22.04.
+#-------------------------------------------------------------------------------
+restartSshSocket () {
+  echoComment 'To enable the new ssh socker configutation, you will need to restart'
+  echoComment 'the ssh socket. This can potentially interupt your connection.'
+  promptForUserInput 'Do you want to restart the ssh socket (y/n)?'
+  SSH_SOCKET_RESTART_YN="$(getUserInput)"
+
+  if [ "$SSH_SOCKET_RESTART_YN" = 'y' -o "$SSH_SOCKET_RESTART_YN" = 'Y' ]; then
+    systemctl daemon-reload
+    controlService 'restart' 'ssh.socket'
+  elif [ "$SSH_SOCKET_RESTART_YN" = 'n' -o "$SSH_SOCKET_RESTART_YN" = 'N' ]; then
+    echoComment 'The ssh socket will not be restarted.'
   else
     echoComment 'You must answer y or n.'
     restartSshd
@@ -267,6 +290,12 @@ echoLocalSshConfig () {
 # is also configured. As per:
 #
 # https://serverfault.com/a/1159600
+#
+# N.B.
+# SSHD is only restarted if Ubuntu 22 or lower is running. As per:
+#
+# https://askubuntu.com/a/1523872
+# https://askubuntu.com/a/1439482
 #-------------------------------------------------------------------------------
 mainScript () {
   local UBUNTU_22_TF="$(compareOsVersion "22.04")"
@@ -278,11 +307,17 @@ mainScript () {
   createHardenedSShdConfig
   setPermissions "600" "$SSHD_CONF_DIR"
 
-  if [ $UBUNTU_22_TF = false ] ; then
-    configureSshSocket
-  if
+  echoComment "The check to see if your OS is greater than Ubuntu 22.04 returned $UBUNTU_22_TF."
 
-  restartSshd
+  if [ "$UBUNTU_22_TF" = false ]; then
+    echoComment 'You are on a version of Ubuntu that is higher than 22.04.'
+    echoComment 'We must also configure the SSH socket.'
+    configureSshSocket
+
+    restartSshSocket
+  else
+    restartSshd
+  fi
 
   writeSetupConfigOption "sshPort" "$SSH_PORT"
   
