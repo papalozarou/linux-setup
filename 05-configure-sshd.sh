@@ -74,7 +74,7 @@ SSH_SOCKET_OVERRIDE_CONF="$SSH_SOCKET_CONF_DIR/override.conf"
 # The "sed" command is in double quotes to ensure variable substitution of
 # "$SSHD_CONF_DIR" as per:
 #
-# https://stackoverflow.com/questions/584894/environment-variable-substitution-in-sed#748586
+# - https://stackoverflow.com/a/748586
 #
 # For the newline to work the "\" and the "n" must be escaped, hence the triple
 # "\\\" in the command.
@@ -105,7 +105,7 @@ checkSshdConfig () {
 # This is necessary to override the port value in the other config files. 
 # As per:
 # 
-# https://serverfault.com/a/1159600
+# - https://serverfault.com/a/1159600
 #-------------------------------------------------------------------------------
 configureSshSocket () {
   local SOCKET_CONF_TF="$(checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF")"
@@ -174,7 +174,7 @@ EOF
 # 22.xx. This is necessary to overide the port value in the config files. 
 # As per:
 # 
-# https://serverfault.com/a/1159600
+# - https://serverfault.com/a/1159600
 #-------------------------------------------------------------------------------
 createSocketOverideConfig () {
   echoComment 'Generating ssh.socket override config file at:' 
@@ -223,7 +223,7 @@ echoLocalSshConfig () {
 # We must run "rm" from a shell, as shell does the expansion of the wildcard,
 # "*", not "rm". As per:
 # 
-# https://stackoverflow.com/a/31559110
+# - https://stackoverflow.com/a/31559110
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
   promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
@@ -289,13 +289,13 @@ restartSshSocket () {
 # of Ubuntu that the host is running – if higher than 22.xx then the SSH socket
 # is also configured. As per:
 #
-# https://serverfault.com/a/1159600
+# - https://serverfault.com/a/1159600
 #
 # N.B.
 # SSHD is only restarted if Ubuntu 22 or lower is running. As per:
 #
-# https://askubuntu.com/a/1523872
-# https://askubuntu.com/a/1439482
+# - https://askubuntu.com/a/1523872
+# - https://askubuntu.com/a/1439482
 #-------------------------------------------------------------------------------
 mainScript () {
   local UBUNTU_22_TF="$(compareOsVersion "22.04")"

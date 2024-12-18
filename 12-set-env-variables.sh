@@ -9,7 +9,7 @@
 # These variables can then be used in other projects and in Docker ".env" files
 # when building images. As per:
 # 
-# https://dev.to/natterstefan/docker-tip-how-to-get-host-s-ip-address-inside-a-docker-container-5anh
+# - https://dev.to/natterstefan/docker-tip-how-to-get-host-s-ip-address-inside-a-docker-container-5anh
 # 
 # N.B. 
 # This script needs to be run as "sudo".
@@ -76,7 +76,7 @@ DOMAIN="${HOSTNAME#"$SUBDOMAIN".}"
 # Check for the "@includedir" line in "$SUDOERS". If it is present, confirm it's
 # present. If not present, add it at the end of the file, as per:
 # 
-# https://stackoverflow.com/a/28382838
+# - https://stackoverflow.com/a/28382838
 #-------------------------------------------------------------------------------
 checkSudoersConf () {
   echoComment 'Checking for include line in:'
@@ -102,7 +102,7 @@ checkSudoersConf () {
 #-------------------------------------------------------------------------------
 # Creates the default environment config file for sudoers. As per:
 # 
-# https://stackoverflow.com/a/8636711
+# - https://stackoverflow.com/a/8636711
 #-------------------------------------------------------------------------------
 createSudoersConf () {
   echoComment 'Generating sudoers config file at:'

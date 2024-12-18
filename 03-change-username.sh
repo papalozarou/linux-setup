@@ -64,7 +64,7 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR/$RENAME_SCRIPT"
 # password for the new user during setup, rather than all the other information,
 # as per:
 #
-# https://unix.stackexchange.com/a/611219
+# - https://unix.stackexchange.com/a/611219
 #-------------------------------------------------------------------------------
 createTempUser () {
   echoComment 'Creating temporary user, tempuser. You will be asked to enter a'

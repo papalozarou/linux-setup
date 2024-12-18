@@ -76,7 +76,7 @@ getGitDetails () {
 # As the script is run as "sudo" it is necessary to execute the git commands
 # as the "$SUDO_USER", as per:
 #
-# https://stackoverflow.com/a/1988255
+# - https://stackoverflow.com/a/1988255
 #-------------------------------------------------------------------------------
 setGitDetails () {
   echoComment "Setting global git username to $GIT_USERNAME."
@@ -93,7 +93,7 @@ setGitDetails () {
 # As the script is run as "sudo" it is necessary to execute the git commands
 # as the "$SUDO_USER", as per:
 #
-# https://stackoverflow.com/a/1988255
+# - https://stackoverflow.com/a/1988255
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
   echoComment 'Setting global default branch to main.'
@@ -146,7 +146,7 @@ getUserToAddKey () {
 # As we are trying to be POSIX compliant, we are using "-eq" and "-o" within
 # single brackets as per:
 #
-# https://queirozf.com/entries/posix-shell-tests-and-conditionals-examples-and-reference
+# - https://queirozf.com/entries/posix-shell-tests-and-conditionals-examples-and-reference
 #-------------------------------------------------------------------------------
 checkUserAddedKey () {
   sleep 5

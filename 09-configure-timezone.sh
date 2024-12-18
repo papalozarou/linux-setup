@@ -8,7 +8,7 @@
 #
 # Based on this Digital Ocean guide:
 #
-# https://www.digitalocean.com/community/tutorials/how-to-set-up-time-synchronization-on-ubuntu-20-04#conclusion
+# - https://www.digitalocean.com/community/tutorials/how-to-set-up-time-synchronization-on-ubuntu-20-04#conclusion
 #
 # N.B.
 # This script needs to be run as "sudo".

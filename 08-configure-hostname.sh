@@ -9,7 +9,7 @@
 #
 # Based on this RedHat guide:
 #
-# https://www.redhat.com/sysadmin/configure-hostname-linux
+# - https://www.redhat.com/sysadmin/configure-hostname-linux
 #
 # N.B.
 # This script needs to be run as "sudo".
