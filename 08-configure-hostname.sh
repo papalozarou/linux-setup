@@ -52,24 +52,18 @@
 CONFIG_KEY='configuredHostname'
 
 #-------------------------------------------------------------------------------
-# Asks the user to change the hostname. Runs "setNewHostname" if yes, exits if
-# no, otherwise re-runs.
+# Asks the user to change the hostname. Runs "setNewHostname" if yes, makes no
+# changes if no.
 #-------------------------------------------------------------------------------
 changeHostname () {
-  promptForUserInput 'Would you like to change the hostname?'
-  HOSTNAME_CHANGE_YN="$(getUserInput)"
+  promptForUserInput 'Would you like to change the hostname (y/n)?'
+  HOSTNAME_CHANGE_YN="$(getUserInputYN)"
 
-  if [  "$HOSTNAME_CHANGE_YN" = 'y' -o "$HOSTNAME_CHANGE_YN" = 'Y' ]; then
+  if [  "$HOSTNAME_CHANGE_YN" = true ]; then
     setNewHostname
-  elif [ "$HOSTNAME_CHANGE_YN" = 'n' -o "$HOSTNAME_CHANGE_YN" = 'N' ]; then
-    echoComment 'No changes made to hostname.'
-    echoScriptExiting
-
-    exit 1
   else
-    echoComment 'You must answer y or n.'
-    changeHostname
-  fi 
+    echoComment 'No changes made to hostname.'
+  fi
 }
 
 #-------------------------------------------------------------------------------

@@ -151,15 +151,17 @@ getUserToAddKey () {
 checkUserAddedKey () {
   sleep 5
   promptForUserInput 'Have you added the ssh key to your account (y/n)?'
-  KEY_ADDED="$(getUserInput)"
+  KEY_ADDED="$(getUserInputYN)"
 
-  if [ "$KEY_ADDED" = 'y' -o "$KEY_ADDED" = 'Y' ]; then
+  if [ "$KEY_ADDED" = true ]; then
     echoComment 'Key added to Github – we will know later if you fibbed…'
   else
     echoComment 'You must add your key to Github proceed. Please add it now via:'
-    echoComment 'Settings > Access > SSH and GPG keys'
+    echoSeparator
+    echoComment 'github.com > Settings > Access > SSH and GPG keys'
+    echoSeparator
     echoComment 'You will likely need to open a separate command line session to'
-    echoComment 'copy the contents.'
+    echoComment 'copy the contents of the key.'
     checkUserAddedKey
   fi
 }

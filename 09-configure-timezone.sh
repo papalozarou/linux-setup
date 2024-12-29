@@ -58,28 +58,19 @@ CURRENT_TIMEZONE="$(timedatectl show | grep "Timezone")"
 #-------------------------------------------------------------------------------
 # Lists the current settings, then asks if the user would like to change 
 # the timezone. If not, no settings are changed.
-# 
-# Any input other than "y", "Y", "n" or "N" will re-run this function.
 #-------------------------------------------------------------------------------
 changeTimezone () {
   listTimeDate
   echoComment 'Your current timezone is:'
   echoComment "$CURRENT_TIMEZONE"
 
-  promptForUserInput 'Would you like to change the timezone?'
-  TIMEZONE_SET_YN="$(getUserInput)"
+  promptForUserInput 'Would you like to change the timezone (y/n)?'
+  TIMEZONE_SET_YN="$(getUserInputYN)"
 
-  if [  "$TIMEZONE_SET_YN" = 'y' -o "$TIMEZONE_SET_YN" = 'Y' ]; then
+  if [  "$TIMEZONE_SET_YN" = true ]; then
     setNewTimezone
-  elif [ "$TIMEZONE_SET_YN" = 'n' -o "$TIMEZONE_SET_YN" = 'N' ]; then
-    echoComment 'No changes made to timezone settings.'
-    
-    echoScriptExiting
-
-    exit 1
   else
-    echoComment 'You must answer y or n.'
-    changeTimezone
+    echoComment 'No changes made to timezone settings.'
   fi 
 }
 

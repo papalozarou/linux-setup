@@ -116,20 +116,17 @@ EOF
 # ensure that the name of "$SUDO_USER" can be changed by "tempUser".
 #
 # N.B.
-# It is necessary to exit the script as well as killing all processes. Otherwise
-# "finaliseScript" will still run.
+# It is necessary to exit the script in both cases. Otherwise "finaliseScript" 
+# will still run.
 #-------------------------------------------------------------------------------
 killProcesses () {
     echoComment 'To ensure that the current username can be changed, all processes'
     echoComment "currently being run by $SUDO_USER must be killed."
-    echoSeparator
-    echoComment 'Warning: This will log you out.'
-    echoSeparator
 
-    promptForUserInput 'Ready to kill all processes (y)?'
-    KILL_PROCESSES_YN="$(getUserInput)"
+    promptForUserInput 'Ready to kill all processes (y/n)?' 'This may log you out.'
+    KILL_PROCESSES_YN="$(getUserInputYN)"
 
-    if [ "$KILL_PROCESSES_YN" = 'y' -o "$KILL_PROCESSES_YN" = 'Y' ]; then
+    if [ "$KILL_PROCESSES_YN" = true ]; then
       echoSeparator
       echoComment "Killing all processes for $SUDO_USER."
       echoSeparator
@@ -138,10 +135,12 @@ killProcesses () {
       exit
     else
       echoSeparator
-      echoComment 'You must answer y or Y to proceed.'
+      echoComment 'Processes remain running for this user. To enable changing the username,'
+      echoComment 'you must run the following command:'
+      echoComment "pkill -u $SUDO_UID"
       echoSeparator
 
-      killProcesses
+      exit
     fi
 }
 

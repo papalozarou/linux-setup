@@ -106,22 +106,16 @@ installDockerRepository () {
 #-------------------------------------------------------------------------------
 removeExistingDocker () {
   promptForUserInput "Do you want to remove the existing install of $SERVICE (y/n)?"
-  DOCKER_REMOVE_YN="$(getUserInput)"
+  DOCKER_REMOVE_YN="$(getUserInputYN)"
 
-  if [ "$DOCKER_REMOVE_YN" = 'y' -o "$DOCKER_REMOVE_YN" = 'Y' ]; then
+  if [ "$DOCKER_REMOVE_YN" = true ]; then
     echoComment "Removing existing installation of $SERVICE."
     installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
     installRemovePackages "remove" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 
     mainScript
-  elif [ "$DOCKER_REMOVE_YN" = 'n' -o "$DOCKER_REMOVE_YN" = 'N' ]; then
-    echoComment "Leaving current $SERVICE installation intact."
-    echoScriptExiting
-
-    exit 1
   else
-    echoComment 'You must answer y or n.'
-    removeExistingDocker
+    echoComment "Leaving current $SERVICE installation intact."
   fi
 }
 

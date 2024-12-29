@@ -217,8 +217,6 @@ echoLocalSshConfig () {
 #
 # If the user doesn't request to delete, the files are left alone.
 #
-# Any input other than "y", "Y", "n" or "N" will re-run this function.
-#
 # N.B.
 # We must run "rm" from a shell, as shell does the expansion of the wildcard,
 # "*", not "rm". As per:
@@ -227,19 +225,16 @@ echoLocalSshConfig () {
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
   promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
-  SSHD_CONFS_YN="$(getUserInput)"
+  SSHD_CONFS_YN="$(getUserInputYN)"
 
-  if [ "$SSHD_CONFS_YN" = 'y' -o "$SSHD_CONFS_YN" = 'Y' ]; then
+  if [ "$SSHD_CONFS_YN" = true ]; then
     echoComment "Deleting files in $SSHD_CONF_DIR."
     rm "$SSHD_CONF_DIR"/*.conf
     echoComment 'Files deleted.'
 
     listDirectories "$SSHD_CONF_DIR"
-  elif [ "$SSHD_CONFS_YN" = 'n' -o "$SSHD_CONFS_YN" = 'N' ]; then
-    echoComment "Leaving files in $SSHD_CONF_DIR intact."
   else
-    echoComment 'You must answer y or n.'
-    removeCurrentSShdConfigs
+    echoComment "Leaving files in $SSHD_CONF_DIR intact."
   fi
 }
 
@@ -249,17 +244,14 @@ removeCurrentSshdConfigs () {
 #-------------------------------------------------------------------------------
 restartSshd () {
   echoComment 'To enable the new sshd configutation, you will need to restart'
-  echoComment 'sshd. This can potentially interupt your connection.'
-  promptForUserInput 'Do you want to restart sshd (y/n)?'
-  SSHD_RESTART_YN="$(getUserInput)"
+  echoComment 'sshd.'
+  promptForUserInput 'Do you want to restart sshd (y/n)?' 'This can potentially interupt your connection.'
+  SSHD_RESTART_YN="$(getUserInputYN)"
 
-  if [ "$SSHD_RESTART_YN" = 'y' -o "$SSHD_RESTART_YN" = 'Y' ]; then
+  if [ "$SSHD_RESTART_YN" = true ]; then
     controlService 'restart' 'sshd'
-  elif [ "$SSHD_RESTART_YN" = 'n' -o "$SSHD_RESTART_YN" = 'N' ]; then
-    echoComment 'sshd will not be restarted.'
   else
-    echoComment 'You must answer y or n.'
-    restartSshd
+    echoComment 'sshd will not be restarted.'
   fi
 }
 
@@ -269,18 +261,15 @@ restartSshd () {
 #-------------------------------------------------------------------------------
 restartSshSocket () {
   echoComment 'To enable the new ssh socker configutation, you will need to restart'
-  echoComment 'the ssh socket. This can potentially interupt your connection.'
-  promptForUserInput 'Do you want to restart the ssh socket (y/n)?'
-  SSH_SOCKET_RESTART_YN="$(getUserInput)"
+  echoComment 'the ssh socket.'
+  promptForUserInput 'Do you want to restart the ssh socket (y/n)?' 'This can potentially interupt your connection.'
+  SSH_SOCKET_RESTART_YN="$(getUserInputYN)"
 
-  if [ "$SSH_SOCKET_RESTART_YN" = 'y' -o "$SSH_SOCKET_RESTART_YN" = 'Y' ]; then
+  if [ "$SSH_SOCKET_RESTART_YN" = true ]; then
     systemctl daemon-reload
     controlService 'restart' 'ssh.socket'
-  elif [ "$SSH_SOCKET_RESTART_YN" = 'n' -o "$SSH_SOCKET_RESTART_YN" = 'N' ]; then
-    echoComment 'The ssh socket will not be restarted.'
   else
-    echoComment 'You must answer y or n.'
-    restartSshd
+    echoComment 'The ssh socket will not be restarted.'
   fi
 }
 
