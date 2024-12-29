@@ -69,8 +69,7 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR/$RENAME_SCRIPT"
 createTempUser () {
   echoComment 'Creating temporary user, tempuser. You will be asked to enter a'
   echoComment 'password for the temporary user as part of this process.'
-  echoNb
-  echoComment 'Set a password you can remember easily as you will need it shortly.'
+  echoNb 'Set a password you can remember easily as you will need it shortly.'
   echoSeparator
   adduser --gecos GECOS tempuser
   echoSeparator

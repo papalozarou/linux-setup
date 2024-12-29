@@ -60,19 +60,14 @@ EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 checkPrivateSshKeyCopied () {
   echoComment "Have you copied the private key, $EXISTING_KEY_NAME, to your"
   echoComment 'local ~/.ssh directory (y/n)?'
-  echoNb
-  echoComment 'If you answer y and have not copied the key, you will lose'
-  echoComment 'access via ssh.'
-  KEY_COPIED_YN="$(getUserInput)"
+  echoNb 'If you answer y and have not copied the key, you will lose' 'access via ssh.'
+  KEY_COPIED_YN="$(getUserInputYN)"
 
-  if [ "$KEY_COPIED_YN" = 'y' -o "$KEY_COPIED_YN" = 'Y' ]; then
+  if [ "$KEY_COPIED_YN" = true ]; then
     removePrivateSshKey
-  elif [ "$KEY_COPIED_YN" = 'n' -o "$KEY_COPIED_YN" = 'N' ]; then
+  else
     echoComment "You must copy the private key, $EXISTING_KEY_NAME, to your"
     echoComment 'local ~/.ssh directory.'
-    checkPrivateSshKeyCopied
-  else
-    echoComment 'You must answer y or n.'
     checkPrivateSshKeyCopied
   fi
 }
