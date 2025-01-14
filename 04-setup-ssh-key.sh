@@ -24,6 +24,7 @@
 # . ./linshafun/docker-env-variables.sh
 # . ./linshafun/docker-images.sh
 # . ./linshafun/docker-services.sh
+# . ./linshafun/docker-volumes.sh
 . ./linshafun/files-directories.sh
 # . ./linshafun/firewall.sh
 # . ./linshafun/host-env-variables.sh
