@@ -54,9 +54,12 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 # Linux distribution variables.
 #
 # N.B.
-# We are deliverately not quoting "$DISTRIBUTION_ID" so as to avoid spaces/tabs.
+# The "-d" flag is not required with "cut" in this instance as the returned 
+# string is split by tabs. As per:
+#
+# - https://unix.stackexchange.com/a/35387
 #-------------------------------------------------------------------------------
-DISTRIBUTION_ID=$(lsb_release -a | grep "Distributor" | cut -d':' -f2)
+DISTRIBUTION_ID="$(lsb_release -a | grep "Distributor" | cut -f 2)"
 DISTRIBUTION="$(changeCase "$DISTRIBUTION_ID" 'lower')"
 
 #-------------------------------------------------------------------------------
