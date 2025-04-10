@@ -52,8 +52,11 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
 # Linux distribution variables.
+#
+# N.B.
+# We are deliverately not quoting "$DISTRIBUTION_ID" so as to avoid spaces/tabs.
 #-------------------------------------------------------------------------------
-DISTRIBUTION_ID="$(lsb_release -a | grep "Distributor" | cut -d':' -f2)"
+DISTRIBUTION_ID=$(lsb_release -a | grep "Distributor" | cut -d':' -f2)
 DISTRIBUTION="$(changeCase "$DISTRIBUTION_ID" 'lower')"
 
 #-------------------------------------------------------------------------------
