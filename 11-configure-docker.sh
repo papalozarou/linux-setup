@@ -87,8 +87,8 @@ installDockerDependencies () {
 installDockerGpgKey () {
   echoComment "Adding official GPG key for $SERVICE."
   install -m 0755 -d /etc/apt/keyrings
-  curl -fsSL "https://download.docker.com/linux/$DISTRIBUTION/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  chmod a+r /etc/apt/keyrings/docker.gpg
+  curl -fsSL "https://download.docker.com/linux/$DISTRIBUTION/gpg" -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
   echoComment 'GPG key added.'
 }
 
@@ -98,7 +98,7 @@ installDockerGpgKey () {
 installDockerRepository () {
   echoComment "Setting up the repository for $SERVICE."
   echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] "https://download.docker.com/linux/$DISTRIBUTION" \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.asc] "https://download.docker.com/linux/$DISTRIBUTION" \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   echoComment 'Repository set up.'
