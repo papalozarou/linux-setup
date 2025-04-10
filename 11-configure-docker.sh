@@ -51,6 +51,12 @@ CONFIG_KEY='configuredDocker'
 SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
+# Linux distribution variables.
+#-------------------------------------------------------------------------------
+DISTRIBUTION_ID="$(lsb_release -a | grep "Distributor" | cut -d':' -f2)"
+DISTRIBUTION="$(changeCase "$DISTRIBUTION_ID" 'lower')"
+
+#-------------------------------------------------------------------------------
 # Installs all components of docker, after updating and upgrading packages to
 # ensure use of the added docker repository.
 #-------------------------------------------------------------------------------
@@ -81,7 +87,7 @@ installDockerDependencies () {
 installDockerGpgKey () {
   echoComment "Adding official GPG key for $SERVICE."
   install -m 0755 -d /etc/apt/keyrings
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  curl -fsSL "https://download.docker.com/linux/$DISTRIBUTION/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   chmod a+r /etc/apt/keyrings/docker.gpg
   echoComment 'GPG key added.'
 }
@@ -92,7 +98,7 @@ installDockerGpgKey () {
 installDockerRepository () {
   echoComment "Setting up the repository for $SERVICE."
   echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] "https://download.docker.com/linux/$DISTRIBUTION" \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   echoComment 'Repository set up.'
