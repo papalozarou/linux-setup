@@ -110,13 +110,6 @@ removePrivateSshKey () {
 }
 
 #-------------------------------------------------------------------------------
-# Tell the user to copy the private key to their local machine.
-#-------------------------------------------------------------------------------
-echoKeyUsage () {
-  printComment "Please copy the private key, $REMOTE_KEY_NAME, to your local ~/.ssh directory."
-}
-
-#-------------------------------------------------------------------------------
 # Get the name of the ssh key, and set the variable "$SSH_KEY".
 #-------------------------------------------------------------------------------
 getSshKeyDetails () {
@@ -126,6 +119,13 @@ getSshKeyDetails () {
   SSH_EMAIL="$(getUserInput)"
 
   SSH_KEY="$SSH_DIR/$REMOTE_KEY_NAME"
+}
+
+#-------------------------------------------------------------------------------
+# Tell the user to copy the private key to their local machine.
+#-------------------------------------------------------------------------------
+printKeyUsage () {
+  printComment "Please copy the private key, $REMOTE_KEY_NAME, to your local ~/.ssh directory."
 }
 
 #-------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ mainScript () {
     setOwner "$SUDO_USER" "$SSH_KEY"
     setOwner "$SUDO_USER" "$SSH_KEY.pub"
     addKeyToAuthorizedKeys
-    echoKeyUsage
+    printKeyUsage
     writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
 
     printSeparator

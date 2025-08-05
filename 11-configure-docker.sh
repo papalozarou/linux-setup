@@ -67,8 +67,8 @@ DISTRIBUTION="$(changeCase "$DISTRIBUTION_ID" 'lower')"
 # ensure use of the added docker repository.
 #-------------------------------------------------------------------------------
 installDocker () {
-  echoComment "Installing $SERVICE."
-  echoSeparator
+  printComment "Installing $SERVICE."
+  printSeparator
   updateUpgrade
   installRemovePackages "install" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 }
@@ -81,8 +81,8 @@ installDocker () {
 # Some of the dependencies may already be installed.
 #-------------------------------------------------------------------------------
 installDockerDependencies () {
-  echoComment "Installing dependencies for $SERVICE."
-  echoSeparator
+  printComment "Installing dependencies for $SERVICE."
+  printSeparator
   updateUpgrade
   installRemovePackages "install" "ca-certificates" "curl" "gnupg"
 }
@@ -91,23 +91,23 @@ installDockerDependencies () {
 # Adds the GPG key for docker.
 #-------------------------------------------------------------------------------
 installDockerGpgKey () {
-  echoComment "Adding official GPG key for $SERVICE."
+  printComment "Adding official GPG key for $SERVICE."
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL "https://download.docker.com/linux/$DISTRIBUTION/gpg" -o /etc/apt/keyrings/docker.asc
   chmod a+r /etc/apt/keyrings/docker.asc
-  echoComment 'GPG key added.'
+  printComment 'GPG key added.'
 }
 
 #-------------------------------------------------------------------------------
 # Sets up the repository for docker to enable install via "apt install".
 #-------------------------------------------------------------------------------
 installDockerRepository () {
-  echoComment "Setting up the repository for $SERVICE."
+  printComment "Setting up the repository for $SERVICE."
   echo \
   "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.asc] "https://download.docker.com/linux/$DISTRIBUTION" \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  echoComment 'Repository set up.'
+  printComment 'Repository set up.'
 }
 
 #-------------------------------------------------------------------------------
@@ -122,13 +122,13 @@ removeExistingDocker () {
   DOCKER_REMOVE_YN="$(getUserInputYN)"
 
   if [ "$DOCKER_REMOVE_YN" = true ]; then
-    echoComment "Removing existing installation of $SERVICE."
+    printComment "Removing existing installation of $SERVICE."
     installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
     installRemovePackages "remove" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 
     mainScript
   else
-    echoComment "Leaving current $SERVICE installation intact."
+    printComment "Leaving current $SERVICE installation intact."
   fi
 }
 
@@ -140,35 +140,35 @@ removeExistingDocker () {
 # Had to add a shell command to get docker to run from this function.
 #-------------------------------------------------------------------------------
 verifyDockerInstall() {
-  echoComment "Verifying $SERVICE install."
-  echoSeparator
+  printComment "Verifying $SERVICE install."
+  printSeparator
   $SERVICE run hello-world
-  echoSeparator
-  echoComment "If $SERVICE was installed correctly, Hello World will appear above."
+  printSeparator
+  printComment "If $SERVICE was installed correctly, Hello World will appear above."
   
-  echoComment "Removing verification data and container."
-  echoSeparator
+  printComment "Removing verification data and container."
+  printSeparator
   $SERVICE system prune -af
-  echoSeparator
-  echoComment "Verification data and container removed."
+  printSeparator
+  printComment "Verification data and container removed."
 }
 
 #-------------------------------------------------------------------------------
 # Runs the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  echoComment "Starting setup of $SERVICE."
+  printComment "Starting setup of $SERVICE."
 
   local SERVICE_CHECK="$(checkForPackage "$SERVICE")"
-  echoComment "Checking for $SERVICE."
-  echoComment "Check returned $SERVICE_CHECK."
+  printComment "Checking for $SERVICE."
+  printComment "Check returned $SERVICE_CHECK."
 
   if [ "$SERVICE_CHECK" = true ]; then
-    echoComment "You have already installed $SERVICE."
+    printComment "You have already installed $SERVICE."
 
     removeExistingDocker
   elif [ "$SERVICE_CHECK" = false ]; then
-    echoComment "You need to install $SERVICE."
+    printComment "You need to install $SERVICE." true
   
     installDockerDependencies
 

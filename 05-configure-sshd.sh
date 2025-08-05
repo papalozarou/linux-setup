@@ -192,7 +192,7 @@ EOF
 #-------------------------------------------------------------------------------
 # Displays the values a user needs to add to their local ssh config file.
 #-------------------------------------------------------------------------------
-echoLocalSshConfig () {
+printLocalSshConfig () {
   local IP_ADDRESS="$(readIpAddress)"
   local SSH_KEY_FILE="$(readSetupConfigValue "sshKeyFile")"
 
@@ -307,7 +307,7 @@ mainScript () {
 
   writeSetupConfigOption "sshPort" "$SSH_PORT"
   
-  echoLocalSshConfig
+  printLocalSshConfig
 }
 
 #-------------------------------------------------------------------------------

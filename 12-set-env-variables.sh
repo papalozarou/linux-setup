@@ -80,23 +80,22 @@ DOMAIN="${HOSTNAME#"$SUBDOMAIN".}"
 # - https://stackoverflow.com/a/28382838
 #-------------------------------------------------------------------------------
 checkSudoersConf () {
-  echoComment 'Checking for include line in:'
-  echoComment "$SUDOERS"
+  printComment 'Checking for include line in:'
+  printComment "$SUDOERS"
 
   local INCLUDES="$(grep "@includedir" "$SUDOERS")"
 
   if [ -z "$INCLUDES" ]; then
-    echoComment 'Include line not present so adding it. You may be asked for'
-    echoComment 'your password.'
+    printComment 'Include line not present so adding it. You may be asked for your password.' true
 
     echo "@includedir $SUDOERS_CONF_DIR" | sudo EDITOR='tee -a' visudo
 
-    echoComment "Added include line."
-    echoSeparator
+    printComment "Added include line."
+    printSeparator
     grep "@includedir" "$SUDOERS"
-    echoSeparator
+    printSeparator
   else
-    echoComment "Include line already present."
+    printComment "Include line already present."
   fi
 }
 
@@ -106,15 +105,15 @@ checkSudoersConf () {
 # - https://stackoverflow.com/a/8636711
 #-------------------------------------------------------------------------------
 createSudoersConf () {
-  echoComment 'Generating sudoers config file at:'
-  echoComment "$SUDOERS_DEFAULT_CONF"
+  printComment 'Generating sudoers config file at:'
+  printComment "$SUDOERS_DEFAULT_CONF"
   cat <<EOF > "$SUDOERS_DEFAULT_CONF"
 Defaults env_keep += "HOST_IP_ADDRESS"
 Defaults env_keep += "HOST_TIMEZONE"
 Defaults env_keep += "HOST_DOMAIN"
 Defaults env_keep += "HOST_SUBDOMAIN"
 EOF
-  echoComment 'Config file generated.'
+  printComment 'Config file generated.'
 }
 
 #-------------------------------------------------------------------------------
@@ -131,9 +130,9 @@ mainScript () {
   setPermissions "440" "$SUDOERS"
   setOwner "$USER" "$SUDOERS_DEFAULT_CONF"
 
-  echoSeparator
-  echoNb 'As stated above these variables will not be usable until you have' 'logged out and back in.'
-  echoSeparator
+  printSeparator
+  printComment 'As stated above these variables will not be usable until you have logged out and back in.' true
+  printSeparator
 }
 
 #-------------------------------------------------------------------------------
