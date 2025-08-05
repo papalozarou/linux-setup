@@ -68,7 +68,7 @@ FAIL2BAN_DEFAULT_CONF="$GLOBAL_FAIL2BAN_DIR/jail.local"
 # values stored in /etc/fail2ban/jail.conf.
 #-------------------------------------------------------------------------------
 createHardenedFail2banConfig () {
-  echoComment "Generating fail2ban config file at $FAIL2BAN_DEFAULT_CONF."
+  printComment "Generating fail2ban config file at $FAIL2BAN_DEFAULT_CONF."
   cat <<EOF > "$FAIL2BAN_DEFAULT_CONF"
 [DEFAULT]
 ignoreip = 127.0.0.1/8
@@ -79,7 +79,7 @@ maxretry = 3
 [sshd]
 enabled	= true
 EOF
-  echoComment 'Config file generated.'
+  printComment 'Config file generated.'
 }
 
 #-------------------------------------------------------------------------------

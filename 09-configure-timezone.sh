@@ -62,8 +62,8 @@ CURRENT_TIMEZONE="$(timedatectl show | grep "Timezone")"
 #-------------------------------------------------------------------------------
 changeTimezone () {
   listTimeDate
-  echoComment 'Your current timezone is:'
-  echoComment "$CURRENT_TIMEZONE"
+  printComment 'Your current timezone is:'
+  printComment "$CURRENT_TIMEZONE"
 
   promptForUserInput 'Would you like to change the timezone (y/n)?'
   TIMEZONE_SET_YN="$(getUserInputYN)"
@@ -71,7 +71,7 @@ changeTimezone () {
   if [  "$TIMEZONE_SET_YN" = true ]; then
     setNewTimezone
   else
-    echoComment 'No changes made to timezone settings.'
+    printComment 'No changes made to timezone settings.'
   fi 
 }
 
@@ -95,21 +95,21 @@ checkTimezone () {
 # Outputs ntpq settings.
 #-------------------------------------------------------------------------------
 listNtpSettings () {
-  echoComment 'Listing ntpq settings.'
-  echoSeparator
+  printComment 'Listing ntpq settings.'
+  printSeparator
   ntpq -p
-  echoSeparator
-  echoComment 'It may take a moment for connections to be established.'
+  printSeparator
+  printComment 'It may take a moment for connections to be established.' true
 }
 
 #-------------------------------------------------------------------------------
 # Outputs the time and date settings via "timedatectl".
 #-------------------------------------------------------------------------------
 listTimeDate () {
-  echoComment 'Listing time and date settings.'
-  echoSeparator
+  printComment 'Listing time and date settings.'
+  printSeparator
   timedatectl
-  echoSeparator
+  printSeparator
 }
 
 #-------------------------------------------------------------------------------
@@ -119,25 +119,25 @@ listTimeDate () {
 # If the user inputs an invalid timezone the function is run again.
 #-------------------------------------------------------------------------------
 setNewTimezone () {
-  echoComment 'You can find a list of timezones at:'
-  echoComment 'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'
+  printComment 'You can find a list of timezones at:'
+  printComment 'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'
   promptForUserInput 'Which timezone would you like to switch to (Region/City)?'
   NEW_TIMEZONE="$(getUserInput)"
 
-  echoComment "Checking $NEW_TIMEZONE is valid…"
+  printComment "Checking $NEW_TIMEZONE is valid…"
   local TIMEZONE_VALID="$(checkTimezone "$NEW_TIMEZONE")"
 
   if [ "$TIMEZONE_VALID" = true ]; then
-    echoComment 'Timezone is valid.'
+    printComment 'Timezone is valid.'
 
-    echoComment "Setting timezone to $NEW_TIMEZONE."
+    printComment "Setting timezone to $NEW_TIMEZONE."
     timedatectl set-timezone "$NEW_TIMEZONE"
-    echoComment "Timezone set."
+    printComment "Timezone set."
     listTimeDate
 
     writeSetupConfigOption "timezone" "$NEW_TIMEZONE"
   elif [ "$TIMEZONE_VALID" = false ]; then
-    echoComment 'Timezone is invalid. You must use a valid timezone.'
+    printComment 'Timezone is invalid. You must use a valid timezone.' true
     setNewTimezone
   fi
 }
@@ -148,7 +148,7 @@ setNewTimezone () {
 mainScript () {
   changeTimezone
 
-  echoComment 'Ensuring set-ntp is off.'
+  printComment 'Ensuring set-ntp is off.'
   timedatectl set-ntp no
   listTimeDate
 

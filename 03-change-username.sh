@@ -68,17 +68,16 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR/$RENAME_SCRIPT"
 # - https://unix.stackexchange.com/a/611219
 #-------------------------------------------------------------------------------
 createTempUser () {
-  echoComment 'Creating temporary user, tempuser. You will be asked to enter a'
-  echoComment 'password for the temporary user as part of this process.'
-  echoNb 'Set a password you can remember easily as you will need it shortly.'
-  echoSeparator
+  printComment 'Creating temporary user, tempuser. You will be asked to enter a password for the temporary user as part of this process.'
+  printComment 'Set a password you can remember easily as you will need it shortly.' true
+  printSeparator
   adduser --gecos GECOS tempuser
-  echoSeparator
-  echoComment 'Temporary user created. Adding to sudoers.'
-  echoSeparator
+  printSeparator
+  printComment 'Temporary user created. Adding to sudoers.'
+  printSeparator
   adduser tempuser sudo
-  echoSeparator
-  echoComment 'Temporary user added to sudoers file.'
+  printSeparator
+  printComment 'Temporary user added to sudoers file.'
 }
 
 #-------------------------------------------------------------------------------
@@ -94,9 +93,8 @@ getNewUserName () {
 # in username and groupname to "$NEW_USER".
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  echoComment 'Creating a script to change the current username and group within'
-  echoComment 'the tempuser home directory at:'
-  echoComment "$RENAME_SCRIPT_PATH"
+  printComment 'Creating a script to change the current username and group within the tempuser home directory at:'
+  printComment "$RENAME_SCRIPT_PATH"
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
 echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
@@ -109,7 +107,7 @@ echo "$COMMENT_PREFIX cd linux-setup && sudo ~/linux-setup/03-change-username.sh
 EOF
 
   listDirectories "$RENAME_SCRIPT_PATH"
-  echoComment 'Script created.'
+  printComment 'Script created.'
 }
 
 #-------------------------------------------------------------------------------
@@ -121,25 +119,23 @@ EOF
 # will still run.
 #-------------------------------------------------------------------------------
 killProcesses () {
-    echoComment 'To ensure that the current username can be changed, all processes'
-    echoComment "currently being run by $SUDO_USER must be killed."
+    printComment "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed." true
 
     promptForUserInput 'Ready to kill all processes (y/n)?' 'This may log you out.'
     KILL_PROCESSES_YN="$(getUserInputYN)"
 
     if [ "$KILL_PROCESSES_YN" = true ]; then
-      echoSeparator
-      echoComment "Killing all processes for $SUDO_USER."
-      echoSeparator
+      printSeparator
+      printComment "Killing all processes for $SUDO_USER."
+      printSeparator
       pkill -u "$SUDO_UID"
 
       exit
     else
-      echoSeparator
-      echoComment 'Processes remain running for this user. To enable changing the username,'
-      echoComment 'you must run the following command:'
-      echoComment "pkill -u $SUDO_UID"
-      echoSeparator
+      printSeparator
+      printComment 'Processes remain running for this user. To enable changing the username, you must run the following command:' true
+      printComment "pkill -u $SUDO_UID" true
+      printSeparator
 
       exit
     fi
@@ -149,12 +145,12 @@ killProcesses () {
 # Removes the temporary user "tempuser' and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
-  echoComment 'Deleting temporary user, tempuser.'
-  echoSeparator
+  printComment 'Deleting temporary user, tempuser.'
+  printSeparator
   deluser tempuser
   removeFileOrDirectory "$TEMPUSER_DIR"
-  echoSeparator
-  echoComment 'Temporary user and home folder deleted.'
+  printSeparator
+  printComment 'Temporary user and home folder deleted.'
 }
 
 #-------------------------------------------------------------------------------
@@ -174,11 +170,11 @@ mainScript () {
     createTempUserScript
     setPermissions "+x" "$RENAME_SCRIPT_PATH"
     setOwner "tempuser" "$RENAME_SCRIPT_PATH"
-    echoComment 'You can now log this user out, log in as tempuser, then run:'
-    echoComment "sudo ./$RENAME_SCRIPT."
-    echoSeparator
-    echoComment 'Finished setting up the temporary user.'
-    echoSeparator
+    printComment 'You can now log this user out, log in as tempuser, then run:'
+    printComment "sudo ./$RENAME_SCRIPT."
+    printSeparator
+    printComment 'Finished setting up the temporary user.'
+    printSeparator
 
     killProcesses
   fi

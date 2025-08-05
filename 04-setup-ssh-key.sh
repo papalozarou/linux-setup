@@ -59,16 +59,13 @@ EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 # "promptForUserInput" is not used here as it's a multiline question.
 #-------------------------------------------------------------------------------
 checkPrivateSshKeyCopied () {
-  echoComment "Have you copied the private key, $EXISTING_KEY_NAME, to your"
-  echoComment 'local ~/.ssh directory (y/n)?'
-  echoNb 'If you answer y and have not copied the key, you will lose' 'access via ssh.'
+  promptForUserInput "Have you copied the private key, $EXISTING_KEY_NAME, to your local ~/.ssh directory (y/n)?" 'If you answer y and have not copied the key, you will lose access via ssh.'
   KEY_COPIED_YN="$(getUserInputYN)"
 
   if [ "$KEY_COPIED_YN" = true ]; then
     removePrivateSshKey
   else
-    echoComment "You must copy the private key, $EXISTING_KEY_NAME, to your"
-    echoComment 'local ~/.ssh directory.'
+    printComment "You must copy the private key, $EXISTING_KEY_NAME, to your local ~/.ssh directory." true
     checkPrivateSshKeyCopied
   fi
 }
@@ -79,17 +76,17 @@ checkPrivateSshKeyCopied () {
 checkForSshDir () {
   local SSH_DIR_TF="$(checkForFileOrDirectory "$SSH_DIR")"
 
-  echoComment 'Checking for the ssh directory at:'
-  echoComment "$SSH_DIR"
+  printComment 'Checking for the ssh directory at:'
+  printComment "$SSH_DIR"
 
-  echoComment "Check for ssh directory returned $SSH_DIR_TF."
+  printComment "Check for ssh directory returned $SSH_DIR_TF."
 
   if [ "$SSH_DIR_TF" = false ]; then
-    echoComment 'The ssh directory does not exist.'
+    printComment 'The ssh directory does not exist.' true
 
     createSshDir
   else
-    echoComment 'The ssh directory already exists.'
+    printComment 'The ssh directory already exists.'
   fi
 }
 
@@ -106,18 +103,17 @@ createSshDir () {
 # Removes the generated private key, once the script has been run.
 #-------------------------------------------------------------------------------
 removePrivateSshKey () {
-  echoComment 'Removing the private key at:'
-  echoComment "$EXISTING_SSH_KEY"
+  printComment 'Removing the private key at:'
+  printComment "$EXISTING_SSH_KEY"
   rm "$EXISTING_SSH_KEY"
-  echoComment "Key removed."
+  printComment "Key removed."
 }
 
 #-------------------------------------------------------------------------------
 # Tell the user to copy the private key to their local machine.
 #-------------------------------------------------------------------------------
 echoKeyUsage () {
-  echoComment "Please copy the private key, $REMOTE_KEY_NAME, to your local"
-  echoComment '~/.ssh directory.'
+  printComment "Please copy the private key, $REMOTE_KEY_NAME, to your local ~/.ssh directory."
 }
 
 #-------------------------------------------------------------------------------
@@ -153,9 +149,8 @@ mainScript () {
     echoKeyUsage
     writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
 
-    echoSeparator
-    echoComment 'Script finished. Please ensure you copied the private key and'
-    echoComment 'run this script again.'
+    printSeparator
+    printComment 'Script finished. Please ensure you copied the private key and run this script again.'
 
     exit 1
   fi

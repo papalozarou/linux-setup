@@ -63,7 +63,7 @@ changeHostname () {
   if [  "$HOSTNAME_CHANGE_YN" = true ]; then
     setNewHostname
   else
-    echoComment 'No changes made to hostname.'
+    printComment 'No changes made to hostname.'
   fi
 }
 
@@ -74,10 +74,10 @@ checkHostname () {
   local CURRENT_HOSTNAME="$(hostname)"
 
   if [ -z "$CURRENT_HOSTNAME" ]; then
-    echoComment 'No hostname set.'
+    printComment 'No hostname set.' true
   else
-    echoComment 'The current hostname is:'
-    echoComment "$CURRENT_HOSTNAME"
+    printComment 'The current hostname is:'
+    printComment "$CURRENT_HOSTNAME"
   fi
 }
 
@@ -88,11 +88,11 @@ setNewHostname () {
   promptForUserInput 'What is your new hostname (my.hostname.com)?'
   HOSTNAME="$(getUserInput)"
 
-  echoComment 'Setting hostname to:'
-  echoComment "$HOSTNAME"
-  echoComment 'You may be asked to authenticate.'
+  printComment 'Setting hostname to:'
+  printComment "$HOSTNAME"
+  printComment 'You may be asked to authenticate.'
   hostnamectl set-hostname "$HOSTNAME"
-  echoComment 'Hostname is now set to:'
+  printComment 'Hostname is now set to:'
   hostname
 }
 

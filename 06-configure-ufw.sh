@@ -59,14 +59,14 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 setIpv6No () {
   local UFW_CONF='/etc/default/ufw'
 
-  echoComment 'Turning off IPv6 rules in:'
-  echoComment "$UFW_CONF"
+  printComment 'Turning off IPv6 rules in:'
+  printComment "$UFW_CONF"
   sed -i '/IPV6=/c\\IPV6=no' "$UFW_CONF"
 
-  echoSeparator
+  printSeparator
   grep 'IPV6=' "$UFW_CONF"
-  echoSeparator
-  echoComment 'IPv6 turned off.'
+  printSeparator
+  printComment 'IPv6 turned off.'
 }
 
 #-------------------------------------------------------------------------------
@@ -92,8 +92,8 @@ setUfwDefaults () {
 allowSshPort () {
   local SSH_PORT="$(readSetupConfigValue sshPort)"
   
-  echoComment 'Reading ssh port.'
-  echoComment "Current port is $SSH_PORT."
+  printComment 'Reading ssh port…'
+  printComment "Current port is $SSH_PORT."
   addRuleToUfw 'allow' "$SSH_PORT" 'tcp'
 }
 
