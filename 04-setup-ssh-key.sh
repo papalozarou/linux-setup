@@ -54,9 +54,6 @@ EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 # Checks that a user has copied the key after running the script before. If yes,
 # remove it, if no or other input direct to copy the key and run this function
 # again.
-# 
-# N.B.
-# "promptForUserInput" is not used here as it's a multiline question.
 #-------------------------------------------------------------------------------
 checkPrivateSshKeyCopied () {
   promptForUserInput "Have you copied the private key, $EXISTING_KEY_NAME, to your local ~/.ssh directory (y/n)?" 'If you answer y and have not copied the key, you will lose access via ssh.'
