@@ -68,35 +68,6 @@ checkPrivateSshKeyCopied () {
 }
 
 #-------------------------------------------------------------------------------
-# Checks for a "~/.ssh" directory, and if it doesn't exist, creates one.
-#-------------------------------------------------------------------------------
-checkForSshDir () {
-  local SSH_DIR_TF="$(checkForFileOrDirectory "$SSH_DIR")"
-
-  printComment 'Checking for the ssh directory at:'
-  printComment "$SSH_DIR"
-
-  printComment "Check for ssh directory returned $SSH_DIR_TF."
-
-  if [ "$SSH_DIR_TF" = false ]; then
-    printComment 'The ssh directory does not exist.' true
-
-    createSshDir
-  else
-    printComment 'The ssh directory already exists.'
-  fi
-}
-
-#-------------------------------------------------------------------------------
-# Creates the "~/.ssh" directroy and sets the correct permissions and ownership.
-#-------------------------------------------------------------------------------
-createSshDir () {
-    createDirectory "$SSH_DIR"
-    setPermissions 700 "$SSH_DIR"
-    setOwner "$SUDO_USER" "$SSH_DIR"
-}
-
-#-------------------------------------------------------------------------------
 # Executes the main functions of the script, by checking whether the ssh key 
 # already exists. If it does exist delete it, if it doesn't exist, create it.
 # 
