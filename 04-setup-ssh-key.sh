@@ -85,7 +85,7 @@ mainScript () {
     setOwner "$SUDO_USER" "$SSH_KEY"
     setOwner "$SUDO_USER" "$SSH_KEY.pub"
     addKeyToAuthorizedKeys
-    printKeyUsage
+    printPrivateKeyUsage
     writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
 
     printSeparator
