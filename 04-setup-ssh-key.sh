@@ -60,7 +60,7 @@ checkPrivateSshKeyCopied () {
   KEY_COPIED_YN="$(getUserInputYN)"
 
   if [ "$KEY_COPIED_YN" = true ]; then
-    removePrivateSshKey
+    removePrivateSshKey "$EXISTING_SSH_KEY"
   else
     printComment "You must copy the private key, $EXISTING_KEY_NAME, to your local ~/.ssh directory." true
     checkPrivateSshKeyCopied
@@ -97,35 +97,6 @@ createSshDir () {
 }
 
 #-------------------------------------------------------------------------------
-# Removes the generated private key, once the script has been run.
-#-------------------------------------------------------------------------------
-removePrivateSshKey () {
-  printComment 'Removing the private key at:'
-  printComment "$EXISTING_SSH_KEY"
-  rm "$EXISTING_SSH_KEY"
-  printComment "Key removed."
-}
-
-#-------------------------------------------------------------------------------
-# Get the name of the ssh key, and set the variable "$SSH_KEY".
-#-------------------------------------------------------------------------------
-getSshKeyDetails () {
-  promptForUserInput 'What do you want to call your ssh key?'
-  REMOTE_KEY_NAME="$(getUserInput)"
-  promptForUserInput 'What email do you want to add to your ssh key?'
-  SSH_EMAIL="$(getUserInput)"
-
-  SSH_KEY="$SSH_DIR/$REMOTE_KEY_NAME"
-}
-
-#-------------------------------------------------------------------------------
-# Tell the user to copy the private key to their local machine.
-#-------------------------------------------------------------------------------
-printKeyUsage () {
-  printComment "Please copy the private key, $REMOTE_KEY_NAME, to your local ~/.ssh directory."
-}
-
-#-------------------------------------------------------------------------------
 # Executes the main functions of the script, by checking whether the ssh key 
 # already exists. If it does exist delete it, if it doesn't exist, create it.
 # 
@@ -136,7 +107,7 @@ mainScript () {
   if [ -f "$EXISTING_SSH_KEY" ]; then
     checkPrivateSshKeyCopied
   else
-    checkForSshDir
+    checkForAndCreateSshDir
 
     getSshKeyDetails
     generateSshKey "$SSH_KEY" "$SSH_EMAIL"
