@@ -21,14 +21,17 @@
 # Imported shared functions.
 #-------------------------------------------------------------------------------
 . ./linshafun/comments.sh
+# . ./linshafun/crontab.sh
 # . ./linshafun/docker-env-variables.sh
 # . ./linshafun/docker-images.sh
+# . ./linshafun/docker-secrets.sh
 # . ./linshafun/docker-services.sh
 # . ./linshafun/docker-volumes.sh
 . ./linshafun/files-directories.sh
 # . ./linshafun/firewall.sh
 # . ./linshafun/host-env-variables.sh
 # . ./linshafun/host-information.sh
+# . ./linshafun/initialisation.sh
 # . ./linshafun/network.sh
 . ./linshafun/ownership-permissions.sh
 # . ./linshafun/packages.sh
@@ -79,6 +82,7 @@ mainScript () {
     checkPrivateSshKeyCopied
   else
     checkForAndCreateSshDir
+    checkForAndCreateSshConfig
 
     getSshKeyDetails
     generateSshKey "$SSH_KEY" "$SSH_EMAIL"
@@ -87,7 +91,7 @@ mainScript () {
     writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
 
     printSeparator
-    printComment 'Script finished. Please ensure you copied the private key and run this script again.'
+    printComment 'Script finished. Please ensure you copied the private key and run this script again.' true
 
     exit 1
   fi
