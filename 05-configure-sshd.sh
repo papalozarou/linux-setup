@@ -288,7 +288,11 @@ restartSshSocket () {
 # - https://askubuntu.com/a/1439482
 #-------------------------------------------------------------------------------
 mainScript () {
-  local UBUNTU_22_TF="$(compareOsVersion "22.04")"
+  local OS_TYPE="$(getOsType)"
+
+  if [ "$OS_TYPE" = "ubuntu" ]; then
+    local UBUNTU_22_TF="$(compareOsVersion "22.04")"
+  fi
 
   listDirectories "$SSHD_CONF_DIR"
   removeCurrentSshdConfigs
@@ -297,17 +301,14 @@ mainScript () {
   createHardenedSShdConfig
   setPermissions "600" "$SSHD_CONF_DIR"
 
-  printComment "The check to see if your OS is greater than Ubuntu 22.04 returned $UBUNTU_22_TF."
-
   if [ "$UBUNTU_22_TF" = false ]; then
-    printComment 'You are on a version of Ubuntu that is higher than 22.04.'
-    printComment 'We must also configure the SSH socket.'
+    printComment 'You are on a version of Ubuntu that is higher than 22.04. We must also configure the SSH socket.'
     configureSshSocket
 
     restartSshSocket
-  else
-    restartSshd
   fi
+
+  restartSshd
 
   writeSetupConfigOption "sshPort" "$SSH_PORT"
   
