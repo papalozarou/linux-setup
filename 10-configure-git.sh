@@ -105,24 +105,6 @@ setGitDefaultBranch () {
 }
 
 #-------------------------------------------------------------------------------
-# Generate an ssh config file.
-#-------------------------------------------------------------------------------
-generateSshConfig () {
-  printComment 'Generating ssh config file at:'
-  printComment "$SSH_CONF"
-  cat <<EOF > "$SSH_CONF"
-Host github.com
-  Hostname github.com
-  IdentityFile ~/.ssh/github
-  IdentitiesOnly yes
-EOF
-
-  printComment 'Config file generated.'
-  setPermissions 600 "$SSH_CONF"
-  setOwner "$SUDO_USER" "$SSH_CONF"
-}
-
-#-------------------------------------------------------------------------------
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
@@ -190,7 +172,7 @@ mainScript () {
 
   generateSshKey "$SSH_KEY" "$GIT_EMAIL"
   addSshKeytoAgent
-  generateSshConfig
+  addHostToSshConfig "github" "github.com"
 
   getUserToAddKey
   checkUserAddedKey
