@@ -288,9 +288,9 @@ restartSshSocket () {
 # - https://askubuntu.com/a/1439482
 #-------------------------------------------------------------------------------
 mainScript () {
-  local OS_TYPE="$(getOsType)"
+  local OS_DISTRIBUTION="$(getOsDistribution)"
 
-  if [ "$OS_TYPE" = "ubuntu" ]; then
+  if [ "$OS_D" = "ubuntu" ]; then
     local UBUNTU_22_TF="$(compareOsVersion "22.04")"
   fi
 
