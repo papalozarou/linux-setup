@@ -102,18 +102,6 @@ setGitDefaultBranch () {
 }
 
 #-------------------------------------------------------------------------------
-# Start the "ssh-agent" and add the newly generated key to it.
-#-------------------------------------------------------------------------------
-addSshKeytoAgent () {
-  printComment 'Adding the generated key to the ssh-agent.'
-  printSeparator
-  eval "$(ssh-agent -s)"
-  ssh-add "$SSH_KEY"
-  printSeparator
-  printComment 'Key added to agent.'
-}
-
-#-------------------------------------------------------------------------------
 # Generate an ssh config file.
 #-------------------------------------------------------------------------------
 generateSshConfig () {
@@ -125,7 +113,10 @@ Host github.com
   IdentityFile ~/.ssh/github
   IdentitiesOnly yes
 EOF
+
   printComment 'Config file generated.'
+  setPermissions 600 "$SSH_CONF"
+  setOwner "$SUDO_USER" "$SSH_CONF"
 }
 
 #-------------------------------------------------------------------------------
@@ -190,13 +181,14 @@ mainScript () {
   getGitDetails
   setGitDetails
   setGitDefaultBranch
+
+  checkForAndCreateSshDir
+  checkForAndCreateSshConfig
+
   generateSshKey "$SSH_KEY" "$GIT_EMAIL"
-  setOwner "$SUDO_USER" "$SSH_KEY"
-  setOwner "$SUDO_USER" "$SSH_KEY.pub"
   addSshKeytoAgent
   generateSshConfig
-  setPermissions 600 "$SSH_CONF"
-  setOwner "$SUDO_USER" "$SSH_CONF"
+
   getUserToAddKey
   checkUserAddedKey
   listGitConfig

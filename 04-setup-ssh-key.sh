@@ -82,8 +82,6 @@ mainScript () {
 
     getSshKeyDetails
     generateSshKey "$SSH_KEY" "$SSH_EMAIL"
-    setOwner "$SUDO_USER" "$SSH_KEY"
-    setOwner "$SUDO_USER" "$SSH_KEY.pub"
     addKeyToAuthorizedKeys
     printPrivateKeyUsage
     writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
