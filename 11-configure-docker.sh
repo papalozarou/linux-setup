@@ -55,15 +55,8 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
 # Linux distribution variables.
-#
-# N.B.
-# The "-d" flag is not required with "cut" in this instance as the returned 
-# string is split by tabs. As per:
-#
-# - https://unix.stackexchange.com/a/35387
 #-------------------------------------------------------------------------------
-DISTRIBUTION_ID="$(lsb_release -a | grep "Distributor" | cut -f 2)"
-DISTRIBUTION="$(changeCase "$DISTRIBUTION_ID" 'lower')"
+OS_DISTRIBUTION="$(getOsDistribution)"
 
 #-------------------------------------------------------------------------------
 # Installs all components of docker, after updating and upgrading packages to
@@ -96,7 +89,7 @@ installDockerDependencies () {
 installDockerGpgKey () {
   printComment "Adding official GPG key for $SERVICE."
   install -m 0755 -d /etc/apt/keyrings
-  curl -fsSL "https://download.docker.com/linux/$DISTRIBUTION/gpg" -o /etc/apt/keyrings/docker.asc
+  curl -fsSL "https://download.docker.com/linux/$OS_DISTRIBUTION/gpg" -o /etc/apt/keyrings/docker.asc
   chmod a+r /etc/apt/keyrings/docker.asc
   printComment 'GPG key added.'
 }
@@ -107,7 +100,7 @@ installDockerGpgKey () {
 installDockerRepository () {
   printComment "Setting up the repository for $SERVICE."
   echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.asc] "https://download.docker.com/linux/$DISTRIBUTION" \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.asc] "https://download.docker.com/linux/$OS_DISTRIBUTION" \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   printComment 'Repository set up.'
