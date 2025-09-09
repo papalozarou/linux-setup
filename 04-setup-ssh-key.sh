@@ -54,23 +54,6 @@ EXISTING_KEY_NAME="$(readSetupConfigValue "sshKeyFile")"
 EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 
 #-------------------------------------------------------------------------------
-# Checks that a user has copied the key after running the script before. If yes,
-# remove it, if no or other input direct to copy the key and run this function
-# again.
-#-------------------------------------------------------------------------------
-checkPrivateSshKeyCopied () {
-  promptForUserInput "Have you copied the private key, $EXISTING_KEY_NAME, to your local ~/.ssh directory (y/n)?" 'If you answer y and have not copied the key, you will lose access via ssh.'
-  KEY_COPIED_YN="$(getUserInputYN)"
-
-  if [ "$KEY_COPIED_YN" = true ]; then
-    removePrivateSshKey "$EXISTING_SSH_KEY"
-  else
-    printComment "You must copy the private key, $EXISTING_KEY_NAME, to your local ~/.ssh directory." true
-    checkPrivateSshKeyCopied
-  fi
-}
-
-#-------------------------------------------------------------------------------
 # Executes the main functions of the script, by checking whether the ssh key 
 # already exists. If it does exist delete it, if it doesn't exist, create it.
 # 
@@ -79,7 +62,7 @@ checkPrivateSshKeyCopied () {
 #-------------------------------------------------------------------------------
 mainScript () {
   if [ -f "$EXISTING_SSH_KEY" ]; then
-    checkPrivateSshKeyCopied
+    checkPrivateSshKeyCopied "$EXISTING_SSH_KEY"
   else
     checkForAndCreateSshDir
     checkForAndCreateSshConfig
