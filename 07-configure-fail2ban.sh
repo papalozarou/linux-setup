@@ -50,6 +50,7 @@
 . ./linshafun/services.sh
 . ./linshafun/setup-config.sh
 . ./linshafun/setup.sh
+# . ./linshafun/ssh-config.sh
 # . ./linshafun/ssh-keys.sh
 . ./linshafun/text.sh
 # . ./linshafun/user-input.sh
