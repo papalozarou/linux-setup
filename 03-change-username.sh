@@ -57,9 +57,9 @@ CONFIG_KEY='changedUsername'
 #-------------------------------------------------------------------------------
 # File variables.
 #-------------------------------------------------------------------------------
-TEMPUSER_DIR="/home/tempuser"
+TEMPUSER_DIR_PATH="/home/tempuser"
 RENAME_SCRIPT="renameUser.sh"
-RENAME_SCRIPT_PATH="$TEMPUSER_DIR/$RENAME_SCRIPT"
+RENAME_SCRIPT_PATH="$TEMPUSER_DIR_PATH/$RENAME_SCRIPT"
 
 #-------------------------------------------------------------------------------
 # Create a temporary user, "tempuser", and adds it to sudoers so it can change
@@ -74,7 +74,7 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR/$RENAME_SCRIPT"
 #-------------------------------------------------------------------------------
 createTempUser () {
   printComment 'Creating temporary user, tempuser. You will be asked to enter a password for the temporary user as part of this process.'
-  printComment 'Set a password you can remember easily as you will need it shortly.' true
+  printComment 'Set a password you can remember easily as you will need it shortly.' 'warning'
   printSeparator
   adduser --gecos GECOS tempuser
   printSeparator
@@ -124,7 +124,7 @@ EOF
 # will still run.
 #-------------------------------------------------------------------------------
 killProcesses () {
-    printComment "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed." true
+    printComment "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed." 'warning'
 
     promptForUserInput 'Ready to kill all processes (y/n)?' 'This may log you out.'
     KILL_PROCESSES_YN="$(getUserInputYN)"
@@ -138,8 +138,8 @@ killProcesses () {
       exit
     else
       printSeparator
-      printComment 'Processes remain running for this user. To enable changing the username, you must run the following command:' true
-      printComment "pkill -u $SUDO_UID" true
+      printComment 'Processes remain running for this user. To enable changing the username, you must run the following command:' 'warning'
+      printComment "pkill -u $SUDO_UID" 'warning'
       printSeparator
 
       exit
@@ -150,10 +150,10 @@ killProcesses () {
 # Removes the temporary user "tempuser' and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
-  printComment 'Deleting temporary user, tempuser.'
+  printComment 'Deleting temporary user tempuser.'
   printSeparator
   deluser tempuser
-  removeFileOrDirectory "$TEMPUSER_DIR"
+  removeFileOrDirectory "$TEMPUSER_DIR_PATH"
   printSeparator
   printComment 'Temporary user and home folder deleted.'
 }
