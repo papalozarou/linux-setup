@@ -37,7 +37,7 @@ When all scripts have been executed, it's safe to delete the repo with:
 sudo rm -R ~/linux-setup
 ```
 
-This leaves the `.config/linux-setup` directory in place for reference.
+This leaves the `.config/linux-setup.conf` file in place for reference.
 
 ### N.B.
 
