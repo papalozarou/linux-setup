@@ -1,4 +1,4 @@
 #-------------------------------------------------------------------------------
 # File variables.
 #-------------------------------------------------------------------------------
-SETUP_CONF_PATH="$SETUP_CONF_DIR/linux-setup.conf"
+SETUP_CONF_PATH="$SETUP_CONF_DIR_PATH/linux-setup.conf"
