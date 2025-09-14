@@ -4,7 +4,7 @@
 # Initialises the setup by:
 #
 # 1. updating and upgrading packages; and
-# 2. creating a config file at "~/.config/linux-setup.conf"
+# 2. creating a config folder and file at "~/.config/linux-setup.conf".
 # 
 # N.B.
 # This script needs to be run as "sudo".
@@ -14,6 +14,7 @@
 # Imported shared variables.
 #-------------------------------------------------------------------------------
 . ./linshafun/linshafun.var
+# . ./linshafun/linshafun-docker.var
 
 #-------------------------------------------------------------------------------
 # Imported project specific variables.

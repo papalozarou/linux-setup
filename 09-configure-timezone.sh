@@ -18,6 +18,7 @@
 # Imported shared variables.
 #-------------------------------------------------------------------------------
 . ./linshafun/linshafun.var
+# . ./linshafun/linshafun-docker.var
 
 #-------------------------------------------------------------------------------
 # Imported project specific variables.
@@ -49,6 +50,7 @@
 # . ./linshafun/ssh-keys.sh
 # . ./linshafun/text.sh
 . ./linshafun/user-input.sh
+
 #-------------------------------------------------------------------------------
 # Config key and service variables.
 #-------------------------------------------------------------------------------

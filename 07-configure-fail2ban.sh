@@ -23,6 +23,7 @@
 # Imported shared variables.
 #-------------------------------------------------------------------------------
 . ./linshafun/linshafun.var
+# . ./linshafun/linshafun-docker.var
 
 #-------------------------------------------------------------------------------
 # Imported project specific variables.
