@@ -76,7 +76,7 @@ mainScript () {
     writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
 
     printSeparator
-    printComment 'Script finished. Please ensure you copied the private key and run this script again.' true
+    printComment 'Script finished. Please ensure you copied the private key and run this script again.' 'warning'
 
     exit 1
   fi

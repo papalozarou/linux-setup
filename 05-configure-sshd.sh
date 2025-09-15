@@ -93,7 +93,7 @@ checkSshdConfig () {
   local INCLUDES="$(grep "Include" "$SSHD_CONF")"
 
   if [ -z "$INCLUDES" ]; then
-    printComment 'Include line not present so adding it.' true
+    printComment 'Include line not present so adding it.' 'warning'
 
     sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" "$SSHD_CONF"
     printComment "Added include line."
@@ -134,7 +134,7 @@ configureSshSocket () {
     printComment "ListenStream=$SSH_PORT"
     printSeparator
   else
-    printComment 'The setup config file and directory do not exist. Creating both.' true
+    printComment 'The setup config file and directory do not exist. Creating both.' 'warning'
 
     createDirectory "$SSH_SOCKET_CONF_DIR"
     createSocketOverideConfig
@@ -248,7 +248,7 @@ removeCurrentSshdConfigs () {
 # of Ubuntu lower than or equal to 22.04.
 #-------------------------------------------------------------------------------
 restartSshd () {
-  printComment 'To enable the new sshd configutation, you will need to restart sshd.' true
+  printComment 'To enable the new sshd configutation, you will need to restart sshd.' 'warning'
   promptForUserInput 'Do you want to restart sshd (y/n)?' 'This can potentially interupt your connection.'
   SSHD_RESTART_YN="$(getUserInputYN)"
 
@@ -264,7 +264,7 @@ restartSshd () {
 # Ubuntu greater than 22.04.
 #-------------------------------------------------------------------------------
 restartSshSocket () {
-  printComment 'To enable the new ssh socker configutation, you will need to restart the ssh socket.' true
+  printComment 'To enable the new ssh socker configutation, you will need to restart the ssh socket.' 'warning'
   promptForUserInput 'Do you want to restart the ssh socket (y/n)?' 'This can potentially interupt your connection.'
   SSH_SOCKET_RESTART_YN="$(getUserInputYN)"
 

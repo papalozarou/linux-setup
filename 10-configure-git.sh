@@ -110,9 +110,9 @@ setGitDefaultBranch () {
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
-  printComment 'You must add the contents of ~/.ssh/github.pub to your Github account via:' true
-  printComment 'Settings > Access > SSH and GPG keys' true
-  printComment 'You will likely need to open a separate command line session to copy the contents. We will wait a while you go add the key…' true
+  printComment 'You must add the contents of ~/.ssh/github.pub to your Github account via:' 'warning'
+  printComment 'Settings > Access > SSH and GPG keys' 'warning'
+  printComment 'You will likely need to open a separate command line session to copy the contents. We will wait a while you go add the key…' 'warning'
 }
 
 #-------------------------------------------------------------------------------

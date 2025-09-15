@@ -90,7 +90,7 @@ checkSudoersConf () {
   local INCLUDES="$(grep "@includedir" "$SUDOERS")"
 
   if [ -z "$INCLUDES" ]; then
-    printComment 'Include line not present so adding it. You may be asked for your password.' true
+    printComment 'Include line not present so adding it. You may be asked for your password.' 'warning'
 
     echo "@includedir $SUDOERS_CONF_DIR" | sudo EDITOR='tee -a' visudo
 
@@ -135,7 +135,7 @@ mainScript () {
   setOwner "$USER" "$SUDOERS_DEFAULT_CONF"
 
   printSeparator
-  printComment 'As stated above these variables will not be usable until you have logged out and back in.' true
+  printComment 'As stated above these variables will not be usable until you have logged out and back in.' 'warning'
   printSeparator
 }
 

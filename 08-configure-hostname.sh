@@ -79,7 +79,7 @@ checkHostname () {
   local CURRENT_HOSTNAME="$(hostname)"
 
   if [ -z "$CURRENT_HOSTNAME" ]; then
-    printComment 'No hostname set.' true
+    printComment 'No hostname set.' 'warning'
   else
     printComment 'The current hostname is:'
     printComment "$CURRENT_HOSTNAME"

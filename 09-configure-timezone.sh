@@ -105,7 +105,7 @@ listNtpSettings () {
   printSeparator
   ntpq -p
   printSeparator
-  printComment 'It may take a moment for connections to be established.' true
+  printComment 'It may take a moment for connections to be established.' 'warning'
 }
 
 #-------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ setNewTimezone () {
 
     writeSetupConfigOption "timezone" "$NEW_TIMEZONE"
   elif [ "$TIMEZONE_VALID" = false ]; then
-    printComment 'Timezone is invalid. You must use a valid timezone.' true
+    printComment 'Timezone is invalid. You must use a valid timezone.' 'warning'
     setNewTimezone
   fi
 }
