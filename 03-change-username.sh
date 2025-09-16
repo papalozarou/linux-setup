@@ -86,14 +86,6 @@ createTempUser () {
 }
 
 #-------------------------------------------------------------------------------
-# Get the desired new username and group.
-#-------------------------------------------------------------------------------
-getNewUserName () {
-  promptForUserInput 'What is your new user name?' 
-  NEW_USER="$(getUserInput)"
-}
-
-#-------------------------------------------------------------------------------
 # Create a script in the temporary user directory to change the current logged
 # in username and groupname to "$NEW_USER".
 #-------------------------------------------------------------------------------
@@ -168,8 +160,10 @@ removeTempUser () {
 #-------------------------------------------------------------------------------
 mainScript () {
   printComment 'Checking for a temporary user, "tempuser".'
+  printSeparator
   
   if id tempuser; then
+    printSeparator
     removeTempUser
   else
     printSeparator
