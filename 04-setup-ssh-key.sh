@@ -53,7 +53,7 @@ CONFIG_KEY="setupSshKey"
 # File variables.
 #-------------------------------------------------------------------------------
 EXISTING_SSH_KEY_NAME="$(readSetupConfigValue "sshKeyFile")"
-EXISTING_SSH_KEY_PATH="$SSH_DIR/$EXISTING_SSH_KEY_NAME"
+EXISTING_SSH_KEY_PATH="$SSH_DIR_PATH/$EXISTING_SSH_KEY_NAME"
 
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script, by checking whether the ssh key 
