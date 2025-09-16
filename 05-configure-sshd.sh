@@ -285,12 +285,12 @@ mainScript () {
     local UBUNTU_22_TF="$(compareOsVersion "22.04")"
   fi
 
-  listDirectories "$SSHD_CONF_DIR"
+  listDirectories "$SSHD_CONF_DIR_PATH"
   removeCurrentSshdConfigs
 
   checkSshdConfig
   createHardenedSShdConfig
-  setPermissions "600" "$SSHD_CONF_DIR"
+  setPermissions "600" "$SSHD_CONF_DIR_PATH"
 
   if [ "$UBUNTU_22_TF" = false ]; then
     printComment 'You are on a version of Ubuntu that is higher than 22.04. We must also configure the SSH socket.'
