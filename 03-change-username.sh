@@ -3,10 +3,12 @@
 #-------------------------------------------------------------------------------
 # Changes the current user's username by:
 #
-# 1. Creating a temporary user, "tempuser";
-# 2. Creating a script within their home directory to change the default ubuntu
-#    username and groupname; and
-# 3. Deleting the temporary user and their home directory.
+# 1. checking for the existence of a temporary user, "tempuser";
+# 2. asking the user if they want to change the current username;
+# 3. creating "tempuser" and adding it to sudoers;
+# 4. creating a script within the "tempuser" home directory to change the 
+#    current username and groupname; and
+# 5. removing "tempuser" and its home directory if it exists;
 #
 # N.B.
 # This script needs to be run as "sudo".
@@ -62,6 +64,17 @@ RENAME_SCRIPT="renameUser.sh"
 RENAME_SCRIPT_PATH="$TEMPUSER_DIR_PATH/$RENAME_SCRIPT"
 
 #-------------------------------------------------------------------------------
+# Checks for the existence of "tempuser".
+#-------------------------------------------------------------------------------
+checkForTempUser () {
+  if id tempuser > /dev/null 2>&1; then
+    echo "true"
+  else
+    echo "false"
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Create a temporary user, "tempuser", and adds it to sudoers so it can change
 # the current users name and group.
 #
@@ -102,6 +115,9 @@ echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER."
 echo "$COMMENT_PREFIX Once logged in re-run:"
 echo "$COMMENT_PREFIX cd linux-setup && sudo ~/linux-setup/03-change-username.sh"
 EOF
+
+  setPermissions "+x" "$RENAME_SCRIPT_PATH"
+  setOwner "tempuser" "$RENAME_SCRIPT_PATH"
 
   listDirectories "$RENAME_SCRIPT_PATH"
   printComment 'Script created.'
@@ -147,6 +163,17 @@ killProcesses () {
 }
 
 #-------------------------------------------------------------------------------
+# Prints the instructions for using "tempuser" to change the current username.
+#-------------------------------------------------------------------------------
+printTempUserInstructions () {
+  printComment 'You can now log this user out, log in as "tempuser", then run:'
+  printComment "sudo ./$RENAME_SCRIPT."
+  printSeparator
+  printComment 'Finished setting up "tempuser".'
+  printSeparator
+}
+
+#-------------------------------------------------------------------------------
 # Removes the temporary user "tempuser' and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
@@ -159,34 +186,48 @@ removeTempUser () {
 }
 
 #-------------------------------------------------------------------------------
-# Runs the main functions of the script, by checking whether "tempuser" exists. 
-# If it does exist delete it, if it doesn't exist create it.
+# Runs the main functions of the script.
 # 
 # N.B.
 # When the "tempuser" is created, all processes for the current user are 
 # terminated, which may include the current ssh session.
+# 
+# If the user chooses not to change the username, the script exits and saves
+# "changedUsername false" to the setup config file.
 #-------------------------------------------------------------------------------
 mainScript () {
-  printComment 'Checking for a temporary user, "tempuser".'
-  printSeparator
-  
-  if id tempuser; then
-    printSeparator
+  local TEMPUSER_TF="$(checkForTempUser)"
+
+  printComment 'Checking for a temporary user, "tempuser", used to enable changing the current username.'
+  printComment "Check returned $TEMPUSER_TF."
+
+  if [ "$TEMPUSER_TF" = "true" ]; then
+    printComment '"tempuser" already exists.'
+
     removeTempUser
-  else
-    printSeparator
+
+    finaliseScript "$CONFIG_KEY"
+  elif [ "$TEMPUSER_TF" = "false" ]; then
+    printComment '"tempuser" does not exist.'
+
+    promptForUserInput 'Do you want to change the current users name (y/n)?' 'This will create a temporary user, "tempuser", to perform the change.'
+    local CHANGE_NAME_YN="$(getUserInputYN)"
+  fi
+  
+  if [ "$CHANGE_NAME_YN" = true ] && [ "$TEMPUSER_TF" = "false" ]; then
     createTempUser
     getNewUserName
     createTempUserScript
-    setPermissions "+x" "$RENAME_SCRIPT_PATH"
-    setOwner "tempuser" "$RENAME_SCRIPT_PATH"
-    printComment 'You can now log this user out, log in as "tempuser", then run:'
-    printComment "sudo ./$RENAME_SCRIPT."
-    printSeparator
-    printComment 'Finished setting up "tempuser".'
-    printSeparator
+
+    printTempUserInstructions
 
     killProcesses
+  elif [ "$CHANGE_NAME_YN" = false ] || [ "$TEMPUSER_TF" = "true" ]; then
+    printComment 'Leaving current username unchanged.'
+    writeSetupConfigOption "$CONFIG_KEY" "false"
+
+    printScriptFinished
+    exit 1
   fi
 }
 
@@ -195,4 +236,3 @@ mainScript () {
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
 mainScript
-finaliseScript "$CONFIG_KEY"
