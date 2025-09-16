@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 # Changes the current user's username by:
 #
-# 1. Creating a temporary user, `tempuser`;
+# 1. Creating a temporary user, "tempuser";
 # 2. Creating a script within their home directory to change the default ubuntu
 #    username and groupname; and
 # 3. Deleting the temporary user and their home directory.
@@ -73,16 +73,16 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR_PATH/$RENAME_SCRIPT"
 # - https://unix.stackexchange.com/a/611219
 #-------------------------------------------------------------------------------
 createTempUser () {
-  printComment 'Creating temporary user, tempuser. You will be asked to enter a password for the temporary user as part of this process.'
+  printComment 'Creating temporary user, "tempuser". You will be asked to enter a password for "tempuser" as part of this process.'
   printComment 'Set a password you can remember easily as you will need it shortly.' 'warning'
   printSeparator
   adduser --gecos GECOS tempuser
   printSeparator
-  printComment 'Temporary user created. Adding to sudoers.'
+  printComment '"tempuser" created. Adding to sudoers.'
   printSeparator
   adduser tempuser sudo
   printSeparator
-  printComment 'Temporary user added to sudoers file.'
+  printComment '"tempuser" added to sudoers file.'
 }
 
 #-------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ getNewUserName () {
 # in username and groupname to "$NEW_USER".
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  printComment 'Creating a script to change the current username and group within the tempuser home directory at:'
+  printComment 'Creating a script to change the current username and group within the "tempuser" home directory at:'
   printComment "$RENAME_SCRIPT_PATH"
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
@@ -150,12 +150,12 @@ killProcesses () {
 # Removes the temporary user "tempuser' and it's home directory.
 #-------------------------------------------------------------------------------
 removeTempUser () {
-  printComment 'Deleting temporary user tempuser.'
+  printComment 'Deleting temporary user "tempuser".'
   printSeparator
   deluser tempuser
   removeFileOrDirectory "$TEMPUSER_DIR_PATH"
   printSeparator
-  printComment 'Temporary user and home folder deleted.'
+  printComment '"tempuser" and home folder deleted.'
 }
 
 #-------------------------------------------------------------------------------
@@ -167,18 +167,21 @@ removeTempUser () {
 # terminated, which may include the current ssh session.
 #-------------------------------------------------------------------------------
 mainScript () {
+  printComment 'Checking for a temporary user, "tempuser".'
+  
   if id tempuser; then
     removeTempUser
   else
+    printSeparator
     createTempUser
     getNewUserName
     createTempUserScript
     setPermissions "+x" "$RENAME_SCRIPT_PATH"
     setOwner "tempuser" "$RENAME_SCRIPT_PATH"
-    printComment 'You can now log this user out, log in as tempuser, then run:'
+    printComment 'You can now log this user out, log in as "tempuser", then run:'
     printComment "sudo ./$RENAME_SCRIPT."
     printSeparator
-    printComment 'Finished setting up the temporary user.'
+    printComment 'Finished setting up "tempuser".'
     printSeparator
 
     killProcesses
