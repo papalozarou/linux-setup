@@ -111,7 +111,7 @@ echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
 usermod -l "$NEW_USER" "$SUDO_USER"
 usermod -d /home/"$NEW_USER" -m "$NEW_USER"
 groupmod --new-name "$NEW_USER" "$SUDO_USER"
-echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER."
+echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER, using the existing password."
 echo "$COMMENT_PREFIX Once logged in re-run:"
 echo "$COMMENT_PREFIX cd linux-setup && sudo ~/linux-setup/03-change-username.sh"
 EOF
