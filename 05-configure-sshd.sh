@@ -303,7 +303,7 @@ mainScript () {
 
   writeSetupConfigOption "sshPort" "$SSH_PORT"
   
-  printLocalSshConfig
+  printLocalSshConfig "$SSH_PORT"
 }
 
 #-------------------------------------------------------------------------------
