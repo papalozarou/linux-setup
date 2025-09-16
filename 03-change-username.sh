@@ -68,9 +68,9 @@ RENAME_SCRIPT_PATH="$TEMPUSER_DIR_PATH/$RENAME_SCRIPT"
 #-------------------------------------------------------------------------------
 checkForTempUser () {
   if id tempuser > /dev/null 2>&1; then
-    echo "true"
+    echo true
   else
-    echo "false"
+    echo false
   fi
 }
 
@@ -201,13 +201,13 @@ mainScript () {
   printComment 'Checking for a temporary user, "tempuser", used to enable changing the current username.'
   printComment "Check returned $TEMPUSER_TF."
 
-  if [ "$TEMPUSER_TF" = "true" ]; then
+  if [ "$TEMPUSER_TF" = true ]; then
     printComment '"tempuser" already exists.'
 
     removeTempUser
 
     finaliseScript "$CONFIG_KEY"
-  elif [ "$TEMPUSER_TF" = "false" ]; then
+  elif [ "$TEMPUSER_TF" = false ]; then
     printComment '"tempuser" does not exist.'
 
     promptForUserInput 'Do you want to change the current users name (y/n)?' 'This will create a temporary user, "tempuser", to perform the change.'
