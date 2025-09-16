@@ -108,6 +108,14 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
+# Get the desired new username and group.
+#-------------------------------------------------------------------------------
+getNewUserName () {
+  promptForUserInput 'What is your new user name?' 
+  NEW_USER="$(getUserInput)"
+}
+
+#-------------------------------------------------------------------------------
 # Kills all processes currently being run by "$SUDO_USER". This is done to
 # ensure that the name of "$SUDO_USER" can be changed by "tempUser".
 #
