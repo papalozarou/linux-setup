@@ -52,8 +52,8 @@ CONFIG_KEY="setupSshKey"
 #-------------------------------------------------------------------------------
 # File variables.
 #-------------------------------------------------------------------------------
-EXISTING_KEY_NAME="$(readSetupConfigValue "sshKeyFile")"
-EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
+EXISTING_SSH_KEY_NAME="$(readSetupConfigValue "sshKeyFile")"
+EXISTING_SSH_KEY_PATH="$SSH_DIR/$EXISTING_SSH_KEY_NAME"
 
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script, by checking whether the ssh key 
@@ -63,17 +63,17 @@ EXISTING_SSH_KEY="$SSH_DIR/$EXISTING_KEY_NAME"
 # We also write the ssh key filename to the config file.
 #-------------------------------------------------------------------------------
 mainScript () {
-  if [ -f "$EXISTING_SSH_KEY" ]; then
-    checkPrivateSshKeyCopied "$EXISTING_SSH_KEY"
+  if [ -f "$EXISTING_SSH_KEY_PATH" ]; then
+    checkPrivateSshKeyCopied "$EXISTING_SSH_KEY_PATH"
   else
     checkForAndCreateSshDir
     checkForAndCreateSshConfig
 
     getSshKeyDetails
-    generateSshKey "$SSH_KEY" "$SSH_EMAIL"
+    generateSshKey "$SSH_KEY_PATH" "$SSH_EMAIL"
     addKeyToAuthorizedKeys
     printPrivateKeyUsage
-    writeSetupConfigOption "sshKeyFile" "$REMOTE_KEY_NAME"
+    writeSetupConfigOption "sshKeyFile" "$SSH_KEY_NAME"
 
     printSeparator
     printComment 'Script finished. Please ensure you copied the private key and run this script again.' 'warning'
