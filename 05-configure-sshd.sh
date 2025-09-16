@@ -52,7 +52,7 @@
 . ./linshafun/services.sh
 . ./linshafun/setup-config.sh
 . ./linshafun/setup.sh
-# . ./linshafun/ssh-config.sh
+. ./linshafun/ssh-config.sh
 # . ./linshafun/ssh-keys.sh
 # . ./linshafun/text.sh
 . ./linshafun/user-input.sh
@@ -63,14 +63,23 @@
 CONFIG_KEY='configuredSshd'
 
 #-------------------------------------------------------------------------------
-# sshd related variables.
+# Directory variables.
 #-------------------------------------------------------------------------------
-GLOBAL_SSH_DIR='/etc/ssh'
-SSHD_CONF="$GLOBAL_SSH_DIR/sshd_config"
-SSHD_CONF_DIR="$GLOBAL_SSH_DIR/sshd_config.d"
-SSHD_DEFAULT_CONF="$SSHD_CONF_DIR/99-hardened.conf"
-SSH_SOCKET_CONF_DIR="/etc/systemd/system/ssh.socket.d"
-SSH_SOCKET_OVERRIDE_CONF="$SSH_SOCKET_CONF_DIR/override.conf"
+GLOBAL_SSH_DIR_PATH='/etc/ssh'
+SSHD_CONF_DIR_PATH="$GLOBAL_SSH_DIR_PATH/sshd_config.d"
+SSH_SOCKET_CONF_DIR_PATH="/etc/systemd/system/ssh.socket.d"
+
+#-------------------------------------------------------------------------------
+# File variables.
+#-------------------------------------------------------------------------------
+SSHD_CONF_PATH="$GLOBAL_SSH_DIR_PATH/sshd_config"
+SSHD_DEFAULT_CONF_PATH="$SSHD_CONF_DIR_PATH/99-hardened.conf"
+SSH_SOCKET_OVERRIDE_CONF_PATH="$SSH_SOCKET_CONF_DIR_PATH/override.conf"
+
+#-------------------------------------------------------------------------------
+# SSH variables.
+#-------------------------------------------------------------------------------
+SSH_PORT="$(generatePortNumber)"
 
 #-------------------------------------------------------------------------------
 # Check for the "Include" line in "$SSHD_CONF". If not present, add it after
@@ -88,17 +97,17 @@ SSH_SOCKET_OVERRIDE_CONF="$SSH_SOCKET_CONF_DIR/override.conf"
 #-------------------------------------------------------------------------------
 checkSshdConfig () {
   printComment 'Checking for include line in:'
-  printComment "$SSHD_CONF"
+  printComment "$SSHD_CONF_PATH"
 
-  local INCLUDES="$(grep "Include" "$SSHD_CONF")"
+  local INCLUDES="$(grep "Include" "$SSHD_CONF_PATH")"
 
   if [ -z "$INCLUDES" ]; then
     printComment 'Include line not present so adding it.' 'warning'
 
-    sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR/*.conf" "$SSHD_CONF"
+    sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR_PATH/*.conf" "$SSHD_CONF_PATH"
     printComment "Added include line."
     printSeparator
-    grep "Include" "$SSHD_CONF"
+    grep "Include" "$SSHD_CONF_PATH"
     printSeparator
   else
     printComment "Include line already present."
@@ -115,19 +124,18 @@ checkSshdConfig () {
 # - https://serverfault.com/a/1159600
 #-------------------------------------------------------------------------------
 configureSshSocket () {
-  local SOCKET_CONF_TF="$(checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF")"
-  local SOCKET_CONF_DIR_TF="$(checkForFileOrDirectory "$SSH_SOCKET_CONF_DIR")"
+  local SOCKET_CONF_TF="$(checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF_PATH")"
+  local SOCKET_CONF_DIR_TF="$(checkForFileOrDirectory "$SSH_SOCKET_CONF_DIR_PATH")"
 
   printComment 'Checking for the socket config file or directory at:'
-  # printComment "$SSH_SOCKET_CONF_DIR"
-  printComment "$SSH_SOCKET_OVERRIDE_CONF"
+  printComment "$SSH_SOCKET_OVERRIDE_CONF_PATH"
 
   printComment "Check for config file returned $SOCKET_CONF_TF."
   printComment "Check for config directory returned $SOCKET_CONF_DIR_TF."
 
   if [ "$SOCKET_CONF_TF" = true ]; then 
-    printComment 'The setup config file and directory exist. You will need to manually add the following to:'
-    printComment "$SSH_SOCKET_OVERRIDE_CONF"
+    printComment 'The setup config file and directory exist. You will need to manually add the following to:' 'warning'
+    printComment "$SSH_SOCKET_OVERRIDE_CONF_PATH" 'warning'
     printSeparator
     printComment '[Socket]'
     printComment 'ListenStream='
@@ -136,21 +144,19 @@ configureSshSocket () {
   else
     printComment 'The setup config file and directory do not exist. Creating both.' 'warning'
 
-    createDirectory "$SSH_SOCKET_CONF_DIR"
+    createDirectory "$SSH_SOCKET_CONF_DIR_PATH"
     createSocketOverideConfig
   fi
 }
 
 #-------------------------------------------------------------------------------
 # Creates the hardened config file for sshd. This overides the default values
-# stored in "$SSHD_CONF".
+# stored in "$SSHD_CONF_PATH".
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
-  SSH_PORT="$(generatePortNumber)"
-
   printComment 'Generating sshd config file at:' 
-  printComment "$SSHD_DEFAULT_CONF" 
-  cat <<EOF > "$SSHD_DEFAULT_CONF"
+  printComment "$SSHD_DEFAULT_CONF_PATH" 
+  cat <<EOF > "$SSHD_DEFAULT_CONF_PATH"
 Port $SSH_PORT
 AddressFamily inet
 LoginGraceTime 20
@@ -172,7 +178,7 @@ AcceptEnv LANG LC_*
 EOF
   printComment 'Config file generated.'
 
-  listDirectories "$SSHD_CONF_DIR"
+  listDirectories "$SSHD_CONF_DIR_PATH"
 }
 
 #-------------------------------------------------------------------------------
@@ -184,38 +190,20 @@ EOF
 #-------------------------------------------------------------------------------
 createSocketOverideConfig () {
   printComment 'Generating ssh.socket override config file at:' 
-  printComment "$SSH_SOCKET_CONF_DIR" 
-  cat <<EOF > "$SSH_SOCKET_OVERRIDE_CONF"
+  printComment "$SSH_SOCKET_CONF_DIR_PATH" 
+  cat <<EOF > "$SSH_SOCKET_OVERRIDE_CONF_PATH"
 [Socket]
 ListenStream=
 ListenStream=$SSH_PORT
 EOF
   printComment 'Override config file generated.'
 
-  listDirectories "$SSH_SOCKET_CONF_DIR"
+  listDirectories "$SSH_SOCKET_CONF_DIR_PATH"
 }
 
 #-------------------------------------------------------------------------------
-# Displays the values a user needs to add to their local ssh config file.
-#-------------------------------------------------------------------------------
-printLocalSshConfig () {
-  local IP_ADDRESS="$(readIpAddress)"
-  local SSH_KEY_FILE="$(readSetupConfigValue "sshKeyFile")"
-
-  printComment 'To enable easy connection from your local machine, add the following to your local ssh config file at either:'
-  printComment '~/.ssh/ssh_config'
-  printComment '~/.ssh/config'
-  printSeparator
-  printComment "Host $SSH_KEY_FILE"
-  printComment "  Hostname $IP_ADDRESS"
-  printComment "  Port $SSH_PORT"
-  printComment "  User $SUDO_USER"
-  printComment "  IdentityFile ~/.ssh/$SSH_KEY_FILE"
-  printSeparator
-}
-
-#-------------------------------------------------------------------------------
-# Removes the config files within "$SSHD_CONF_DIR", based on the users input.
+# Removes the config files within "$SSHD_CONF_DIR_PATH", based on the users 
+# input.
 #
 # If the user requests to delete, the files are deleted and the folder is listed
 # again to confirm deletion, using "listDirectories".
@@ -229,23 +217,23 @@ printLocalSshConfig () {
 # - https://stackoverflow.com/a/31559110
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
-  promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
+  promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR_PATH (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
   SSHD_CONFS_YN="$(getUserInputYN)"
 
   if [ "$SSHD_CONFS_YN" = true ]; then
-    printComment "Deleting files in $SSHD_CONF_DIR."
-    rm "$SSHD_CONF_DIR"/*.conf
+    printComment "Deleting files in $SSHD_CONF_DIR_PATH."
+    rm "$SSHD_CONF_DIR_PATH"/*.conf
     printComment 'Files deleted.'
 
-    listDirectories "$SSHD_CONF_DIR"
+    listDirectories "$SSHD_CONF_DIR_PATH"
   else
-    printComment "Leaving files in $SSHD_CONF_DIR intact."
+    printComment "Leaving files in $SSHD_CONF_DIR_PATH intact."
   fi
 }
 
 #-------------------------------------------------------------------------------
 # Asks the user if they want to restart the sshd service. Applies to versions
-# of Ubuntu lower than or equal to 22.04.
+# of Debian and Ubuntu versions lower than or equal to 22.04.
 #-------------------------------------------------------------------------------
 restartSshd () {
   printComment 'To enable the new sshd configutation, you will need to restart sshd.' 'warning'
@@ -264,7 +252,7 @@ restartSshd () {
 # Ubuntu greater than 22.04.
 #-------------------------------------------------------------------------------
 restartSshSocket () {
-  printComment 'To enable the new ssh socker configutation, you will need to restart the ssh socket.' 'warning'
+  printComment 'To enable the new ssh socket configutation, you will need to restart the ssh socket.' 'warning'
   promptForUserInput 'Do you want to restart the ssh socket (y/n)?' 'This can potentially interupt your connection.'
   SSH_SOCKET_RESTART_YN="$(getUserInputYN)"
 
@@ -277,14 +265,15 @@ restartSshSocket () {
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script. A check is performed on the version
-# of Ubuntu that the host is running – if higher than 22.xx then the SSH socket
-# is also configured. As per:
+# Executes the main functions of the script. A check is performed on the Linux
+# distribution the host machine is running. If it is Ubuntu and higher than 
+# 22.xx then the SSH socket is also configured. As per:
 #
 # - https://serverfault.com/a/1159600
 #
 # N.B.
-# SSHD is only restarted if Ubuntu 22 or lower is running. As per:
+# SSHD is only restarted if the distribution is Debian or Ubunto 22 or lower. 
+# As per:
 #
 # - https://askubuntu.com/a/1523872
 # - https://askubuntu.com/a/1439482
