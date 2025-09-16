@@ -77,6 +77,7 @@ mainScript () {
 
     printSeparator
     printComment 'Script finished. Please ensure you copied the private key and run this script again.' 'warning'
+    printSeparator
 
     exit 1
   fi
