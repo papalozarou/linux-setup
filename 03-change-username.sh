@@ -147,7 +147,7 @@ killProcesses () {
 
     if [ "$KILL_PROCESSES_YN" = true ]; then
       printSeparator
-      printComment "Killing all processes for $SUDO_USER."
+      printComment "Killing all processes for $SUDO_USER." 'warning'
       printSeparator
       pkill -u "$SUDO_UID"
 
