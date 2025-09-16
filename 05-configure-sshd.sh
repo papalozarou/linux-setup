@@ -281,7 +281,7 @@ restartSshSocket () {
 mainScript () {
   local OS_DISTRIBUTION="$(getOsDistribution)"
 
-  if [ "$OS_D" = "ubuntu" ]; then
+  if [ "$OS_DISTRIBUTION" = "ubuntu" ]; then
     local UBUNTU_22_TF="$(compareOsVersion "22.04")"
   fi
 
