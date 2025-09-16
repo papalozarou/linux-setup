@@ -71,8 +71,8 @@ mainScript () {
 
     getSshKeyDetails
     generateSshKey "$SSH_KEY_PATH" "$SSH_EMAIL"
-    addKeyToAuthorizedKeys
-    printPrivateKeyUsage
+    addKeyToAuthorizedKeys "$SSH_KEY_PATH"
+    printPrivateKeyUsage "$SSH_KEY_NAME"
     writeSetupConfigOption "sshKeyFile" "$SSH_KEY_NAME"
 
     printSeparator
