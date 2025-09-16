@@ -214,7 +214,7 @@ mainScript () {
     local CHANGE_NAME_YN="$(getUserInputYN)"
   fi
   
-  if [ "$CHANGE_NAME_YN" = true ] && [ "$TEMPUSER_TF" = "false" ]; then
+  if [ "$CHANGE_NAME_YN" = true ]; then
     createTempUser
     getNewUserName
     createTempUserScript
@@ -222,7 +222,7 @@ mainScript () {
     printTempUserInstructions
 
     killProcesses
-  elif [ "$CHANGE_NAME_YN" = false ] || [ "$TEMPUSER_TF" = "true" ]; then
+  elif [ "$CHANGE_NAME_YN" = false ]; then
     printComment 'Leaving current username unchanged.'
     writeSetupConfigOption "$CONFIG_KEY" "false"
 
