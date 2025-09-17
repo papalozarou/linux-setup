@@ -87,9 +87,9 @@ checkSudoersConf () {
   printComment 'Checking for include line in:'
   printComment "$SUDOERS_PATH"
 
-  local INCLUDES="$(grep "@includedir" "$SUDOERS_PATH")"
+  local INCLUDES_TF="$(grep "@includedir" "$SUDOERS_PATH")"
 
-  if [ -z "$INCLUDES" ]; then
+  if [ -z "$INCLUDES_TF" ]; then
     printComment 'Include line not present so adding it. You may be asked for your password.' 'warning'
 
     echo "@includedir $SUDOERS_CONF_DIR_PATH" | sudo EDITOR='tee -a' visudo
@@ -98,6 +98,8 @@ checkSudoersConf () {
     printSeparator
     grep "@includedir" "$SUDOERS_PATH"
     printSeparator
+
+    setPermissions "440" "$SUDOERS_PATH"
   else
     printComment "Include line already present."
   fi
@@ -108,7 +110,7 @@ checkSudoersConf () {
 # 
 # - https://stackoverflow.com/a/8636711
 #-------------------------------------------------------------------------------
-createSudoersConf () {
+createSudoersDefaultConf () {
   printComment 'Generating sudoers config file at:'
   printComment "$SUDOERS_DEFAULT_CONF_PATH"
   cat <<EOF > "$SUDOERS_DEFAULT_CONF_PATH"
@@ -118,6 +120,8 @@ Defaults env_keep += "HOST_DOMAIN"
 Defaults env_keep += "HOST_SUBDOMAIN"
 EOF
   printComment 'Config file generated.'
+
+  setOwner "$USER" "$SUDOERS_DEFAULT_CONF_PATH"
 }
 
 #-------------------------------------------------------------------------------
@@ -130,9 +134,7 @@ mainScript () {
   setHostEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
 
   checkSudoersConf
-  createSudoersConf
-  setPermissions "440" "$SUDOERS_PATH"
-  setOwner "$USER" "$SUDOERS_DEFAULT_CONF_PATH"
+  createSudoersDefaultConf
 
   printSeparator
   printComment 'As stated above these variables will not be usable until you have logged out and back in.' 'warning'
