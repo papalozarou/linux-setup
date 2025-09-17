@@ -157,16 +157,16 @@ verifyDockerInstall() {
 mainScript () {
   printComment "Starting setup of $SERVICE."
 
-  local SERVICE_CHECK="$(checkForPackage "$SERVICE")"
+  local SERVICE_TF="$(checkForPackage "$SERVICE")"
   printComment "Checking for $SERVICE."
-  printComment "Check returned $SERVICE_CHECK."
+  printComment "Check returned $SERVICE_TF."
 
-  if [ "$SERVICE_CHECK" = true ]; then
+  if [ "$SERVICE_TF" = true ]; then
     printComment "You have already installed $SERVICE."
 
     removeExistingDocker
-  elif [ "$SERVICE_CHECK" = false ]; then
-    printComment "You need to install $SERVICE." true
+  elif [ "$SERVICE_TF" = false ]; then
+    printComment "You need to install $SERVICE."
   
     installDockerDependencies
 
