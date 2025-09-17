@@ -36,7 +36,7 @@
 # . ./linshafun/docker-secrets.sh
 # . ./linshafun/docker-services.sh
 # . ./linshafun/docker-volumes.sh
-# . ./linshafun/files-directories.sh
+. ./linshafun/files-directories.sh
 # . ./linshafun/firewall.sh
 # . ./linshafun/host-env-variables.sh
 # . ./linshafun/host-information.sh
@@ -56,13 +56,12 @@
 # Config key and service variables.
 #-------------------------------------------------------------------------------
 CONFIG_KEY='configuredGit'
-SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
+# SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
 # Set the ssh file variables for the Linux user.
 #-------------------------------------------------------------------------------
-SSH_CONF="$SSH_DIR_PATH/config"
-SSH_KEY="$SSH_DIR_PATH/github"
+SSH_KEY_PATH="$SSH_DIR_PATH/github"
 
 #-------------------------------------------------------------------------------
 # Request user details to use in global git settings and when generating ssh key
@@ -173,7 +172,7 @@ mainScript () {
   checkForAndCreateSshDir
   checkForAndCreateSshConfig
 
-  generateSshKey "$SSH_KEY" "$GIT_EMAIL"
+  generateSshKey "$SSH_KEY_PATH" "$GIT_EMAIL"
   addSshKeytoAgent
   addHostToSshConfig "github" "github.com"
 
