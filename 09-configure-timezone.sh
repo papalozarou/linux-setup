@@ -143,7 +143,7 @@ setNewTimezone () {
 
     writeSetupConfigOption "timezone" "$NEW_TIMEZONE"
   elif [ "$TIMEZONE_VALID" = false ]; then
-    printComment 'Timezone is invalid. You must use a valid timezone.' 'warning'
+    printComment 'Timezone is invalid. You must use a valid timezone.' 'error'
     setNewTimezone
   fi
 }
