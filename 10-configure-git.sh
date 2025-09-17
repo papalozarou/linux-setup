@@ -61,8 +61,8 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 #-------------------------------------------------------------------------------
 # Set the ssh file variables for the Linux user.
 #-------------------------------------------------------------------------------
-SSH_CONF="$SSH_DIR/config"
-SSH_KEY="$SSH_DIR/github"
+SSH_CONF="$SSH_DIR_PATH/config"
+SSH_KEY="$SSH_DIR_PATH/github"
 
 #-------------------------------------------------------------------------------
 # Request user details to use in global git settings and when generating ssh key
@@ -71,6 +71,7 @@ SSH_KEY="$SSH_DIR/github"
 getGitDetails () {
   promptForUserInput 'What global git username do you want to use with git?'
   GIT_USERNAME="$(getUserInput)"
+
   promptForUserInput 'What global git email do you want to use with git?'
   GIT_EMAIL="$(getUserInput)"
 }
@@ -128,9 +129,9 @@ getUserToAddKey () {
 checkUserAddedKey () {
   sleep 5
   promptForUserInput 'Have you added the ssh key to your account (y/n)?'
-  KEY_ADDED="$(getUserInputYN)"
+  KEY_ADDED_YN="$(getUserInputYN)"
 
-  if [ "$KEY_ADDED" = true ]; then
+  if [ "$KEY_ADDED_YN" = true ]; then
     printComment 'Key added to Github – we will know later if you fibbed…'
   else
     getUserToAddKey
@@ -156,9 +157,9 @@ testGitSsh () {
   printSeparator
   ssh -T git@github.com
   printSeparator
-  printComment 'If you saw a success message, you are good to go. If you saw an error about permissions, when this script exits you can try:'
+  printComment 'If you saw a success message, the key was added successfully. If you saw an error about permissions, when this script exits you can try:'
   printComment 'ssh -T git@github.com'
-  printComment 'If that still does not work, you fibbed about adding your key…'
+  printComment 'If the above still does not work, you fibbed about adding your key…' 'warning'
 }
 
 #-------------------------------------------------------------------------------
