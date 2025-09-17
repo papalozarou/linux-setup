@@ -58,7 +58,9 @@ SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 #-------------------------------------------------------------------------------
 # Linux distribution variables.
 #-------------------------------------------------------------------------------
+HOST_ARCHITECTURE="$(getHostArchitecture)"
 OS_DISTRIBUTION="$(getOsDistribution)"
+OS_CODENAME="$(getOsCodename)"
 
 #-------------------------------------------------------------------------------
 # Installs all components of docker, after updating and upgrading packages to
@@ -102,8 +104,8 @@ installDockerGpgKey () {
 installDockerRepository () {
   printComment "Setting up the repository for $SERVICE."
   echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.asc] "https://download.docker.com/linux/$OS_DISTRIBUTION" \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  "deb [arch=$HOST_ARCHITECTURE signed-by=/etc/apt/keyrings/docker.asc] "https://download.docker.com/linux/$OS_DISTRIBUTION" \
+  "$OS_CODENAME" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   printComment 'Repository set up.'
 }
@@ -174,7 +176,8 @@ mainScript () {
     installDockerRepository
 
     installDocker
-    createDockerSecretsDir
+
+    checkForAndCreateDockerSecretsDir
 
     verifyDockerInstall
   fi
