@@ -173,7 +173,7 @@ mainScript () {
   checkForAndCreateSshConfig
 
   generateSshKey "$SSH_KEY_PATH" "$GIT_EMAIL"
-  addSshKeytoAgent
+  addSshKeytoAgent "$SSH_KEY_PATH"
   addHostToSshConfig "github" "github.com"
 
   getUserToAddKey
