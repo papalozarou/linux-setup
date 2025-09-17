@@ -131,7 +131,7 @@ mainScript () {
 
   checkSudoersConf
   createSudoersConf
-  setPermissions "440" "$SUDOERS_DEFAULT_CONF_PATH"
+  setPermissions "440" "$SUDOERS_PATH"
   setOwner "$USER" "$SUDOERS_DEFAULT_CONF_PATH"
 
   printSeparator
