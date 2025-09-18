@@ -157,7 +157,7 @@ testGitSsh () {
   ssh -T git@github.com
   printSeparator
   printComment 'If you saw a success message, the key was added successfully. If you saw an error about permissions, when this script exits you can try:'
-  printComment 'ssh -T git@github.com'
+  printComment 'ssh -vT git@github.com'
   printComment 'If the above still does not work, you fibbed about adding your key…' 'warning'
 }
 
@@ -174,7 +174,7 @@ mainScript () {
 
   generateSshKey "$SSH_KEY_PATH" "$GIT_EMAIL"
   addSshKeytoAgent "$SSH_KEY_PATH"
-  addHostToSshConfig "github" "github.com"
+  addHostToSshConfig "github.com" "github.com"
 
   getUserToAddKey
   checkUserAddedKey
