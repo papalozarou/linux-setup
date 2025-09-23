@@ -160,8 +160,8 @@ mainScript () {
   printComment "Starting setup of $SERVICE."
 
   local SERVICE_TF="$(checkForPackage "$SERVICE")"
-  printComment "Checking for $SERVICE."
-  printComment "Check returned $SERVICE_TF."
+
+  printCheckResult "for $SERVICE" "$SERVICE_TF"
 
   if [ "$SERVICE_TF" = true ]; then
     printComment "You have already installed $SERVICE."

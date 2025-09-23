@@ -198,8 +198,7 @@ removeTempUser () {
 mainScript () {
   local TEMPUSER_TF="$(checkForTempUser)"
 
-  printComment 'Checking for a temporary user, "tempuser", used to enable changing the current username.'
-  printComment "Check returned $TEMPUSER_TF."
+  printCheckResult 'for a temporary user, "tempuser", used to enable changing the current username.' "$TEMPUSER_TF"
 
   if [ "$TEMPUSER_TF" = true ]; then
     printComment '"tempuser" already exists.'

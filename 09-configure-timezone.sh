@@ -128,12 +128,13 @@ setNewTimezone () {
   printComment 'You can find a list of timezones at:'
   printComment 'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'
   promptForUserInput 'Which timezone would you like to switch to (Region/City)?'
-  NEW_TIMEZONE="$(getUserInput)"
+  local NEW_TIMEZONE="$(getUserInput)"
 
-  printComment "Checking $NEW_TIMEZONE is valid…"
-  local TIMEZONE_VALID="$(checkTimezone "$NEW_TIMEZONE")"
+  local TIMEZONE_VALID_TF="$(checkTimezone "$NEW_TIMEZONE")"
 
-  if [ "$TIMEZONE_VALID" = true ]; then
+  printCheckResult "$NEW_TIMEZONE is a valid timezone" "$TIMEZONE_VALID_TF"
+
+  if [ "$TIMEZONE_VALID_TF" = true ]; then
     printComment 'Timezone is valid.'
 
     printComment "Setting timezone to $NEW_TIMEZONE."
@@ -142,8 +143,9 @@ setNewTimezone () {
     listTimeDate
 
     writeSetupConfigOption "timezone" "$NEW_TIMEZONE"
-  elif [ "$TIMEZONE_VALID" = false ]; then
+  elif [ "$TIMEZONE_VALID_TF" = false ]; then
     printComment 'Timezone is invalid. You must use a valid timezone.' 'error'
+
     setNewTimezone
   fi
 }

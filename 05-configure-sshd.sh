@@ -96,12 +96,17 @@ SSH_PORT="$(generatePortNumber)"
 # "\\\" in the command.
 #-------------------------------------------------------------------------------
 checkSshdConfig () {
-  printComment 'Checking for include line in:'
-  printComment "$SSHD_CONF_PATH"
+  if grep -q "Include" "$SSHD_CONF_PATH"; then
+    local INCLUDES_TF=true
+  else
+    local INCLUDES_TF=false
+  fi
 
-  local INCLUDES="$(grep "Include" "$SSHD_CONF_PATH")"
+  printCheckResult "for include line in the sshd config file" "$INCLUDES_TF"
 
-  if [ -z "$INCLUDES" ]; then
+  if [ "$INCLUDES_TF" = true ]; then
+    printComment "Include line already present."
+  elif [ "$INCLUDES_TF" = false ]; then
     printComment 'Include line not present so adding it.' 'warning'
 
     sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR_PATH/*.conf" "$SSHD_CONF_PATH"
@@ -109,8 +114,6 @@ checkSshdConfig () {
     printSeparator
     grep "Include" "$SSHD_CONF_PATH"
     printSeparator
-  else
-    printComment "Include line already present."
   fi
 }
 
@@ -127,11 +130,8 @@ configureSshSocket () {
   local SOCKET_CONF_TF="$(checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF_PATH")"
   local SOCKET_CONF_DIR_TF="$(checkForFileOrDirectory "$SSH_SOCKET_CONF_DIR_PATH")"
 
-  printComment 'Checking for the socket config file or directory at:'
-  printComment "$SSH_SOCKET_OVERRIDE_CONF_PATH"
-
-  printComment "Check for config file returned $SOCKET_CONF_TF."
-  printComment "Check for config directory returned $SOCKET_CONF_DIR_TF."
+  printCheckResult 'for the socket config file' "$SOCKET_CONF_TF"
+  printCheckResult 'for the socket config directory' "$SOCKET_CONF_DIR_TF"
 
   if [ "$SOCKET_CONF_TF" = true ]; then 
     printComment 'The setup config file and directory exist. You will need to manually add the following to:' 'warning'

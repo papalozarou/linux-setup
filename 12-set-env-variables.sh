@@ -82,14 +82,23 @@ DOMAIN="${HOSTNAME#"$SUBDOMAIN".}"
 # present. If not present, add it at the end of the file, as per:
 # 
 # - https://stackoverflow.com/a/28382838
+# 
+# N.B.
+# If the check returns anything other than true or false, the script exits with
+# an error.
 #-------------------------------------------------------------------------------
 checkSudoersConf () {
-  printComment 'Checking for include line in:'
-  printComment "$SUDOERS_PATH"
+  if grep -q "@includedir" "$SUDOERS_PATH"; then
+    local INCLUDES_TF=true
+  else
+    local INCLUDES_TF=false
+  fi
 
-  local INCLUDES_TF="$(grep "@includedir" "$SUDOERS_PATH")"
+  printCheckResult "for include line in $SUDOERS_PATH" "$INCLUDES_TF"
 
-  if [ -z "$INCLUDES_TF" ]; then
+  if [ "$INCLUDES_TF" = true ]; then
+    printComment "Include line already present."   
+  elif [ "$INCLUDES_TF" = false ]; then
     printComment 'Include line not present so adding it. You may be asked for your password.' 'warning'
 
     echo "@includedir $SUDOERS_CONF_DIR_PATH" | sudo EDITOR='tee -a' visudo
@@ -100,8 +109,6 @@ checkSudoersConf () {
     printSeparator
 
     setPermissions "440" "$SUDOERS_PATH"
-  else
-    printComment "Include line already present."
   fi
 }
 
