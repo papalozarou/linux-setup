@@ -94,7 +94,7 @@ checkSudoersConf () {
     local INCLUDES_TF=false
   fi
 
-  printCheckResult "for include line in $SUDOERS_PATH" "$INCLUDES_TF"
+  printCheckResult "for the include line in the sudoers file" "$INCLUDES_TF"
 
   if [ "$INCLUDES_TF" = true ]; then
     printComment "Include line already present."   
