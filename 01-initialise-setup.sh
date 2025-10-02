@@ -67,9 +67,6 @@ CONFIG_KEY='initialisedSetup'
 initialisePi () {
   printComment 'Initialising Raspberry Pi specific settings.'
 
-  promptForUserInput "Do you want to disable the Raspberry Pi's onboard LEDs (y/n)?"
-  local DISABLE_LEDS_YN="$(getUserInputYN)"
-
   updatePiFirmware
   updatePiBootloader
 
