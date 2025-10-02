@@ -47,7 +47,7 @@
 # . ./linshafun/ssh-config.sh
 # . ./linshafun/ssh-keys.sh
 . ./linshafun/text.sh
-# . ./linshafun/user-input.sh
+. ./linshafun/user-input.sh
 
 #-------------------------------------------------------------------------------
 # Config key variable.
@@ -93,6 +93,9 @@ initialisePi () {
   fi
 
   enablePiPcieGen3InConfigTxt
+
+  printComment 'Raspberry Pi specific initialisation complete.'
+  printComment 'Please reboot the system for changes to take effect.' 'warning'
 }
 
 #-------------------------------------------------------------------------------
