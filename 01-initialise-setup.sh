@@ -55,11 +55,58 @@
 CONFIG_KEY='initialisedSetup'
 
 #-------------------------------------------------------------------------------
+# Initialises Raspberry Pi specific settings by:
+# 
+# - updating the firmware and bootloader on Pi models 4 and later;
+# - adding video modes and cgroup memory options to "cmdline.txt";
+# - setting "POWER_OFF_ON_HALT=1" for Pi models 4 and later;
+# - optionally disabling onboard WiFi;
+# - optionally disabling onboard LEDs on Pi models 4 and later; and
+# - enabling PCIe Gen 3 for Pi models 5 and later.
+#-------------------------------------------------------------------------------
+initialisePi () {
+  printComment 'Initialising Raspberry Pi specific settings.'
+
+  promptForUserInput "Do you want to disable the Raspberry Pi's onboard LEDs (y/n)?"
+  local DISABLE_LEDS_YN="$(getUserInputYN)"
+
+  updatePiFirmware
+  updatePiBootloader
+
+  addPiVideoModesToCmdline
+  addPiCgroupOptionsToCmdline
+
+  setPiPowerOffOnHalt
+
+  promptForUserInput "Do you want to disable the Raspberry Pi's onboard WiFi (y/n)?"
+  local DISABLE_WIFI_YN="$(getUserInputYN)"
+
+  if [ "$DISABLE_WIFI_YN" = true ]; then
+    disablePiWifiInConfigTxt
+  fi
+
+  promptForUserInput "Do you want to disable the Raspberry Pi's onboard LEDs (y/n)?"
+  local DISABLE_LEDS_YN="$(getUserInputYN)"
+
+  if [ "$DISABLE_LEDS_YN" = true ]; then
+    disablePiOnboardLeds
+  fi
+
+  enablePiPcieGen3InConfigTxt
+}
+
+#-------------------------------------------------------------------------------
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
+  local IS_PI_TF="$(checkIfRaspberryPi)"
+
   updateUpgrade
   checkForAndCreateSetupConfigFileAndDir
+
+  if [ "$IS_PI_TF" = true ]; then
+    initialisePi
+  fi
 }
 
 #-------------------------------------------------------------------------------
