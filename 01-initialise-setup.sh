@@ -86,7 +86,7 @@ initialisePi () {
   local DISABLE_LEDS_YN="$(getUserInputYN)"
 
   if [ "$DISABLE_LEDS_YN" = true ]; then
-    disablePiOnboardLeds
+    disablePiLedsInConfigTxt
   fi
 
   enablePiPcieGen3InConfigTxt
