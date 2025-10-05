@@ -101,17 +101,26 @@ createTempUser () {
 
 #-------------------------------------------------------------------------------
 # Create a script in the temporary user directory to change the current logged
-# in username and groupname to "$NEW_USER".
+# in username and groupname to "$NEW_USER". The script also updates the nopasswd
+# sudoers include file if present.
 #-------------------------------------------------------------------------------
 createTempUserScript () {
   printComment 'Creating a script to change the current username and group within the "tempuser" home directory at:'
   printComment "$RENAME_SCRIPT_PATH"
+
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
 echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
 usermod -l "$NEW_USER" "$SUDO_USER"
 usermod -d /home/"$NEW_USER" -m "$NEW_USER"
 groupmod --new-name "$NEW_USER" "$SUDO_USER"
+
+SUDOERS_FILE="/etc/sudoers.d/010_pi-nopasswd"
+if [ -f "\$SUDOERS_FILE" ]; then
+  sed -i "s/^\$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "\$SUDOERS_FILE"
+  echo "$COMMENT_PREFIX Updated sudoers file: \$SUDOERS_FILE"
+fi
+
 echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER, using the existing password."
 echo "$COMMENT_PREFIX Once logged in re-run:"
 echo "$COMMENT_PREFIX cd linux-setup && sudo ~/linux-setup/03-change-username.sh"
