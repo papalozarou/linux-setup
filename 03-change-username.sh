@@ -93,9 +93,7 @@ createTempUser () {
   adduser --gecos GECOS tempuser
   printSeparator
   printComment '"tempuser" created. Adding to sudoers.'
-  printSeparator
   adduser tempuser sudo
-  printSeparator
   printComment '"tempuser" added to sudoers file.'
 }
 
