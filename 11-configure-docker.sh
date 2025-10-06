@@ -66,11 +66,15 @@ OS_CODENAME="$(getOsCodename)"
 #-------------------------------------------------------------------------------
 # Installs all components of docker, after updating and upgrading packages to
 # ensure use of the added docker repository.
+# 
+# N.B.
+# We are using "apt update" here rather than "updateUpgrade" to avoid
+# unnecessary upgrades of other packages.
 #-------------------------------------------------------------------------------
 installDocker () {
   printComment "Installing $SERVICE."
   printSeparator
-  updateUpgrade
+  apt update
   installRemovePackages "install" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 }
 
