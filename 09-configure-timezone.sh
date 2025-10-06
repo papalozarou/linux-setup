@@ -56,7 +56,7 @@
 # Config key and service variables.
 #-------------------------------------------------------------------------------
 CONFIG_KEY='configuredTimezone'
-SERVICE="ntp"
+SERVICE="ntpsec"
 
 #-------------------------------------------------------------------------------
 # Timezone related variables.
