@@ -54,59 +54,40 @@
 #-------------------------------------------------------------------------------
 CONFIG_KEY='initialisedSetup'
 
+
 #-------------------------------------------------------------------------------
-# Initialises Raspberry Pi specific settings by:
-# 
-# - updating the firmware and bootloader on Pi models 4 and later;
-# - adding video modes and cgroup memory options to "cmdline.txt";
-# - setting "POWER_OFF_ON_HALT=1" for Pi models 4 and later;
-# - optionally disabling onboard WiFi;
-# - optionally disabling onboard LEDs on Pi models 4 and later; and
-# - enabling PCIe Gen 3 for Pi models 5 and later.
+# Reorders setup scripts based on whether the host machine is a Raspberry Pi or 
+# not. If the host machine is a Pi, the scropt order is preserved. If not, 
+# "02-configure-pi-specific-settings.sh" is removed and subsequent scripts are 
+# renamed.
 #-------------------------------------------------------------------------------
-initialisePi () {
-  printComment 'Initialising Raspberry Pi specific settings.'
+initialiseSetupScripts () {
+  local IS_PI_TF="$(checkIfRaspberryPi)"
 
-  updatePiFirmware
-  updatePiBootloader
-
-  addPiVideoModesToCmdline
-  addPiCgroupOptionsToCmdline
-
-  setPiPowerOffOnHalt
-
-  promptForUserInput "Do you want to disable the Raspberry Pi's onboard WiFi (y/n)?"
-  local DISABLE_WIFI_YN="$(getUserInputYN)"
-
-  if [ "$DISABLE_WIFI_YN" = true ]; then
-    disablePiWifiInConfigTxt
+  if [ "$IS_PI_TF" = false ]; then
+    rm "./02-configure-pi-specific-settings.sh"
+    mv "./03-change-password.sh" "./02-change-password.sh"
+    mv "./04-change-username.sh" "./03-change-username.sh"
+    mv "./05-setup-ssh-key.sh" "./04-setup-ssh-key.sh"
+    mv "./06-configure-sshd.sh" "./05-configure-sshd.sh"
+    mv "./07-configure-ufw.sh" "./06-configure-ufw.sh"
+    mv "./08-configure-fail2ban.sh" "./07-configure-fail2ban.sh"
+    mv "./09-configure-hostname.sh" "./08-configure-hostname.sh"
+    mv "./10-configure-timezone.sh" "./09-configure-timezone.sh"
+    mv "./11-configure-git.sh" "./10-configure-git.sh"
+    mv "./12-configure-docker.sh" "./11-configure-docker.sh"
+    mv "./13-set-env-variables.sh" "./12-set-env-variables.sh"
   fi
-
-  promptForUserInput "Do you want to disable the Raspberry Pi's onboard LEDs (y/n)?"
-  local DISABLE_LEDS_YN="$(getUserInputYN)"
-
-  if [ "$DISABLE_LEDS_YN" = true ]; then
-    disablePiLedsInConfigTxt
-  fi
-
-  enablePiPcieGen3InConfigTxt
-
-  printComment 'Raspberry Pi specific initialisation complete.'
-  printComment 'Please reboot the system for changes to take effect.' 'warning'
 }
 
 #-------------------------------------------------------------------------------
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  local IS_PI_TF="$(checkIfRaspberryPi)"
-
   updateUpgrade
   checkForAndCreateSetupConfigFileAndDir
 
-  if [ "$IS_PI_TF" = true ]; then
-    initialisePi
-  fi
+  initialiseSetupScripts
 }
 
 #-------------------------------------------------------------------------------

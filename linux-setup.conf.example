@@ -1,12 +1,13 @@
-addedPiCgroupOptions true [raspberry pi only]
+initialisedSetup true
 addedPiVideoModes true [raspberry pi only]
+addedPiCgroupOptions true [raspberry pi only]
+updatedPiFirmware true [raspberry pi only]
+updatedPiBootloader true [raspberry pi only]
+setPiPowerOffOnHalt true [raspberry pi only]
+enabledPiPcieGen3 true [raspberry pi only]
 disabledPiLeds true [raspberry pi only]
 disabledPiWifi true [raspberry pi only]
-enabledPiPcieGen3 true [raspberry pi only]
-setPiPowerOffOnHalt true [raspberry pi only]
-updatedPiBootloader true [raspberry pi only]
-updatedPiFirmware true [raspberry pi only]
-initialisedSetup true
+configuredPiSpecificSettings true [raspberry pi only]
 changedPassword true
 changedUsername true
 setupSshKey true

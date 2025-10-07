@@ -83,7 +83,7 @@ changeTimezone () {
 }
 
 #-------------------------------------------------------------------------------
-# Checks the user inputted timezone. Takes one mandatory arguement:
+# Checks the user inputted timezone. Takes one mandatory argument:
 #
 # 1. ${1:?} - the user inputted timezone
 #-------------------------------------------------------------------------------
