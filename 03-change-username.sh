@@ -108,20 +108,26 @@ createTempUserScript () {
 
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
-echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
-usermod -l "$NEW_USER" "$SUDO_USER"
-usermod -d /home/"$NEW_USER" -m "$NEW_USER"
-groupmod --new-name "$NEW_USER" "$SUDO_USER"
+OLD_USER="$SUDO_USER"
+SUDOERS_PATH="/etc/sudoers.d/010_pi-nopasswd"
 
-SUDOERS_FILE="/etc/sudoers.d/010_pi-nopasswd"
-if [ -f "\$SUDOERS_FILE" ]; then
-  sed -i "s/^\$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "\$SUDOERS_FILE"
-  echo "$COMMENT_PREFIX Updated sudoers file: \$SUDOERS_FILE"
+echo "$COMMENT_PREFIX Changing username and group of the user $OLD_USER."
+usermod -l "$NEW_USER" "$OLD_USER"
+usermod -d /home/"$NEW_USER" -m "$NEW_USER"
+groupmod --new-name "$NEW_USER" "$OLD_USER"
+echo "$COMMENT_PREFIX Username and group changed from $OLD_USER to $NEW_USER."
+
+if [ -f "\$SUDOERS_PATH" ]; then
+  sed -i "s/^\$OLD_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "\$SUDOERS_PATH"
+  echo "$COMMENT_SEPARATOR"
+  grep "$NEW_USER" "SUDOERS_PATH"
+  echo "$COMMENT_SEPARATOR"
+  echo "$COMMENT_PREFIX Updated sudoers file: $SUDOERS_FILE"
 fi
 
 echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER, using the existing password."
 echo "$COMMENT_PREFIX Once logged in re-run:"
-echo "$COMMENT_PREFIX cd linux-setup && sudo ~/linux-setup/03-change-username.sh"
+echo "$COMMENT_PREFIX cd linux-setup && sudo ./03-change-username.sh"
 EOF
 
   setPermissions "+x" "$RENAME_SCRIPT_PATH"
