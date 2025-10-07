@@ -115,10 +115,8 @@ mainScript () {
     printComment 'To enable the changes made the system must be rebooted.' 'warning'
     printComment 'Once the system has rebooted, run this script again to complete the Pi specific setup.' 'warning'
     rebootSystem '20'
-
-    exit 0
   else
-    local REBOOT_TF="$(checkIfSystemRebooted '45')"
+    local REBOOT_TF="$(checkIfSystemRebooted)"
     printCheckResult 'for a recent reboot' "$REBOOT_TF"
   fi
 
@@ -127,8 +125,6 @@ mainScript () {
   elif [ "$REBOOT_TF" = false ]; then
     printComment 'The system must be rebooted for changes to take effect.' 'warning'
     rebootSystem '20'
-
-    exit 0
   fi
 }
 
