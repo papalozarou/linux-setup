@@ -122,7 +122,7 @@ mainScript () {
 
   if [ "$REBOOT_TF" = true ]; then   
     printComment 'Raspberry Pi specific setup complete.'
-  else
+  elif [ "$REBOOT_TF" = false ]; then
     printComment 'The system must be rebooted for changes to take effect.' 'warning'
     rebootSystem '20'
   fi
