@@ -16,6 +16,12 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 
 ## Usage
 
+Install git if it is not already installed with:
+
+```
+sudo apt update && sudo apt upgrade -y && sudo apt install git -y
+```
+
 Clone the repository, and submodules, then switch to the repository directory with:
 
 ```
