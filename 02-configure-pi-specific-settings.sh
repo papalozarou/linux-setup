@@ -70,7 +70,7 @@ CONFIG_KEY='configurePiSpecificSettings'
 # - enabling PCIe Gen 3 for Pi models 5 and later.
 #-------------------------------------------------------------------------------
 configurePiSettings () {
-  local MODEL="$(getPiModel)"
+  local MODEL="$(getRaspberryPiModel)"
 
   printComment 'Configuring Raspberry Pi specific settings.'
 
@@ -111,7 +111,7 @@ mainScript () {
   
   if [ -z "$UPDATED_PI_FIRMWARE_TF" ]; then
     configurePiSettings
-    
+
     printComment 'To enable the changes made the system must be rebooted.' 'warning'
     printComment 'Once the system has rebooted, run this script again to complete the Pi specific setup.' 'warning'
     rebootSystem '20'
