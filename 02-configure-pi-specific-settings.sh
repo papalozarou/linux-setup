@@ -116,7 +116,7 @@ mainScript () {
     printComment 'Once the system has rebooted, run this script again to complete the Pi specific setup.' 'warning'
     rebootSystem '20'
   else
-    local REBOOT_TF="$(checkIfSystemRebooted)"
+    local REBOOT_TF="$(checkIfSystemRebooted '45')"
     printCheckResult 'for a recent reboot' "$REBOOT_TF"
   fi
 
