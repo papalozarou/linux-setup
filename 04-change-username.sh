@@ -112,17 +112,17 @@ OLD_USER="$SUDO_USER"
 SUDOERS_PATH="/etc/sudoers.d/010_pi-nopasswd"
 
 echo "$COMMENT_PREFIX Changing username and group of the user $OLD_USER."
-usermod -l "$NEW_USER" "$OLD_USER"
-usermod -d /home/"$NEW_USER" -m "$NEW_USER"
-groupmod --new-name "$NEW_USER" "$OLD_USER"
+usermod -l $NEW_USER $OLD_USER
+usermod -d /home/$NEW_USER -m $NEW_USER
+groupmod --new-name $NEW_USER $OLD_USER
 echo "$COMMENT_PREFIX Username and group changed from $OLD_USER to $NEW_USER."
 
 if [ -f "\$SUDOERS_PATH" ]; then
   sed -i "s/^\$OLD_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "\$SUDOERS_PATH"
   echo "$COMMENT_SEPARATOR"
-  grep "$NEW_USER" "SUDOERS_PATH"
+  grep $NEW_USER $SUDOERS_PATH
   echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX Updated sudoers file: $SUDOERS_FILE"
+  echo "$COMMENT_PREFIX Updated sudoers file: $SUDOERS_PATH"
 fi
 
 echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER, using the existing password."
