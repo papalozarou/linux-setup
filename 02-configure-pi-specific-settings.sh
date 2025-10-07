@@ -107,10 +107,11 @@ configurePiSettings () {
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  local UPDATED_PI_FIRMWARE_TF="$(getSetupConfigOption 'addedPiVideoModes')"
+  local UPDATED_PI_FIRMWARE_TF="$(readSetupConfigValue 'addedPiVideoModes')"
   
-  if [ "$UPDATED_PI_FIRMWARE_TF" = false ]; then
+  if [ -z "$UPDATED_PI_FIRMWARE_TF" ]; then
     configurePiSettings
+    
     printComment 'To enable the changes made the system must be rebooted.' 'warning'
     printComment 'Once the system has rebooted, run this script again to complete the Pi specific setup.' 'warning'
     rebootSystem '20'
