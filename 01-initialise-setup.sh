@@ -54,7 +54,6 @@
 #-------------------------------------------------------------------------------
 CONFIG_KEY='initialisedSetup'
 
-
 #-------------------------------------------------------------------------------
 # Reorders setup scripts based on whether the host machine is a Raspberry Pi or 
 # not. If the host machine is a Pi, the scropt order is preserved. If not, 
