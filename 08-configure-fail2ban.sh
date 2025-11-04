@@ -40,7 +40,7 @@
 # . ./linshafun/docker-secrets.sh
 # . ./linshafun/docker-services.sh
 # . ./linshafun/docker-volumes.sh
-# . ./linshafun/files-directories.sh
+. ./linshafun/files-directories.sh
 # . ./linshafun/firewall.sh
 # . ./linshafun/host-env-variables.sh
 # . ./linshafun/host-information.sh
