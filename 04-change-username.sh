@@ -113,7 +113,7 @@ SUDOERS_PATH="/etc/sudoers.d/010_pi-nopasswd"
 
 echo "$COMMENT_PREFIX Changing username and group of the user $OLD_USER."
 usermod -l $NEW_USER $OLD_USER
-usermod -d /home/$NEW_USER -m $NEW_USER
+usermod -d /home/$NEW_USER -m $OLD_USER
 groupmod --new-name $NEW_USER $OLD_USER
 echo "$COMMENT_PREFIX Username and group changed from $OLD_USER to $NEW_USER."
 
