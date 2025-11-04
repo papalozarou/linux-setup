@@ -109,6 +109,7 @@ createTempUserScript () {
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
 OLD_USER="$SUDO_USER"
+MEW_USER="$NEW_USER"
 SUDOERS_PATH="/etc/sudoers.d/010_pi-nopasswd"
 
 echo "$COMMENT_PREFIX Changing username and group of the user $OLD_USER."
