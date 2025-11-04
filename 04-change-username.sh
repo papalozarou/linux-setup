@@ -101,18 +101,21 @@ createTempUser () {
 # Create a script in the temporary user directory to change the current logged
 # in username and groupname to "$NEW_USER". The script also updates the nopasswd
 # sudoers include file if present.
+#
+# The generated script uses "usermod" and "groupmod" commands as per:
+#
+# - https://serverfault.com/a/437343
 #-------------------------------------------------------------------------------
 createTempUserScript () {
   local SUDOERS_OVERRIDE_PATH="/etc/sudoers.d/010_pi-nopasswd"
-  
+
   printComment 'Creating a script to change the current username and group within the "tempuser" home directory at:'
   printComment "$RENAME_SCRIPT_PATH"
 
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
 echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
-usermod -l $NEW_USER $SUDO_USER
-usermod -d /home/$NEW_USER -m $SUDO_USER
+usermod --login $NEW_USER --move-home --home /home/$NEW_USER $SUDO_USER
 groupmod --new-name $NEW_USER $SUDO_USER
 echo "$COMMENT_PREFIX Username and group changed from $SUDO_USER to $NEW_USER."
 
