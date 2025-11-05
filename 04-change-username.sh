@@ -119,8 +119,8 @@ usermod --login $NEW_USER --move-home --home /home/$NEW_USER $SUDO_USER
 groupmod --new-name $NEW_USER $SUDO_USER
 echo "$COMMENT_PREFIX Username and group changed from $SUDO_USER to $NEW_USER."
 
-if [ -f "\$SUDOERS_OVERRIDE_PATH" ]; then
-  sed -i "s/^\$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "\$SUDOERS_OVERRIDE_PATH"
+if [ -f "$SUDOERS_OVERRIDE_PATH" ]; then
+  sed -i "s/^$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "$SUDOERS_OVERRIDE_PATH"
   echo "$COMMENT_SEPARATOR"
   grep $NEW_USER $SUDOERS_OVERRIDE_PATH
   echo "$COMMENT_SEPARATOR"
