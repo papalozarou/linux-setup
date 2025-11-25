@@ -10,10 +10,11 @@ A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above ser
 6. configuring the ssh server;
 7. configuring ufw;
 8. configuring fail2ban;
-9. configuring the timezone;
-10. configuring git;
-11. installing docker; and
-12. setting some environment variables for docker usage.
+9. configuring the hostname;
+10. configuring the timezone; 
+11. configuring git;
+12. installing docker; and
+13. setting some environment variables for docker usage.
 
 ## Usage
 
