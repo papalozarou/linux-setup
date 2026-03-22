@@ -31,6 +31,19 @@ git clone --recursive https://github.com/papalozarou/linux-setup.git && \
 cd ~/linux-setup
 ```
 
+If you already cloned the repository without submodules, initialise them with:
+
+```
+git submodule update --init --recursive
+```
+
+To pull later changes from the tracked `linshafun` `main` branch:
+
+```
+git pull && \
+git submodule update --init --remote linshafun
+```
+
 Run the first script:
 
 ```
