@@ -1,3 +1,4 @@
 [submodule "linshafun"]
 	path = linshafun
 	url = https://github.com/papalozarou/linshafun.git
+	branch = main
