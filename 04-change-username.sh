@@ -107,8 +107,6 @@ createTempUser () {
 # - https://serverfault.com/a/437343
 #-------------------------------------------------------------------------------
 createTempUserScript () {
-  local SUDOERS_OVERRIDE_PATH="/etc/sudoers.d/010_pi-nopasswd"
-
   printComment 'Creating a script to change the current username and group within the "tempuser" home directory at:'
   printComment "$RENAME_SCRIPT_PATH"
 
@@ -119,13 +117,15 @@ usermod --login $NEW_USER --move-home --home /home/$NEW_USER $SUDO_USER
 groupmod --new-name $NEW_USER $SUDO_USER
 echo "$COMMENT_PREFIX Username and group changed from $SUDO_USER to $NEW_USER."
 
-if [ -f "$SUDOERS_OVERRIDE_PATH" ]; then
-  sed -i "s/^$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "$SUDOERS_OVERRIDE_PATH"
-  echo "$COMMENT_SEPARATOR"
-  grep $NEW_USER $SUDOERS_OVERRIDE_PATH
-  echo "$COMMENT_SEPARATOR"
-  echo "$COMMENT_PREFIX Updated sudoers file: $SUDOERS_OVERRIDE_PATH"
-fi
+for SUDOERS_CONF_PATH in $SUDOERS_CONF_DIR_PATH/*; do
+  if [ -f "$SUDOERS_CONF_PATH" ] && grep $SUDO_USER $SUDOERS_CONF_PATH > /dev/null; then
+    sed -i "s/^$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "$SUDOERS_CONF_PATH"
+    echo "$COMMENT_SEPARATOR"
+    grep $NEW_USER $SUDOERS_CONF_PATH
+    echo "$COMMENT_SEPARATOR"
+    echo "$COMMENT_PREFIX Updated sudoers file: $SUDOERS_CONF_PATH"
+  fi
+done
 
 echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER, using the existing password."
 echo "$COMMENT_PREFIX Once logged in re-run:"
