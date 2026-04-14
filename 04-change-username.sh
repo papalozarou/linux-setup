@@ -118,10 +118,10 @@ groupmod --new-name $NEW_USER $SUDO_USER
 echo "$COMMENT_PREFIX Username and group changed from $SUDO_USER to $NEW_USER."
 
 for SUDOERS_CONF_PATH in $SUDOERS_CONF_DIR_PATH/*; do
-  if [ -f "$SUDOERS_CONF_PATH" ] && grep $SUDO_USER $SUDOERS_CONF_PATH > /dev/null; then
+  if [ -f "$SUDOERS_CONF_PATH" ] && grep $SUDO_USER "$SUDOERS_CONF_PATH" > /dev/null; then
     sed -i "s/^$SUDO_USER[[:space:]]\+ALL=(ALL) NOPASSWD: ALL\$/$NEW_USER ALL=(ALL) NOPASSWD: ALL/" "$SUDOERS_CONF_PATH"
     echo "$COMMENT_SEPARATOR"
-    grep $NEW_USER $SUDOERS_CONF_PATH
+    grep $NEW_USER "$SUDOERS_CONF_PATH"
     echo "$COMMENT_SEPARATOR"
     echo "$COMMENT_PREFIX Updated sudoers file: $SUDOERS_CONF_PATH"
   fi
