@@ -36,7 +36,6 @@
 # . ./linshafun/host-env-variables.sh
 . ./linshafun/host-information.sh
 . ./linshafun/host-initialisation.sh
-# . ./linshafun/host-initialisation.sh
 # . ./linshafun/initialisation.sh
 # . ./linshafun/network.sh
 . ./linshafun/ownership-permissions.sh
