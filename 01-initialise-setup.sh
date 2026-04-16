@@ -55,7 +55,7 @@ CONFIG_KEY='initialisedSetup'
 
 #-------------------------------------------------------------------------------
 # Reorders setup scripts based on whether the host machine is a Raspberry Pi or 
-# not. If the host machine is a Pi, the scropt order is preserved. If not, 
+# not. If the host machine is a Pi, the script order is preserved. If not, 
 # "02-configure-pi-specific-settings.sh" is removed and subsequent scripts are 
 # renamed.
 #-------------------------------------------------------------------------------

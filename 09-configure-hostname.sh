@@ -4,7 +4,7 @@
 # Set the hostname, by:
 #
 # 1. checking the current hostname;
-# 2. asking if the user wants to change it or creat one if unset; and
+# 2. asking if the user wants to change it or create one if unset; and
 # 3. setting a hostname 
 #
 # Based on this RedHat guide:
@@ -88,7 +88,7 @@ checkHostname () {
 }
 
 #-------------------------------------------------------------------------------
-# Sets a new user inputed hostname.
+# Sets a new user-inputted hostname.
 #-------------------------------------------------------------------------------
 setNewHostname () {
   promptForUserInput 'What is your new hostname (my.hostname.com)?'
