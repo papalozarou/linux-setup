@@ -64,7 +64,8 @@ CONFIG_KEY='configuredHostname'
 #-------------------------------------------------------------------------------
 changeHostname () {
   promptForUserInput 'Would you like to change the hostname (y/n)?'
-  HOSTNAME_CHANGE_YN="$(getUserInputYN)"
+  HOSTNAME_CHANGE_YN=false
+  if getUserInputYN; then HOSTNAME_CHANGE_YN=true; fi
 
   if [  "$HOSTNAME_CHANGE_YN" = true ]; then
     setNewHostname
@@ -80,10 +81,10 @@ checkHostname () {
   local CURRENT_HOSTNAME="$(hostname)"
 
   if [ -z "$CURRENT_HOSTNAME" ]; then
-    printComment 'No hostname set.' 'warning'
+    printComment --warning 'No hostname set.'
   else
     printComment 'The current hostname is:'
-    printComment "$CURRENT_HOSTNAME"
+    printComment -- "$CURRENT_HOSTNAME"
   fi
 }
 
@@ -95,7 +96,7 @@ setNewHostname () {
   HOSTNAME="$(getUserInput)"
 
   printComment 'Setting hostname to:'
-  printComment "$HOSTNAME"
+  printComment -- "$HOSTNAME"
   printComment 'You may be asked to authenticate.'
   hostnamectl set-hostname "$HOSTNAME"
   printComment 'Hostname is now set to:'
