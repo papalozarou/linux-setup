@@ -88,7 +88,7 @@ checkForTempUser () {
 #-------------------------------------------------------------------------------
 createTempUser () {
   printComment 'Creating temporary user, "tempuser". You will be asked to enter a password for "tempuser" as part of this process.'
-  printComment 'Set a password you can remember easily as you will need it shortly.' 'warning'
+  printComment --warning 'Set a password you can remember easily as you will need it shortly.'
   printSeparator
   adduser --gecos GECOS tempuser
   printSeparator
@@ -108,7 +108,7 @@ createTempUser () {
 #-------------------------------------------------------------------------------
 createTempUserScript () {
   printComment 'Creating a script to change the current username and group within the "tempuser" home directory at:'
-  printComment "$RENAME_SCRIPT_PATH"
+  printComment -- "$RENAME_SCRIPT_PATH"
 
   cat <<EOF > "$RENAME_SCRIPT_PATH"
 #!/bin/sh
@@ -156,22 +156,23 @@ getNewUserName () {
 # will still run.
 #-------------------------------------------------------------------------------
 killProcesses () {
-    printComment "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed." 'warning'
+    printComment --warning "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed."
 
     promptForUserInput 'Ready to kill all processes (y/n)?' 'This may log you out.'
-    KILL_PROCESSES_YN="$(getUserInputYN)"
+    KILL_PROCESSES_YN=false
+    if getUserInputYN; then KILL_PROCESSES_YN=true; fi
 
     if [ "$KILL_PROCESSES_YN" = true ]; then
       printSeparator
-      printComment "Killing all processes for $SUDO_USER." 'warning'
+      printComment --warning "Killing all processes for $SUDO_USER."
       printSeparator
       pkill -u "$SUDO_UID"
 
       exit
     else
       printSeparator
-      printComment 'Processes remain running for this user. To enable changing the username, you must run the following command:' 'warning'
-      printComment "pkill -u $SUDO_UID" 'warning'
+      printComment --warning 'Processes remain running for this user. To enable changing the username, you must run the following command:'
+      printComment --warning "pkill -u $SUDO_UID"
       printSeparator
 
       exit
@@ -196,7 +197,7 @@ removeTempUser () {
   printComment 'Deleting temporary user "tempuser".'
   printSeparator
   deluser tempuser
-  removeFileOrDirectory "$TEMPUSER_DIR_PATH"
+  removeFilesOrDirectories --recursive "$TEMPUSER_DIR_PATH"
   printSeparator
   printComment '"tempuser" and home folder deleted.'
 }
@@ -212,9 +213,8 @@ removeTempUser () {
 # "changedUsername false" to the setup config file.
 #-------------------------------------------------------------------------------
 mainScript () {
+  printComment 'Checking for a temporary user, "tempuser", used to enable changing the current username.'
   local TEMPUSER_TF="$(checkForTempUser)"
-
-  printCheckResult 'for a temporary user, "tempuser", used to enable changing the current username.' "$TEMPUSER_TF"
 
   if [ "$TEMPUSER_TF" = true ]; then
     printComment '"tempuser" already exists.'
@@ -226,7 +226,8 @@ mainScript () {
     printComment '"tempuser" does not exist.'
 
     promptForUserInput 'Do you want to change the current users name (y/n)?' 'This will create a temporary user, "tempuser", to perform the change.'
-    local CHANGE_NAME_YN="$(getUserInputYN)"
+    local CHANGE_NAME_YN=false
+    if getUserInputYN; then CHANGE_NAME_YN=true; fi
   fi
   
   if [ "$CHANGE_NAME_YN" = true ]; then
