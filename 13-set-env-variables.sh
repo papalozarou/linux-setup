@@ -83,24 +83,20 @@ DOMAIN="${HOSTNAME#"$SUBDOMAIN".}"
 # present. If not present, add it at the end of the file, as per:
 # 
 # - https://stackoverflow.com/a/28382838
-# 
-# N.B.
-# If the check returns anything other than true or false, the script exits with
-# an error.
 #-------------------------------------------------------------------------------
 checkSudoersConf () {
+  printComment 'Checking for the include line in the sudoers file.'
+
   if grep -q "@includedir" "$SUDOERS_PATH"; then
     local INCLUDES_TF=true
   else
     local INCLUDES_TF=false
   fi
 
-  printCheckResult "for the include line in the sudoers file" "$INCLUDES_TF"
-
   if [ "$INCLUDES_TF" = true ]; then
     printComment "Include line already present."   
   elif [ "$INCLUDES_TF" = false ]; then
-    printComment 'Include line not present so adding it. You may be asked for your password.' 'warning'
+    printComment --warning 'Include line not present so adding it. You may be asked for your password.'
 
     echo "@includedir $SUDOERS_CONF_DIR_PATH" | sudo EDITOR='tee -a' visudo
 
@@ -120,7 +116,7 @@ checkSudoersConf () {
 #-------------------------------------------------------------------------------
 createSudoersDefaultConf () {
   printComment 'Generating sudoers config file at:'
-  printComment "$SUDOERS_DEFAULT_CONF_PATH"
+  printComment -- "$SUDOERS_DEFAULT_CONF_PATH"
   cat <<EOF > "$SUDOERS_DEFAULT_CONF_PATH"
 Defaults env_keep += "HOST_IP_ADDRESS"
 Defaults env_keep += "HOST_TIMEZONE"
@@ -145,7 +141,7 @@ mainScript () {
   createSudoersDefaultConf
 
   printSeparator
-  printComment 'As stated above these variables will not be usable until you have logged out and back in.' 'warning'
+  printComment --warning 'As stated above these variables will not be usable until you have logged out and back in.'
   printSeparator
 }
 
