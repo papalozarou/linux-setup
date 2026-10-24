@@ -65,9 +65,9 @@ EXISTING_SSH_KEY_PATH="$SSH_DIR_PATH/$EXISTING_SSH_KEY_NAME"
 #-------------------------------------------------------------------------------
 mainScript () {
   if [ -f "$EXISTING_SSH_KEY_PATH" ]; then
-    checkPrivateSshKeyCopied "$EXISTING_SSH_KEY_PATH"
+    confirmPrivateSshKeyCopied "$EXISTING_SSH_KEY_PATH"
   else
-    checkForAndCreateSshDir
+    createDirectory "$SSH_DIR_PATH" '700' "$SUDO_USER"
     checkForAndCreateSshConfig
 
     getSshKeyDetails
@@ -77,9 +77,9 @@ mainScript () {
     writeSetupConfigOption "sshKeyFile" "$SSH_KEY_NAME"
 
     printSeparator
-    printComment 'Script finished. Please ensure you copied the private key at:' 'warning'
-    printComment "$SSH_KEY_PATH" 'warning'
-    printComment 'Once you have copied the key, run this script again to complete the ssh key setup.' 'warning'
+    printComment --warning 'Script finished. Please ensure you copied the private key at:'
+    printComment --warning -- "$SSH_KEY_PATH"
+    printComment --warning 'Once you have copied the key, run this script again to complete the ssh key setup.'
     printSeparator
 
     exit 1
