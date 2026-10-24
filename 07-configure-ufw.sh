@@ -66,7 +66,7 @@ setIpv6No () {
   local UFW_CONF='/etc/default/ufw'
 
   printComment 'Turning off IPv6 rules in:'
-  printComment "$UFW_CONF"
+  printComment -- "$UFW_CONF"
   sed -i '/IPV6=/c\\IPV6=no' "$UFW_CONF"
 
   printSeparator
