@@ -97,18 +97,18 @@ SSH_PORT="$(generatePortNumber)"
 # "\\\" in the command.
 #-------------------------------------------------------------------------------
 checkSshdConfig () {
+  printComment 'Checking for the include line in the sshd config file.'
+
   if grep -q "Include" "$SSHD_CONF_PATH"; then
     local INCLUDES_TF=true
   else
     local INCLUDES_TF=false
   fi
 
-  printCheckResult "for include line in the sshd config file" "$INCLUDES_TF"
-
   if [ "$INCLUDES_TF" = true ]; then
     printComment "Include line already present."
   elif [ "$INCLUDES_TF" = false ]; then
-    printComment 'Include line not present so adding it.' 'warning'
+    printComment --warning 'Include line not present so adding it.'
 
     sed -i "/value\./a \\\nInclude $SSHD_CONF_DIR_PATH/*.conf" "$SSHD_CONF_PATH"
     printComment "Added include line."
@@ -128,22 +128,20 @@ checkSshdConfig () {
 # - https://serverfault.com/a/1159600
 #-------------------------------------------------------------------------------
 configureSshSocket () {
-  local SOCKET_CONF_TF="$(checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF_PATH")"
-  local SOCKET_CONF_DIR_TF="$(checkForFileOrDirectory "$SSH_SOCKET_CONF_DIR_PATH")"
-
-  printCheckResult 'for the socket config file' "$SOCKET_CONF_TF"
-  printCheckResult 'for the socket config directory' "$SOCKET_CONF_DIR_TF"
+  printComment 'Checking for the socket config file.'
+  local SOCKET_CONF_TF=false
+  if checkForFileOrDirectory "$SSH_SOCKET_OVERRIDE_CONF_PATH"; then SOCKET_CONF_TF=true; fi
 
   if [ "$SOCKET_CONF_TF" = true ]; then 
-    printComment 'The setup config file and directory exist. You will need to manually add the following to:' 'warning'
-    printComment "$SSH_SOCKET_OVERRIDE_CONF_PATH" 'warning'
+    printComment --warning 'The setup config file and directory exist. You will need to manually add the following to:'
+    printComment --warning -- "$SSH_SOCKET_OVERRIDE_CONF_PATH"
     printSeparator
     printComment '[Socket]'
     printComment 'ListenStream='
     printComment "ListenStream=$SSH_PORT"
     printSeparator
   else
-    printComment 'The setup config file and directory do not exist. Creating both.' 'warning'
+    printComment --warning 'The setup config file and directory do not exist. Creating both.'
 
     createDirectory "$SSH_SOCKET_CONF_DIR_PATH"
     createSocketOverideConfig
@@ -156,7 +154,7 @@ configureSshSocket () {
 #-------------------------------------------------------------------------------
 createHardenedSShdConfig () {
   printComment 'Generating sshd config file at:' 
-  printComment "$SSHD_DEFAULT_CONF_PATH" 
+  printComment -- "$SSHD_DEFAULT_CONF_PATH" 
   cat <<EOF > "$SSHD_DEFAULT_CONF_PATH"
 Port $SSH_PORT
 AddressFamily inet
@@ -191,7 +189,7 @@ EOF
 #-------------------------------------------------------------------------------
 createSocketOverideConfig () {
   printComment 'Generating ssh.socket override config file at:' 
-  printComment "$SSH_SOCKET_CONF_DIR_PATH" 
+  printComment -- "$SSH_SOCKET_CONF_DIR_PATH" 
   cat <<EOF > "$SSH_SOCKET_OVERRIDE_CONF_PATH"
 [Socket]
 ListenStream=
@@ -219,7 +217,8 @@ EOF
 #-------------------------------------------------------------------------------
 removeCurrentSshdConfigs () {
   promptForUserInput "Do you want to remove the configs in $SSHD_CONF_DIR_PATH (y/n)?" 'This cannot be undone, and we wont ask for confirmation.'
-  SSHD_CONFS_YN="$(getUserInputYN)"
+  SSHD_CONFS_YN=false
+  if getUserInputYN; then SSHD_CONFS_YN=true; fi
 
   if [ "$SSHD_CONFS_YN" = true ]; then
     printComment "Deleting files in $SSHD_CONF_DIR_PATH."
@@ -237,9 +236,10 @@ removeCurrentSshdConfigs () {
 # of Debian and Ubuntu versions lower than or equal to 22.04.
 #-------------------------------------------------------------------------------
 restartSshd () {
-  printComment 'To enable the new sshd configutation, you will need to restart sshd.' 'warning'
+  printComment --warning 'To enable the new sshd configutation, you will need to restart sshd.'
   promptForUserInput 'Do you want to restart sshd (y/n)?' 'This can potentially interupt your connection.'
-  SSHD_RESTART_YN="$(getUserInputYN)"
+  SSHD_RESTART_YN=false
+  if getUserInputYN; then SSHD_RESTART_YN=true; fi
 
   if [ "$SSHD_RESTART_YN" = true ]; then
     controlService 'restart' 'sshd'
@@ -253,9 +253,10 @@ restartSshd () {
 # Ubuntu greater than 22.04.
 #-------------------------------------------------------------------------------
 restartSshSocket () {
-  printComment 'To enable the new ssh socket configutation, you will need to restart the ssh socket.' 'warning'
+  printComment --warning 'To enable the new ssh socket configutation, you will need to restart the ssh socket.'
   promptForUserInput 'Do you want to restart the ssh socket (y/n)?' 'This can potentially interupt your connection.'
-  SSH_SOCKET_RESTART_YN="$(getUserInputYN)"
+  SSH_SOCKET_RESTART_YN=false
+  if getUserInputYN; then SSH_SOCKET_RESTART_YN=true; fi
 
   if [ "$SSH_SOCKET_RESTART_YN" = true ]; then
     systemctl daemon-reload
@@ -283,7 +284,8 @@ mainScript () {
   local OS_DISTRIBUTION="$(getOsDistribution)"
 
   if [ "$OS_DISTRIBUTION" = "ubuntu" ]; then
-    local UBUNTU_22_TF="$(compareOsVersion "22.04")"
+    local UBUNTU_22_TF=false
+    if compareOsVersion '22.04'; then UBUNTU_22_TF=true; fi
   fi
 
   listDirectories "$SSHD_CONF_DIR_PATH"
@@ -291,7 +293,7 @@ mainScript () {
 
   checkSshdConfig
   createHardenedSShdConfig
-  setPermissions "600" "$SSHD_CONF_DIR_PATH"
+  setPermissions --recursive '755' "$SSHD_CONF_DIR_PATH" '600'
 
   if [ "$UBUNTU_22_TF" = false ]; then
     printComment 'You are on a version of Ubuntu that is higher than 22.04. We must also configure the SSH socket.'
