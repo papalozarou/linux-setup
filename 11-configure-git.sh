@@ -7,9 +7,9 @@
 # 2. setting global git user;
 # 3. setting global git email;
 # 4. setting global branch to "main";
-# 5. generating an ssh key;
-# 6. adding the ssh key to the ssh agent; and
-# 7. generating an ssh config file.
+# 5. generating an ssh key at "~/.ssh/github";
+# 6. adding a "github.com" host that uses the key to "~/.ssh/config"; and
+# 7. testing the ssh connection to Github.
 #
 # N.B.
 # This script needs to be run as "sudo".
@@ -60,9 +60,11 @@ CONFIG_KEY='configuredGit'
 # SERVICE="$(changeCase "${CONFIG_KEY#'configured'}" "lower")"
 
 #-------------------------------------------------------------------------------
-# Set the ssh file variables for the Linux user.
+# Set the ssh file variables for the Linux user. The key is "~/.ssh/github",
+# and "addHostToSshConfig" points the "github.com" host at it.
 #-------------------------------------------------------------------------------
-SSH_KEY_PATH="$SSH_DIR_PATH/github"
+SSH_KEY_NAME='github'
+SSH_KEY_PATH="$SSH_DIR_PATH/$SSH_KEY_NAME"
 
 #-------------------------------------------------------------------------------
 # Request user details to use in global git settings and when generating ssh key
@@ -77,41 +79,66 @@ getGitDetails () {
 }
 
 #-------------------------------------------------------------------------------
-# Set global git username and email, using values from getGitDetails.
+# Runs a command as "$SUDO_USER", with "$HOME" set to their home directory.
+# Takes one or more mandatory arguments:
+#
+# 1. "$@" – the command and its arguments, e.g. "git config --list".
+#
+# Returns the command's exit status.
 #
 # N.B.
-# As the script is run as "sudo" it is necessary to execute the git commands
-# as the "$SUDO_USER", as per:
-#
-# - https://stackoverflow.com/a/1988255
+# As the script is run as "sudo", "git" and "ssh" would otherwise read and
+# write root's "~/.gitconfig" and "~/.ssh". "sudo -H" sets "$HOME" for the
+# user. Each argument is passed as given, so values with spaces, e.g. a git
+# username of "Joe Bloggs", stay as one argument.
 #-------------------------------------------------------------------------------
-setGitDetails () {
-  printComment "Setting global git username to $GIT_USERNAME."
-  su -c "git config --global user.name "$GIT_USERNAME"" "$SUDO_USER"
+runAsSudoUser () {
+  : "${1:?}"
 
-  printComment "Setting global git email to $GIT_EMAIL"
-  su -c "git config --global user.email "$GIT_EMAIL"" "$SUDO_USER"
+  sudo -H -u "$SUDO_USER" "$@"
 }
 
 #-------------------------------------------------------------------------------
-# Set global default branch to "main".
-# 
-# N.B.
-# As the script is run as "sudo" it is necessary to execute the git commands
-# as the "$SUDO_USER", as per:
-#
-# - https://stackoverflow.com/a/1988255
+# Set global git username and email, using values from getGitDetails. Returns 1
+# with an error if either can't be set.
+#-------------------------------------------------------------------------------
+setGitDetails () {
+  printComment "Setting global git username to $GIT_USERNAME."
+
+  if ! runAsSudoUser git config --global user.name "$GIT_USERNAME"; then
+    printComment --error 'Failed to set the global git username.'
+
+    return 1
+  fi
+
+  printComment "Setting global git email to $GIT_EMAIL"
+
+  if ! runAsSudoUser git config --global user.email "$GIT_EMAIL"; then
+    printComment --error 'Failed to set the global git email.'
+
+    return 1
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Set global default branch to "main". Returns 1 with an error if it can't be
+# set.
 #-------------------------------------------------------------------------------
 setGitDefaultBranch () {
   printComment 'Setting global default branch to main.'
-  su -c "git config --global init.defaultBranch main" "$SUDO_USER"
+
+  if ! runAsSudoUser git config --global init.defaultBranch main; then
+    printComment --error 'Failed to set the global default branch.'
+
+    return 1
+  fi
 }
 
 #-------------------------------------------------------------------------------
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
-  printComment --warning 'You must add the contents of ~/.ssh/github.pub to your Github account via:'
+  printComment --warning "You must add the contents of ~/.ssh/$SSH_KEY_NAME.pub to your Github account via:"
   printComment --warning 'Settings > Access > SSH and GPG keys'
   printComment --warning 'You will likely need to open a separate command line session to copy the contents. We will wait while you go add the key…'
 }
@@ -119,12 +146,6 @@ getUserToAddKey () {
 #-------------------------------------------------------------------------------
 # Check if the user has added the key to their Github account. Block progress
 # until they have added it.
-#
-# N.B.
-# As we are trying to be POSIX compliant, we are using "-eq" and "-o" within
-# single brackets as per:
-#
-# - https://queirozf.com/entries/posix-shell-tests-and-conditionals-examples-and-reference
 #-------------------------------------------------------------------------------
 checkUserAddedKey () {
   sleep 5
@@ -141,22 +162,24 @@ checkUserAddedKey () {
 }
 
 #-------------------------------------------------------------------------------
-# List git configuration.
+# List the global git configuration of "$SUDO_USER".
 #-------------------------------------------------------------------------------
 listGitConfig () {
   printComment 'Listing git configuration.'
   printSeparator
-  git config --list
+  runAsSudoUser git config --global --list
   printSeparator
 }
 
 #-------------------------------------------------------------------------------
-# Test ssh connection.
+# Test the ssh connection to Github as "$SUDO_USER", so their ssh config and
+# key are used. The exit status isn't checked; the user reads the output
+# instead.
 #-------------------------------------------------------------------------------
 testGitSsh () {
   printComment 'Testing ssh connection to git:'
   printSeparator
-  ssh -T git@github.com
+  runAsSudoUser ssh -T git@github.com
   printSeparator
   printComment 'If you saw a success message, the key was added successfully. If you saw an error about permissions, when this script exits you can try:'
   printComment 'ssh -vT git@github.com'
@@ -164,18 +187,19 @@ testGitSsh () {
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script.
+# Executes the main functions of the script. Returns 1 as soon as a step fails.
+# The linshafun functions print the error.
 #-------------------------------------------------------------------------------
 mainScript () {
   getGitDetails
-  setGitDetails
-  setGitDefaultBranch
+  setGitDetails || return 1
+  setGitDefaultBranch || return 1
 
-  createDirectory "$SSH_DIR_PATH" '700' "$SUDO_USER"
-  checkForAndCreateSshConfig
+  createDirectory "$SSH_DIR_PATH" '700' "$SUDO_USER" || return 1
+  checkForAndCreateSshConfig || return 1
 
-  generateSshKey "$SSH_KEY_PATH" "$GIT_EMAIL"
-  addHostToSshConfig "github.com" "github"
+  generateSshKey "$SSH_KEY_PATH" "$GIT_EMAIL" || return 1
+  addHostToSshConfig "github.com" "" "" "" "$SSH_KEY_NAME" || return 1
 
   getUserToAddKey
   checkUserAddedKey
@@ -184,8 +208,15 @@ mainScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. If "mainScript" fails, the script exits with 1 before
+# "finaliseScript", so the step isn't recorded as done in the setup config file
+# and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi
+
 finaliseScript "$CONFIG_KEY"

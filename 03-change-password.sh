@@ -52,14 +52,23 @@
 CONFIG_KEY='changedPassword'
 
 #-------------------------------------------------------------------------------
-# Change the password for the default ubuntu user.
+# Change the password for the default ubuntu user. Returns 1 with an error if
+# "passwd" fails, e.g. when the two passwords entered don't match.
 #-------------------------------------------------------------------------------
 changeUserPassword () {
+  local STATUS=0
+
   printComment "Changing password for $SUDO_USER."
   printComment --warning 'Please make sure your password is set to a minimum of 24 characters, using a mix of alphanumeric characters and symbols.'
   printSeparator
-  passwd "$SUDO_USER"
+  passwd "$SUDO_USER" || STATUS=1
   printSeparator
+
+  if [ "$STATUS" -ne 0 ]; then
+    printComment --error "Failed to change the password for $SUDO_USER."
+
+    return 1
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -73,16 +82,24 @@ displayUserAccountStatus() {
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script.
+# Executes the main functions of the script. Returns 1 if the password can't be
+# changed.
 #-------------------------------------------------------------------------------
 mainScript () {
-  changeUserPassword
+  changeUserPassword || return 1
   displayUserAccountStatus
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. If "mainScript" fails, the script exits with 1 before
+# "finaliseScript", so the step isn't recorded as done in the setup config file
+# and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi
+
 finaliseScript "$CONFIG_KEY"

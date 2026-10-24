@@ -55,11 +55,11 @@
 #-------------------------------------------------------------------------------
 # Config key variable.
 #-------------------------------------------------------------------------------
-CONFIG_KEY='configurePiSpecificSettings'
+CONFIG_KEY='configuredPiSpecificSettings'
 
 #-------------------------------------------------------------------------------
 # Configures Raspberry Pi specific settings by:
-# 
+#
 # - checking the Pi model;
 # - updating the firmware and bootloader on Pi models 4 and later;
 # - adding video modes and cgroup memory options to "cmdline.txt";
@@ -67,74 +67,103 @@ CONFIG_KEY='configurePiSpecificSettings'
 # - optionally disabling onboard WiFi;
 # - optionally disabling onboard LEDs on Pi models 4 and later; and
 # - enabling PCIe Gen 3 for Pi models 5 and later.
+#
+# Once every step has succeeded, "appliedPiSettings true" is written to the
+# setup config file. Returns 1 as soon as a step fails, without writing it, so
+# the next run starts the settings again. The linshafun functions print the
+# error, and skip changes already made to "cmdline.txt" and "config.txt".
+#
+# N.B.
+# "getRaspberryPiModel" returns an empty string for models without a number,
+# e.g. "Raspberry Pi Zero 2 W", so "0" is used to skip the Pi 4 and 5 steps
+# without an "integer expression expected" error.
 #-------------------------------------------------------------------------------
 configurePiSettings () {
   local MODEL="$(getRaspberryPiModel)"
+  local DISABLE_WIFI_YN=false
+  local DISABLE_LEDS_YN=false
+
+  MODEL="${MODEL:-0}"
 
   printComment 'Configuring Raspberry Pi specific settings.'
 
-  addPiVideoModesToCmdline
-  addPiCgroupOptionsToCmdline
+  addPiVideoModesToCmdline || return 1
+  addPiCgroupOptionsToCmdline || return 1
 
   if [ "$MODEL" -ge 4 ]; then
-    updatePiFirmware
-    updatePiBootloader
+    updatePiFirmware || return 1
+    updatePiBootloader || return 1
 
-    setPiPowerOffOnHalt
+    setPiPowerOffOnHalt || return 1
   fi
 
   if [ "$MODEL" -ge 5 ]; then
-    enablePiPcieGen3InConfigTxt
+    enablePiPcieGen3InConfigTxt || return 1
   fi
 
   promptForUserInput "Do you want to disable the Raspberry Pi's onboard WiFi (y/n)?"
-  local DISABLE_WIFI_YN=false
   if getUserInputYN; then DISABLE_WIFI_YN=true; fi
 
   if [ "$DISABLE_WIFI_YN" = true ]; then
-    disablePiWifiInConfigTxt
+    disablePiWifiInConfigTxt || return 1
   fi
 
   if [ "$MODEL" -ge 4 ]; then
     promptForUserInput "Do you want to disable the Raspberry Pi's onboard LEDs (y/n)?"
-    local DISABLE_LEDS_YN=false
-    if getUserInputYN; then DISABLE_LEDS_YN=true; fi
+    getUserInputYN && DISABLE_LEDS_YN=true
   fi
 
   if [ "$DISABLE_LEDS_YN" = true ]; then
-    disablePiLedsInConfigTxt
+    disablePiLedsInConfigTxt || return 1
   fi
+
+  writeSetupConfigOption 'appliedPiSettings' 'true'
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script.
+# Executes the main functions of the script. The script is run twice:
+#
+# 1. the first run applies the settings, then reboots; and
+# 2. the second run, once "appliedPiSettings" is in the setup config file,
+#    checks the system rebooted in the last 300 seconds, and reboots again if
+#    not.
+#
+# Returns 1 if the settings can't be applied. "rebootSystem" exits the script
+# with 0, so "finaliseScript" only runs after a recent reboot.
 #-------------------------------------------------------------------------------
 mainScript () {
-  local UPDATED_PI_FIRMWARE_TF="$(readSetupConfigValue 'addedPiVideoModes')"
-  
-  if [ -z "$UPDATED_PI_FIRMWARE_TF" ]; then
-    configurePiSettings
+  local APPLIED_PI_SETTINGS_TF="$(readSetupConfigValue 'appliedPiSettings')"
+
+  if [ -z "$APPLIED_PI_SETTINGS_TF" ]; then
+    configurePiSettings || return 1
 
     printComment --warning 'To enable the changes made the system must be rebooted.'
     printComment --warning 'Once the system has rebooted, run this script again to complete the Pi specific setup.'
     rebootSystem '20'
-  else
-    printComment 'Checking for a recent reboot.'
-    local REBOOT_TF=false
-    if checkIfSystemRebooted '300'; then REBOOT_TF=true; fi
   fi
 
-  if [ "$REBOOT_TF" = true ]; then   
+  printComment 'Checking for a recent reboot.'
+
+  if checkIfSystemRebooted '300'; then
     printComment 'Raspberry Pi specific setup complete.'
-  elif [ "$REBOOT_TF" = false ]; then
-    printComment --warning 'The system must be rebooted for changes to take effect.'
-    rebootSystem '20'
+
+    return 0
   fi
+
+  printComment --warning 'The system must be rebooted for changes to take effect.'
+  rebootSystem '20'
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. If "mainScript" fails, the script exits with 1 before
+# "finaliseScript", so the step isn't recorded as done in the setup config file
+# and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi
+
 finaliseScript "$CONFIG_KEY"

@@ -60,12 +60,12 @@ CONFIG_KEY='setHostEnvVariables'
 #-------------------------------------------------------------------------------
 # Environment variable values. Set as follows:
 #
-# - "HOST_IP_ADDRESS" - using the "readIPAddress" function.
+# - "HOST_IP_ADDRESS" - using the "readIpAddress" function.
 # - "HOST_TIMEZONE" - grepping "Timezone" from the output of "timedatectl show".
-# - "HOST_DOMAIN" - cutting "$HOSTNAME" using "." as a delimiter, and taking the 
-#   first segment, "f1".
-# - "HOST_SUBDOMAIN" - trimming "$SUBDOMAIN", with a trailing period, from
-#   "$HOSTNAME"
+# - "HOST_SUBDOMAIN" - cutting "$HOSTNAME" using "." as a delimiter, and taking
+#   the first segment, "f1".
+# - "HOST_DOMAIN" - trimming "$SUBDOMAIN", with a trailing period, from
+#   "$HOSTNAME".
 # 
 # Usage of cut and trim as per:
 # 
@@ -79,66 +79,76 @@ SUBDOMAIN="$(echo "$HOSTNAME" | cut -d'.' -f1)"
 DOMAIN="${HOSTNAME#"$SUBDOMAIN".}"
 
 #-------------------------------------------------------------------------------
-# Check for the "@includedir" line in "$SUDOERS". If it is present, confirm it's
+# Check for the include line in "$SUDOERS_PATH". If it is present, confirm it's
 # present. If not present, add it at the end of the file, as per:
 # 
 # - https://stackoverflow.com/a/28382838
+#
+# Returns 1 with an error if the line can't be added.
+#
+# N.B.
+# Older sudoers files, e.g. on Ubuntu 20.04, use "#includedir", and newer ones
+# use "@includedir". Both include the directory, so either counts as present.
 #-------------------------------------------------------------------------------
 checkSudoersConf () {
   printComment 'Checking for the include line in the sudoers file.'
 
-  if grep -q "@includedir" "$SUDOERS_PATH"; then
-    local INCLUDES_TF=true
-  else
-    local INCLUDES_TF=false
+  if grep -Eq '^[#@]includedir' "$SUDOERS_PATH"; then
+    printComment "Include line already present."
+
+    return 0
   fi
 
-  if [ "$INCLUDES_TF" = true ]; then
-    printComment "Include line already present."   
-  elif [ "$INCLUDES_TF" = false ]; then
-    printComment --warning 'Include line not present so adding it. You may be asked for your password.'
+  printComment --warning 'Include line not present so adding it. You may be asked for your password.'
 
-    echo "@includedir $SUDOERS_CONF_DIR_PATH" | sudo EDITOR='tee -a' visudo
+  if ! echo "@includedir $SUDOERS_CONF_DIR_PATH" | sudo EDITOR='tee -a' visudo; then
+    printComment --error "Failed to add the include line to $SUDOERS_PATH."
 
-    printComment "Added include line."
-    printSeparator
-    grep "@includedir" "$SUDOERS_PATH"
-    printSeparator
-
-    setPermissions "440" "$SUDOERS_PATH"
+    return 1
   fi
+
+  printComment "Added include line."
+  printSeparator
+  grep "@includedir" "$SUDOERS_PATH"
+  printSeparator
+
+  setPermissions "440" "$SUDOERS_PATH"
 }
 
 #-------------------------------------------------------------------------------
-# Creates the default environment config file for sudoers. As per:
-# 
-# - https://stackoverflow.com/a/8636711
+# Adds an "env_keep" line for each host environment variable to
+# "$SUDOERS_DEFAULT_CONF_PATH", so "sudo" keeps them. Returns 1 if any line
+# can't be added.
+#
+# N.B.
+# "addHostEnvVariableToSudoersConf" checks each line with "visudo", skips lines
+# already in the file, and sets the file's mode to "440".
 #-------------------------------------------------------------------------------
-createSudoersDefaultConf () {
-  printComment 'Generating sudoers config file at:'
+addHostEnvVariablesToSudoersConf () {
+  local STATUS=0
+  local ENV_VAR
+
+  printComment 'Adding env_keep lines to the sudoers config file at:'
   printComment -- "$SUDOERS_DEFAULT_CONF_PATH"
-  cat <<EOF > "$SUDOERS_DEFAULT_CONF_PATH"
-Defaults env_keep += "HOST_IP_ADDRESS"
-Defaults env_keep += "HOST_TIMEZONE"
-Defaults env_keep += "HOST_DOMAIN"
-Defaults env_keep += "HOST_SUBDOMAIN"
-EOF
-  printComment 'Config file generated.'
 
-  setOwner "$USER" "$SUDOERS_DEFAULT_CONF_PATH"
+  for ENV_VAR in HOST_IP_ADDRESS HOST_TIMEZONE HOST_DOMAIN HOST_SUBDOMAIN; do
+    addHostEnvVariableToSudoersConf "$ENV_VAR" || STATUS=1
+  done
+
+  return "$STATUS"
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script.
+# Executes the main functions of the script. Returns 1 as soon as a step fails.
 #-------------------------------------------------------------------------------
 mainScript () {
-  setHostEnvVariable "HOST_IP_ADDRESS" "$IP_ADDRESS"
-  setHostEnvVariable "HOST_TIMEZONE" "$TIMEZONE" 
-  setHostEnvVariable "HOST_DOMAIN" "$DOMAIN"
-  setHostEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN"
+  setHostEnvVariable "HOST_IP_ADDRESS" "$IP_ADDRESS" || return 1
+  setHostEnvVariable "HOST_TIMEZONE" "$TIMEZONE" || return 1
+  setHostEnvVariable "HOST_DOMAIN" "$DOMAIN" || return 1
+  setHostEnvVariable "HOST_SUBDOMAIN" "$SUBDOMAIN" || return 1
 
-  checkSudoersConf
-  createSudoersDefaultConf
+  checkSudoersConf || return 1
+  addHostEnvVariablesToSudoersConf || return 1
 
   printSeparator
   printComment --warning 'As stated above these variables will not be usable until you have logged out and back in.'
@@ -146,8 +156,15 @@ mainScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. If "mainScript" fails, the script exits with 1 before
+# "finaliseScript", so the step isn't recorded as done in the setup config file
+# and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi
+
 finaliseScript "$CONFIG_KEY"

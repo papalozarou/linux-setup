@@ -60,21 +60,28 @@ EXISTING_SSH_KEY_PATH="$SSH_DIR_PATH/$EXISTING_SSH_KEY_NAME"
 # Executes the main functions of the script, by checking whether the ssh key 
 # already exists. If it does exist delete it, if it doesn't exist, create it.
 # 
+# Returns 1 as soon as a step fails. The linshafun functions print the error.
+#
 # N.B.
 # We also write the ssh key filename to the config file.
+#
+# "checkForAndCreateAuthorizedKeys" creates "authorized_keys" with mode "600"
+# and "$SUDO_USER" as owner if it doesn't exist. Otherwise the root-run
+# "addKeyToAuthorizedKeys" would create it owned by root.
 #-------------------------------------------------------------------------------
 mainScript () {
   if [ -f "$EXISTING_SSH_KEY_PATH" ]; then
     confirmPrivateSshKeyCopied "$EXISTING_SSH_KEY_PATH"
   else
-    createDirectory "$SSH_DIR_PATH" '700' "$SUDO_USER"
-    checkForAndCreateSshConfig
+    createDirectory "$SSH_DIR_PATH" '700' "$SUDO_USER" || return 1
+    checkForAndCreateSshConfig || return 1
+    checkForAndCreateAuthorizedKeys || return 1
 
     getSshKeyDetails
-    generateSshKey "$SSH_KEY_PATH" "$SSH_EMAIL"
-    addKeyToAuthorizedKeys "$SSH_KEY_PATH"
+    generateSshKey "$SSH_KEY_PATH" "$SSH_EMAIL" || return 1
+    addKeyToAuthorizedKeys "$SSH_KEY_PATH" || return 1
     printPrivateKeyUsage "$SSH_KEY_NAME"
-    writeSetupConfigOption "sshKeyFile" "$SSH_KEY_NAME"
+    writeSetupConfigOption "sshKeyFile" "$SSH_KEY_NAME" || return 1
 
     printSeparator
     printComment --warning 'Script finished. Please ensure you copied the private key at:'
@@ -87,8 +94,15 @@ mainScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. If "mainScript" fails, the script exits with 1 before
+# "finaliseScript", so the step isn't recorded as done in the setup config file
+# and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi
+
 finaliseScript "$CONFIG_KEY"

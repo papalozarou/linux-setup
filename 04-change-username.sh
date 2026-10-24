@@ -65,6 +65,13 @@ RENAME_SCRIPT="renameUser.sh"
 RENAME_SCRIPT_PATH="$TEMPUSER_DIR_PATH/$RENAME_SCRIPT"
 
 #-------------------------------------------------------------------------------
+# The name of this script, for the instruction to run it again. It is
+# "04-change-username.sh" on a Raspberry Pi and "03-change-username.sh"
+# elsewhere, as "01-initialise-setup.sh" renames the scripts on other hosts.
+#-------------------------------------------------------------------------------
+SETUP_SCRIPT_NAME="$(basename "$0")"
+
+#-------------------------------------------------------------------------------
 # Checks for the existence of "tempuser".
 #-------------------------------------------------------------------------------
 checkForTempUser () {
@@ -80,20 +87,39 @@ checkForTempUser () {
 # the current users name and group.
 #
 # N.B.
-# The "adduser" command uses "--gecos GECOS" to so that it only asks for a
+# Returns 1 with an error if "tempuser" can't be created or added to the "sudo"
+# group.
+#
+# N.B.
+# The "adduser" command uses "--gecos GECOS" so that it only asks for a
 # password for the new user during setup, rather than all the other information,
 # as per:
 #
 # - https://unix.stackexchange.com/a/611219
 #-------------------------------------------------------------------------------
 createTempUser () {
+  local STATUS=0
+
   printComment 'Creating temporary user, "tempuser". You will be asked to enter a password for "tempuser" as part of this process.'
   printComment --warning 'Set a password you can remember easily as you will need it shortly.'
   printSeparator
-  adduser --gecos GECOS tempuser
+  adduser --gecos GECOS tempuser || STATUS=1
   printSeparator
+
+  if [ "$STATUS" -ne 0 ]; then
+    printComment --error 'Failed to create "tempuser".'
+
+    return 1
+  fi
+
   printComment '"tempuser" created. Adding to sudoers.'
-  adduser tempuser sudo
+
+  if ! adduser tempuser sudo; then
+    printComment --error 'Failed to add "tempuser" to the "sudo" group.'
+
+    return 1
+  fi
+
   printComment '"tempuser" added to sudoers file.'
 }
 
@@ -105,12 +131,17 @@ createTempUser () {
 # The generated script uses "usermod" and "groupmod" commands as per:
 #
 # - https://serverfault.com/a/437343
+#
+# Returns 1 with an error if the script can't be written, or if its
+# permissions or owner can't be set.
 #-------------------------------------------------------------------------------
 createTempUserScript () {
+  local STATUS=0
+
   printComment 'Creating a script to change the current username and group within the "tempuser" home directory at:'
   printComment -- "$RENAME_SCRIPT_PATH"
 
-  cat <<EOF > "$RENAME_SCRIPT_PATH"
+  cat <<EOF > "$RENAME_SCRIPT_PATH" || STATUS=1
 #!/bin/sh
 echo "$COMMENT_PREFIX Changing username and group of the user $SUDO_USER."
 usermod --login $NEW_USER --move-home --home /home/$NEW_USER $SUDO_USER
@@ -129,11 +160,17 @@ done
 
 echo "$COMMENT_PREFIX You can now log back in as the user $NEW_USER, using the existing password."
 echo "$COMMENT_PREFIX Once logged in re-run:"
-echo "$COMMENT_PREFIX cd linux-setup && sudo ./03-change-username.sh"
+echo "$COMMENT_PREFIX cd linux-setup && sudo ./$SETUP_SCRIPT_NAME"
 EOF
 
-  setPermissions "+x" "$RENAME_SCRIPT_PATH"
-  setOwner "tempuser" "$RENAME_SCRIPT_PATH"
+  if [ "$STATUS" -ne 0 ]; then
+    printComment --error "Failed to create the script at $RENAME_SCRIPT_PATH."
+
+    return 1
+  fi
+
+  setPermissions "+x" "$RENAME_SCRIPT_PATH" || return 1
+  setOwner "tempuser" "$RENAME_SCRIPT_PATH" || return 1
 
   listDirectories "$RENAME_SCRIPT_PATH"
   printComment 'Script created.'
@@ -156,27 +193,27 @@ getNewUserName () {
 # will still run.
 #-------------------------------------------------------------------------------
 killProcesses () {
-    printComment --warning "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed."
+  printComment --warning "To ensure that the current username can be changed, all processes currently being run by $SUDO_USER must be killed."
 
-    promptForUserInput 'Ready to kill all processes (y/n)?' 'This may log you out.'
-    KILL_PROCESSES_YN=false
-    if getUserInputYN; then KILL_PROCESSES_YN=true; fi
+  promptForUserInput 'Ready to kill all processes (y/n)?' 'This may log you out.'
+  KILL_PROCESSES_YN=false
+  if getUserInputYN; then KILL_PROCESSES_YN=true; fi
 
-    if [ "$KILL_PROCESSES_YN" = true ]; then
-      printSeparator
-      printComment --warning "Killing all processes for $SUDO_USER."
-      printSeparator
-      pkill -u "$SUDO_UID"
+  if [ "$KILL_PROCESSES_YN" = true ]; then
+    printSeparator
+    printComment --warning "Killing all processes for $SUDO_USER."
+    printSeparator
+    pkill -u "$SUDO_UID"
 
-      exit
-    else
-      printSeparator
-      printComment --warning 'Processes remain running for this user. To enable changing the username, you must run the following command:'
-      printComment --warning "pkill -u $SUDO_UID"
-      printSeparator
+    exit
+  else
+    printSeparator
+    printComment --warning 'Processes remain running for this user. To enable changing the username, you must run the following command:'
+    printComment --warning "pkill -u $SUDO_UID"
+    printSeparator
 
-      exit
-    fi
+    exit
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -184,20 +221,27 @@ killProcesses () {
 #-------------------------------------------------------------------------------
 printTempUserInstructions () {
   printComment 'You can now log this user out, log in as "tempuser", then run:'
-  printComment "sudo ./$RENAME_SCRIPT."
+  printComment "sudo ./$RENAME_SCRIPT"
   printSeparator
   printComment 'Finished setting up "tempuser".'
   printSeparator
 }
 
 #-------------------------------------------------------------------------------
-# Removes the temporary user "tempuser' and it's home directory.
+# Removes the temporary user "tempuser" and its home directory. Returns 1 if
+# either can't be removed.
 #-------------------------------------------------------------------------------
 removeTempUser () {
   printComment 'Deleting temporary user "tempuser".'
   printSeparator
-  deluser tempuser
-  removeFilesOrDirectories --recursive "$TEMPUSER_DIR_PATH"
+
+  if ! deluser tempuser; then
+    printComment --error 'Failed to delete "tempuser".'
+
+    return 1
+  fi
+
+  removeFilesOrDirectories --recursive "$TEMPUSER_DIR_PATH" || return 1
   printSeparator
   printComment '"tempuser" and home folder deleted.'
 }
@@ -211,6 +255,8 @@ removeTempUser () {
 # 
 # If the user chooses not to change the username, the script exits and saves
 # "changedUsername false" to the setup config file.
+#
+# Returns 1 as soon as a step fails.
 #-------------------------------------------------------------------------------
 mainScript () {
   printComment 'Checking for a temporary user, "tempuser", used to enable changing the current username.'
@@ -219,7 +265,7 @@ mainScript () {
   if [ "$TEMPUSER_TF" = true ]; then
     printComment '"tempuser" already exists.'
 
-    removeTempUser
+    removeTempUser || return 1
 
     finaliseScript "$CONFIG_KEY"
   elif [ "$TEMPUSER_TF" = false ]; then
@@ -231,9 +277,9 @@ mainScript () {
   fi
   
   if [ "$CHANGE_NAME_YN" = true ]; then
-    createTempUser
+    createTempUser || return 1
     getNewUserName
-    createTempUserScript
+    createTempUserScript || return 1
 
     printTempUserInstructions
 
@@ -248,7 +294,13 @@ mainScript () {
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. "mainScript" calls "finaliseScript" itself once "tempuser" is
+# removed. If "mainScript" fails, the script exits with 1, so the step isn't
+# recorded as done in the setup config file and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi

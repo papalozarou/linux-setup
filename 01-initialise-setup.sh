@@ -56,39 +56,51 @@ CONFIG_KEY='initialisedSetup'
 #-------------------------------------------------------------------------------
 # Reorders setup scripts based on whether the host machine is a Raspberry Pi or 
 # not. If the host machine is a Pi, the script order is preserved. If not, 
-# "02-configure-pi-specific-settings.sh" is removed and subsequent scripts are 
+# "02-configure-pi-specific-settings.sh" is removed and subsequent scripts are
 # renamed.
+#
+# Returns 1 as soon as a script can't be removed or renamed. The linshafun
+# functions print the error.
 #-------------------------------------------------------------------------------
 initialiseSetupScripts () {
-  if ! checkIfRaspberryPi; then
-    rm "./02-configure-pi-specific-settings.sh"
-    mv "./03-change-password.sh" "./02-change-password.sh"
-    mv "./04-change-username.sh" "./03-change-username.sh"
-    mv "./05-setup-ssh-key.sh" "./04-setup-ssh-key.sh"
-    mv "./06-configure-sshd.sh" "./05-configure-sshd.sh"
-    mv "./07-configure-ufw.sh" "./06-configure-ufw.sh"
-    mv "./08-configure-fail2ban.sh" "./07-configure-fail2ban.sh"
-    mv "./09-configure-hostname.sh" "./08-configure-hostname.sh"
-    mv "./10-configure-timezone.sh" "./09-configure-timezone.sh"
-    mv "./11-configure-git.sh" "./10-configure-git.sh"
-    mv "./12-configure-docker.sh" "./11-configure-docker.sh"
-    mv "./13-set-env-variables.sh" "./12-set-env-variables.sh"
+  if checkIfRaspberryPi; then
+    return 0
   fi
+
+  removeFilesOrDirectories "./02-configure-pi-specific-settings.sh" || return 1
+  renameFileOrDirectory "./03-change-password.sh" "./02-change-password.sh" || return 1
+  renameFileOrDirectory "./04-change-username.sh" "./03-change-username.sh" || return 1
+  renameFileOrDirectory "./05-setup-ssh-key.sh" "./04-setup-ssh-key.sh" || return 1
+  renameFileOrDirectory "./06-configure-sshd.sh" "./05-configure-sshd.sh" || return 1
+  renameFileOrDirectory "./07-configure-ufw.sh" "./06-configure-ufw.sh" || return 1
+  renameFileOrDirectory "./08-configure-fail2ban.sh" "./07-configure-fail2ban.sh" || return 1
+  renameFileOrDirectory "./09-configure-hostname.sh" "./08-configure-hostname.sh" || return 1
+  renameFileOrDirectory "./10-configure-timezone.sh" "./09-configure-timezone.sh" || return 1
+  renameFileOrDirectory "./11-configure-git.sh" "./10-configure-git.sh" || return 1
+  renameFileOrDirectory "./12-configure-docker.sh" "./11-configure-docker.sh" || return 1
+  renameFileOrDirectory "./13-set-env-variables.sh" "./12-set-env-variables.sh"
 }
 
 #-------------------------------------------------------------------------------
-# Executes the main functions of the script.
+# Executes the main functions of the script. Returns 1 as soon as a step fails.
 #-------------------------------------------------------------------------------
 mainScript () {
-  updateAndUpgradePackages
-  checkForAndCreateSetupConfigFileAndDir
+  updateAndUpgradePackages || return 1
+  checkForAndCreateSetupConfigFileAndDir || return 1
 
   initialiseSetupScripts
 }
 
 #-------------------------------------------------------------------------------
-# Run the script.
+# Run the script. If "mainScript" fails, the script exits with 1 before
+# "finaliseScript", so the step isn't recorded as done in the setup config file
+# and can be run again.
 #-------------------------------------------------------------------------------
 initialiseScript "$CONFIG_KEY"
-mainScript
+
+if ! mainScript; then
+  printScriptExiting --changes
+  exit 1
+fi
+
 finaliseScript "$CONFIG_KEY"

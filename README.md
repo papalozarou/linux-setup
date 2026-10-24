@@ -1,6 +1,6 @@
 # Linux setup scripts
 
-A set of shell scripts to automate the setup of an Ubuntu 20.04.0x and above server, by:
+A set of shell scripts to automate the setup of an Ubuntu 20.04 or later server, by:
 
 1. updating and upgrading the fresh install;
 2. configuring rpi specific settings;
@@ -62,12 +62,6 @@ This leaves the `.config/linux-setup.conf` file in place for reference.
 
 ### N.B.
 
-Script `change-username.sh` kills all processes and requires logging in with a temporary user which is set up as part of the script.
+Script `04-change-username.sh` (`03-change-username.sh` if the host isn't a Raspberry Pi) kills all processes and requires logging in with a temporary user which is set up as part of the script.
 
-The scripts are not particularly robust in terms of error handling. Soz like.
-
-## Todo
-- [x] Fix docker validation
-- [x] Move all service installs to using `installRemovePackage` function
-- [x] Add timezone and NTP setup
-- [ ] Robust error handling
+If a step fails, the script stops with an error and exits with 1, without recording the step as done in `~/.config/linux-setup.conf`. Fix the problem, then run the same script again.
