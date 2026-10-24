@@ -56,7 +56,7 @@ CONFIG_KEY='changedPassword'
 #-------------------------------------------------------------------------------
 changeUserPassword () {
   printComment "Changing password for $SUDO_USER."
-  printComment 'Please make sure your password is set to a minimum of 24 characters, using a mix of alphanumeric characters and symbols.' 'warning'
+  printComment --warning 'Please make sure your password is set to a minimum of 24 characters, using a mix of alphanumeric characters and symbols.'
   printSeparator
   passwd "$SUDO_USER"
   printSeparator
