@@ -111,9 +111,9 @@ setGitDefaultBranch () {
 # Get the user to copy public ssh key to Github account.
 #-------------------------------------------------------------------------------
 getUserToAddKey () {
-  printComment 'You must add the contents of ~/.ssh/github.pub to your Github account via:' 'warning'
-  printComment 'Settings > Access > SSH and GPG keys' 'warning'
-  printComment 'You will likely need to open a separate command line session to copy the contents. We will wait while you go add the key…' 'warning'
+  printComment --warning 'You must add the contents of ~/.ssh/github.pub to your Github account via:'
+  printComment --warning 'Settings > Access > SSH and GPG keys'
+  printComment --warning 'You will likely need to open a separate command line session to copy the contents. We will wait while you go add the key…'
 }
 
 #-------------------------------------------------------------------------------
@@ -129,7 +129,8 @@ getUserToAddKey () {
 checkUserAddedKey () {
   sleep 5
   promptForUserInput 'Have you added the ssh key to your account (y/n)?'
-  KEY_ADDED_YN="$(getUserInputYN)"
+  KEY_ADDED_YN=false
+  if getUserInputYN; then KEY_ADDED_YN=true; fi
 
   if [ "$KEY_ADDED_YN" = true ]; then
     printComment 'Key added to Github – we will know later if you fibbed…'
@@ -159,7 +160,7 @@ testGitSsh () {
   printSeparator
   printComment 'If you saw a success message, the key was added successfully. If you saw an error about permissions, when this script exits you can try:'
   printComment 'ssh -vT git@github.com'
-  printComment 'If the above still does not work, you fibbed about adding your key…' 'warning'
+  printComment --warning 'If the above still does not work, you fibbed about adding your key…'
 }
 
 #-------------------------------------------------------------------------------
@@ -170,11 +171,10 @@ mainScript () {
   setGitDetails
   setGitDefaultBranch
 
-  checkForAndCreateSshDir
+  createDirectory "$SSH_DIR_PATH" '700' "$SUDO_USER"
   checkForAndCreateSshConfig
 
   generateSshKey "$SSH_KEY_PATH" "$GIT_EMAIL"
-  addSshKeytoAgent "$SSH_KEY_PATH"
   addHostToSshConfig "github.com" "github"
 
   getUserToAddKey
