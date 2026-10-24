@@ -89,7 +89,7 @@ setIpv6No () {
 setUfwDefaults () {
   "$SERVICE" default deny incoming
   "$SERVICE" default allow outgoing
-  addRuleToUfw 'deny' '22'
+  addRuleToUfw 'deny' 'any' '22' 'any' 'Default SSH'
 }
 
 #-------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ allowSshPort () {
   
   printComment 'Reading ssh port…'
   printComment "Current port is $SSH_PORT."
-  addRuleToUfw 'allow' "$SSH_PORT" 'tcp'
+  addRuleToUfw 'allow' 'any' "$SSH_PORT" 'tcp' 'SSH'
 }
 
 #-------------------------------------------------------------------------------
