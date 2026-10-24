@@ -70,10 +70,11 @@ CURRENT_TIMEZONE="$(timedatectl show | grep "Timezone")"
 changeTimezone () {
   listTimeDate
   printComment 'Your current timezone is:'
-  printComment "$CURRENT_TIMEZONE"
+  printComment -- "$CURRENT_TIMEZONE"
 
   promptForUserInput 'Would you like to change the timezone (y/n)?'
-  TIMEZONE_SET_YN="$(getUserInputYN)"
+  TIMEZONE_SET_YN=false
+  if getUserInputYN; then TIMEZONE_SET_YN=true; fi
 
   if [  "$TIMEZONE_SET_YN" = true ]; then
     setNewTimezone
@@ -106,7 +107,7 @@ listNtpSettings () {
   printSeparator
   ntpq -p
   printSeparator
-  printComment 'It may take a moment for connections to be established.' 'warning'
+  printComment --warning 'It may take a moment for connections to be established.'
 }
 
 #-------------------------------------------------------------------------------
@@ -131,9 +132,8 @@ setNewTimezone () {
   promptForUserInput 'Which timezone would you like to switch to (Region/City)?'
   local NEW_TIMEZONE="$(getUserInput)"
 
+  printComment "Checking $NEW_TIMEZONE is a valid timezone."
   local TIMEZONE_VALID_TF="$(checkTimezone "$NEW_TIMEZONE")"
-
-  printCheckResult "$NEW_TIMEZONE is a valid timezone" "$TIMEZONE_VALID_TF"
 
   if [ "$TIMEZONE_VALID_TF" = true ]; then
     printComment 'Timezone is valid.'
@@ -145,7 +145,7 @@ setNewTimezone () {
 
     writeSetupConfigOption "timezone" "$NEW_TIMEZONE"
   elif [ "$TIMEZONE_VALID_TF" = false ]; then
-    printComment 'Timezone is invalid. You must use a valid timezone.' 'error'
+    printComment --error 'Timezone is invalid. You must use a valid timezone.'
 
     setNewTimezone
   fi
