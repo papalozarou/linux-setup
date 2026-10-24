@@ -60,9 +60,7 @@ CONFIG_KEY='initialisedSetup'
 # renamed.
 #-------------------------------------------------------------------------------
 initialiseSetupScripts () {
-  local IS_PI_TF="$(checkIfRaspberryPi)"
-
-  if [ "$IS_PI_TF" = false ]; then
+  if ! checkIfRaspberryPi; then
     rm "./02-configure-pi-specific-settings.sh"
     mv "./03-change-password.sh" "./02-change-password.sh"
     mv "./04-change-username.sh" "./03-change-username.sh"
@@ -82,7 +80,7 @@ initialiseSetupScripts () {
 # Executes the main functions of the script.
 #-------------------------------------------------------------------------------
 mainScript () {
-  updateUpgrade
+  updateAndUpgradePackages
   checkForAndCreateSetupConfigFileAndDir
 
   initialiseSetupScripts
