@@ -68,14 +68,14 @@ OS_CODENAME="$(getOsCodename)"
 # ensure use of the added docker repository.
 # 
 # N.B.
-# We are using "apt update" here rather than "updateUpgrade" to avoid
+# We are using "apt update" here rather than "updateAndUpgradePackages" to avoid
 # unnecessary upgrades of other packages.
 #-------------------------------------------------------------------------------
 installDocker () {
   printComment "Installing $SERVICE."
   printSeparator
   apt update
-  installRemovePackages "install" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
+  managePackages "install" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 }
 
 #-------------------------------------------------------------------------------
@@ -88,8 +88,8 @@ installDocker () {
 installDockerDependencies () {
   printComment "Installing dependencies for $SERVICE."
   printSeparator
-  updateUpgrade
-  installRemovePackages "install" "ca-certificates" "curl" "gnupg"
+  updateAndUpgradePackages
+  managePackages "install" "ca-certificates" "curl" "gnupg"
 }
 
 #-------------------------------------------------------------------------------
@@ -124,12 +124,13 @@ installDockerRepository () {
 #-------------------------------------------------------------------------------
 removeExistingDocker () {
   promptForUserInput "Do you want to remove the existing install of $SERVICE (y/n)?"
-  DOCKER_REMOVE_YN="$(getUserInputYN)"
+  DOCKER_REMOVE_YN=false
+  if getUserInputYN; then DOCKER_REMOVE_YN=true; fi
 
   if [ "$DOCKER_REMOVE_YN" = true ]; then
     printComment "Removing existing installation of $SERVICE."
-    installRemovePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
-    installRemovePackages "remove" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
+    managePackages "remove" "docker.io" "docker-doc" "docker-compose" "podman-docker" "containerd" "runc"
+    managePackages "remove" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
 
     mainScript
   else
@@ -164,9 +165,9 @@ verifyDockerInstall() {
 mainScript () {
   printComment "Starting setup of $SERVICE."
 
-  local SERVICE_TF="$(checkForPackage "$SERVICE")"
-
-  printCheckResult "for $SERVICE" "$SERVICE_TF"
+  printComment "Checking for $SERVICE."
+  local SERVICE_TF=false
+  if checkForPackage 'docker-ce'; then SERVICE_TF=true; fi
 
   if [ "$SERVICE_TF" = true ]; then
     printComment "You have already installed $SERVICE."
@@ -182,7 +183,7 @@ mainScript () {
 
     installDocker
 
-    checkForAndCreateDockerSecretsDir
+    createDirectory "$DKR_SECRETS_DIR_PATH" '600'
 
     verifyDockerInstall
   fi
