@@ -81,7 +81,9 @@ configurePiSettings () {
     updatePiBootloader
 
     setPiPowerOffOnHalt
-  elif [ "$MODEL" -ge 5 ]; then
+  fi
+
+  if [ "$MODEL" -ge 5 ]; then
     enablePiPcieGen3InConfigTxt
   fi
 
