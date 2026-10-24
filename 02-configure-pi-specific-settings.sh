@@ -86,7 +86,8 @@ configurePiSettings () {
   fi
 
   promptForUserInput "Do you want to disable the Raspberry Pi's onboard WiFi (y/n)?"
-  local DISABLE_WIFI_YN="$(getUserInputYN)"
+  local DISABLE_WIFI_YN=false
+  if getUserInputYN; then DISABLE_WIFI_YN=true; fi
 
   if [ "$DISABLE_WIFI_YN" = true ]; then
     disablePiWifiInConfigTxt
@@ -94,7 +95,8 @@ configurePiSettings () {
 
   if [ "$MODEL" -ge 4 ]; then
     promptForUserInput "Do you want to disable the Raspberry Pi's onboard LEDs (y/n)?"
-    local DISABLE_LEDS_YN="$(getUserInputYN)"
+    local DISABLE_LEDS_YN=false
+    if getUserInputYN; then DISABLE_LEDS_YN=true; fi
   fi
 
   if [ "$DISABLE_LEDS_YN" = true ]; then
@@ -111,18 +113,19 @@ mainScript () {
   if [ -z "$UPDATED_PI_FIRMWARE_TF" ]; then
     configurePiSettings
 
-    printComment 'To enable the changes made the system must be rebooted.' 'warning'
-    printComment 'Once the system has rebooted, run this script again to complete the Pi specific setup.' 'warning'
+    printComment --warning 'To enable the changes made the system must be rebooted.'
+    printComment --warning 'Once the system has rebooted, run this script again to complete the Pi specific setup.'
     rebootSystem '20'
   else
-    local REBOOT_TF="$(checkIfSystemRebooted "300")"
-    printCheckResult 'for a recent reboot' "$REBOOT_TF"
+    printComment 'Checking for a recent reboot.'
+    local REBOOT_TF=false
+    if checkIfSystemRebooted '300'; then REBOOT_TF=true; fi
   fi
 
   if [ "$REBOOT_TF" = true ]; then   
     printComment 'Raspberry Pi specific setup complete.'
   elif [ "$REBOOT_TF" = false ]; then
-    printComment 'The system must be rebooted for changes to take effect.' 'warning'
+    printComment --warning 'The system must be rebooted for changes to take effect.'
     rebootSystem '20'
   fi
 }
