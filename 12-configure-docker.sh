@@ -26,7 +26,7 @@
 #-------------------------------------------------------------------------------
 # Imported shared functions.
 #-------------------------------------------------------------------------------
-. ./linshafun/comments.sh
+. ./linshafun/comments-logs.sh
 # . ./linshafun/crontab.sh
 # . ./linshafun/docker-env-variables.sh
 # . ./linshafun/docker-images.sh
